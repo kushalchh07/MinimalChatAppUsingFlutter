@@ -1,5 +1,7 @@
 import 'package:chat_app/pages/sign_inpage.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -10,15 +12,75 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   bool _isChecked = false;
+
+  final emailController = TextEditingController();
+  final passController = TextEditingController();
+  final confirmPassController = TextEditingController();
+
+  void showErrorMessage(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Center(
+              child: Text(message),
+            ),
+          );
+        });
+  }
+
+  void signUserUp() async {
+// some time to load showing loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    if (passController != confirmPassController) {
+      Navigator.pop(context); // end CircularProgressIndicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Password Donot Match!"),
+        ),
+      );
+    }
+    final authservice = Provider.of<AuthService>(context, listen: false);
+    try {
+      await authservice.signUpWithEmailandPassword(
+          emailController.text, passController.text);
+      Navigator.pop(context); // end CircularProgressIndicator
+    } catch (e) {
+      Navigator.pop(context); // end CircularProgressIndicator
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
+    // try {
+    //   if (passController == confirmPassController) {
+    //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    //         email: emailController.text, password: passController.text);
+    //   } else {
+    //     showErrorMessage("Both passwords doesnot match");
+    //   }
+    // } on FirebaseAuthException catch (e) {
+    //   Navigator.pop(context);
+    //   showErrorMessage(e.code);
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final emailController = TextEditingController();
-    final passController = TextEditingController();
-    final confirmPassController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -147,7 +209,9 @@ class _SignUpState extends State<SignUp> {
                   height: 40,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    signUserUp();
+                  },
                   child: Text(
                     "Sign up",
                     style: TextStyle(

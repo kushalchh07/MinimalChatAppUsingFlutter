@@ -21,6 +21,7 @@ class GetStart extends StatelessWidget {
                 ))),
           )
         ],
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
