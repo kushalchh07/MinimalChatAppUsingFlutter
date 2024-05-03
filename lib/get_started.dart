@@ -44,7 +44,10 @@ class GetStart extends StatelessWidget {
             SizedBox(
               height: 100,
             ),
-            Image(image: AssetImage("Icons/peoples.jpeg")),
+            Image(
+              image: AssetImage("Icons/peoples.png"),
+              width: 300,
+            ),
             SizedBox(
               height: 100,
             ),

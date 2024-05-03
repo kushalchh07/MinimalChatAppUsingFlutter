@@ -1,6 +1,6 @@
 {
-    "name": "chat_app",
-    "short_name": "chat_app",
+    "name": "ChatRoom",
+    "short_name": "ChatRoom",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

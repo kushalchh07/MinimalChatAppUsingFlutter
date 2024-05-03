@@ -40,6 +40,8 @@ dependencies:
   provider:
   cloud_firestore: ^4.17.2
   google_fonts: ^6.2.1
+  flutter_launcher_icons: ^0.13.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
