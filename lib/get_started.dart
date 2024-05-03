@@ -1,9 +1,10 @@
 import 'package:chat_app/pages/sign_inpage.dart';
 import 'package:chat_app/pages/sign_uppage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class GetStart extends StatelessWidget {
-  const GetStart({super.key});
+  GetStart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +29,11 @@ class GetStart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "Get Started",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold),
-            ),
+            Text("Get Started",
+                style: GoogleFonts.junge(
+                    color: Colors.black,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold)),
             Text(
               "Start with signing up or sign in.",
               style: TextStyle(
@@ -56,7 +55,7 @@ class GetStart extends StatelessWidget {
               },
               child: Text(
                 "Sign up",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue, fixedSize: Size(200, 30)),
@@ -71,7 +70,7 @@ class GetStart extends StatelessWidget {
               },
               child: Text(
                 "Sign in",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 16),
               ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white, fixedSize: Size(200, 30)),

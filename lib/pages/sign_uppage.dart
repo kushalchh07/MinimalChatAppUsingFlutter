@@ -1,6 +1,7 @@
 import 'package:chat_app/pages/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
@@ -30,6 +31,17 @@ class _SignUpState extends State<SignUp> {
   }
 
   void signUserUp() async {
+    //making sure user must agree the terms and conditions
+    if (!_isChecked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              "Please agree to the Terms and Conditions and Privacy Policy"),
+        ),
+      );
+      return; // Return to exit the function
+    }
+
 // some time to load showing loading circle
     showDialog(
       context: context,
@@ -104,9 +116,9 @@ class _SignUpState extends State<SignUp> {
               children: [
                 Text(
                   "Register",
-                  style: TextStyle(
-                      fontSize: 40,
+                  style: GoogleFonts.junge(
                       color: Colors.black,
+                      fontSize: 40,
                       fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
@@ -215,7 +227,9 @@ class _SignUpState extends State<SignUp> {
                   child: Text(
                     "Sign up",
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue, fixedSize: Size(350, 40)),

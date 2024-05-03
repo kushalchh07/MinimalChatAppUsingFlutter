@@ -3,6 +3,7 @@ import 'package:chat_app/pages/sign_uppage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
@@ -94,13 +95,11 @@ class _SignInState extends State<SignIn> {
             width: 500,
             child: Column(
               children: [
-                Text(
-                  "Login",
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
+                Text("Login",
+                    style: GoogleFonts.junge(
+                        color: Colors.black,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(
                   height: 15,
                 ),
@@ -151,7 +150,9 @@ class _SignInState extends State<SignIn> {
                   child: Text(
                     "Sign in",
                     style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue, fixedSize: Size(350, 40)),
