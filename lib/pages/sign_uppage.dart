@@ -101,7 +101,7 @@ class _SignUpState extends State<SignUp> {
                 width: 45,
                 child: Image(
                     image: AssetImage(
-                  "Icons/ChatIcon.png",
+                  "assets/Icons/ChatIcon.png",
                 ))),
           )
         ],

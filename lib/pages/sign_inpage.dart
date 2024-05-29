@@ -1,4 +1,6 @@
 // import 'package:chat_app/pages/sign_inpage.dart';
+// ignore_for_file: dead_code
+
 import 'package:chat_app/pages/sign_uppage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,8 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final emailController = TextEditingController();
   final passController = TextEditingController();
-
+  bool _obscuretext = true;
+  
   void showErrorMessage(String message) {
     showDialog(
       context: context,
@@ -56,16 +59,10 @@ class _SignInState extends State<SignIn> {
         ),
       );
     }
-    // try {
-    //   await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //       email: emailController.text, password: passController.text);
 
-    //   Navigator.pop(context);
-    // } on FirebaseAuthException catch (e) {
-    //   Navigator.pop(context);
-    //   showErrorMessage(e.code);
-    // }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -132,13 +129,25 @@ class _SignInState extends State<SignIn> {
                 ),
                 TextField(
                   controller: passController,
-                  obscureText: true,
+                  obscureText: _obscuretext,
                   decoration: InputDecoration(
                       label: Text(
                         "Password",
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                      prefixIcon: Icon(Icons.lock_open)),
+                      prefixIcon: Icon(Icons.lock_open),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscuretext
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscuretext = !_obscuretext;
+                          });
+                        },
+                      )),
                 ),
                 SizedBox(
                   height: 60,

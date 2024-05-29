@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class GetStart extends StatelessWidget {
   GetStart({super.key});
 
+  void onPressedSignIn() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,12 +15,12 @@ class GetStart extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Container(
-                height: 45,
-                width: 45,
-                child: Image(
-                    image: AssetImage(
-                  "Icons/ChatIcon.png",
-                ))),
+              height: 45,
+              width: 45,
+              child: Image.asset(
+                'assets/Icons/ChatIcon.png',
+              ),
+            ),
           )
         ],
         automaticallyImplyLeading: false,
@@ -44,43 +45,61 @@ class GetStart extends StatelessWidget {
             SizedBox(
               height: 100,
             ),
-            Image(
-              image: AssetImage("Icons/peoples.png"),
+            Image.asset(
+              'assets/Icons/peoples.png',
               width: 300,
             ),
             SizedBox(
               height: 100,
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => SignUp()));
-              },
-              child: Text(
-                "Sign up",
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, fixedSize: Size(200, 30)),
-            ),
+            Button(
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SignUp()));
+                },
+                buttonName: "Sign Up",
+                buttonColor: Colors.blue,
+                textColor: Colors.white),
             SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => SignIn()));
-              },
-              child: Text(
-                "Sign in",
-                style: TextStyle(color: Colors.black, fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white, fixedSize: Size(200, 30)),
-            )
+            Button(
+                onPressed: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => SignIn()));
+                },
+                buttonName: "Sign In",
+                buttonColor: Colors.white,
+                textColor: Colors.black)
           ],
         ),
       ),
+    );
+  }
+}
+
+class Button extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String buttonName;
+  final Color textColor;
+  final Color buttonColor;
+  const Button(
+      {super.key,
+      required this.onPressed,
+      required this.buttonName,
+      required this.buttonColor,
+      required this.textColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        buttonName,
+        style: TextStyle(color: textColor, fontSize: 16),
+      ),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: buttonColor, fixedSize: Size(200, 30)),
     );
   }
 }
