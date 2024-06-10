@@ -19,7 +19,7 @@ class _SignInState extends State<SignIn> {
   final emailController = TextEditingController();
   final passController = TextEditingController();
   bool _obscuretext = true;
-  
+
   void showErrorMessage(String message) {
     showDialog(
       context: context,
@@ -59,10 +59,7 @@ class _SignInState extends State<SignIn> {
         ),
       );
     }
-
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -77,132 +74,134 @@ class _SignInState extends State<SignIn> {
             child: Container(
                 height: 45,
                 width: 45,
-                child: Image(
-                    image: AssetImage(
-                  "Icons/ChatIcon.png",
-                ))),
+                child: Image.asset("assets/Icons/ChatIcon.png")),
           )
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            height: size.height,
-            width: 500,
-            child: Column(
-              children: [
-                Text("Login",
-                    style: GoogleFonts.junge(
-                        color: Colors.black,
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold)),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "Remember to get up & strech once",
-                  style: TextStyle(
-                    color: Colors.grey,
+      body: SingleChildScrollView(
+        
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+              height: size.height,
+              width: 500,
+              child: Column(
+                children: [
+                  Text("Login",
+                      style: GoogleFonts.junge(
+                          color: Colors.black,
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: 15,
                   ),
-                ),
-                Text(
-                  "In a while - your friends at chat.",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      label: Text(
-                        "Email",
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      prefixIcon: Icon(Icons.account_circle_outlined)),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  controller: passController,
-                  obscureText: _obscuretext,
-                  decoration: InputDecoration(
-                      label: Text(
-                        "Password",
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      prefixIcon: Icon(Icons.lock_open),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscuretext
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscuretext = !_obscuretext;
-                          });
-                        },
-                      )),
-                ),
-                SizedBox(
-                  height: 60,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    signUserIn();
-                  },
-                  child: Text(
-                    "Sign in",
+                  Text(
+                    "Remember to get up & strech once",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue, fixedSize: Size(350, 40)),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    "Forget Password?",
-                    style: TextStyle(color: Colors.blue, fontSize: 18),
-                  ),
-                ),
-                SizedBox(
-                  height: 100,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: TextStyle(fontSize: 16),
+                      color: Colors.grey,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => SignUp()));
-                      },
-                      child: Text(
-                        'Sign up here',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue,
-                          // decoration: TextDecoration.underline,
+                  ),
+                  Text(
+                    "In a while - your friends at chat.",
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                        label: Text(
+                          "Email",
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        prefixIcon: Icon(Icons.account_circle_outlined)),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    controller: passController,
+                    obscureText: _obscuretext,
+                    decoration: InputDecoration(
+                        label: Text(
+                          "Password",
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        prefixIcon: Icon(Icons.lock_open),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscuretext
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscuretext = !_obscuretext;
+                            });
+                          },
+                        )),
+                  ),
+                  SizedBox(
+                    height: 60,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      signUserIn();
+                    },
+                    child: Text(
+                      "Sign in",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, fixedSize: Size(350, 40)),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Forget Password?",
+                      style: TextStyle(color: Colors.blue, fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 100,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account? ",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUp()));
+                        },
+                        child: Text(
+                          'Sign up here',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                            // decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
