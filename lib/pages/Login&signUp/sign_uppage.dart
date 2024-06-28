@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
@@ -30,61 +32,7 @@ class _SignUpState extends State<SignUp> {
         });
   }
 
-  void signUserUp() async {
-    //making sure user must agree the terms and conditions
-    if (!_isChecked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              "Please agree to the Terms and Conditions and Privacy Policy"),
-        ),
-      );
-      return; // Return to exit the function
-    }
-
-// some time to load showing loading circle
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-    if (passController != confirmPassController) {
-      Navigator.pop(context); // end CircularProgressIndicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Password Donot Match!"),
-        ),
-      );
-    }
-    final authservice = Provider.of<AuthService>(context, listen: false);
-    try {
-      await authservice.signUpWithEmailandPassword(
-          emailController.text, passController.text);
-      Navigator.pop(context); // end CircularProgressIndicator
-    } catch (e) {
-      Navigator.pop(context); // end CircularProgressIndicator
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
-    }
-    // try {
-    //   if (passController == confirmPassController) {
-    //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    //         email: emailController.text, password: passController.text);
-    //   } else {
-    //     showErrorMessage("Both passwords doesnot match");
-    //   }
-    // } on FirebaseAuthException catch (e) {
-    //   Navigator.pop(context);
-    //   showErrorMessage(e.code);
-    // }
-  }
+  void register() {}
 
   @override
   Widget build(BuildContext context) {
@@ -221,9 +169,7 @@ class _SignUpState extends State<SignUp> {
                   height: 40,
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    signUserUp();
-                  },
+                  onPressed: register,
                   child: Text(
                     "Sign up",
                     style: TextStyle(

@@ -1,5 +1,5 @@
 // import 'package:chat_app/pages/sign_inpage.dart';
-// ignore_for_file: dead_code
+// ignore_for_file: dead_code, prefer_const_constructors, sort_child_properties_last
 
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
 import 'package:chat_app/services/auth_services.dart';
@@ -20,46 +20,9 @@ class _SignInState extends State<SignIn> {
   final passController = TextEditingController();
   bool _obscuretext = true;
 
-  void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text(message)),
-        );
-      },
-    );
-    print("Incorrect email");
-  }
+login(){}
 
-  void signUserIn() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-    //Using Statemangement
-    final authService = Provider.of<AuthService>(context, listen: false);
-    try {
-      await authService.signInWithEmailandPassword(
-          emailController.text, passController.text);
-      //end circularparogress indicator
-      Navigator.pop(context);
-    } catch (e) {
-      Navigator.pop(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -149,9 +112,7 @@ class _SignInState extends State<SignIn> {
                     height: 60,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      signUserIn();
-                    },
+                    onPressed:login,
                     child: Text(
                       "Sign in",
                       style: TextStyle(
