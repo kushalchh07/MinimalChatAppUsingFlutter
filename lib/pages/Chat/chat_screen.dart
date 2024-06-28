@@ -17,8 +17,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   void signOut() {
-    final authService = Provider.of<AuthService>(context, listen: false);
-    authService.signOut();
+    // final authService = Provider.of<AuthService>(context, listen: false);
+    // authService.signOut();
   }
 
   @override
