@@ -1,4 +1,4 @@
-import 'package:chat_app/pages/sign_inpage.dart';
+import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

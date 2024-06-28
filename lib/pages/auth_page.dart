@@ -1,5 +1,5 @@
-import 'package:chat_app/get_started.dart';
-import 'package:chat_app/pages/chat_screen.dart';
+import 'package:chat_app/pages/SplashScreen&onBoard/get_started.dart';
+import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

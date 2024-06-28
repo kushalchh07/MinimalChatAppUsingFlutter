@@ -1,6 +1,6 @@
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/auth_page.dart';
-import 'package:chat_app/pages/sign_inpage.dart';
+import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

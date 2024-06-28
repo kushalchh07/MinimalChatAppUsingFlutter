@@ -1,7 +1,7 @@
 // import 'package:chat_app/pages/sign_inpage.dart';
 // ignore_for_file: dead_code
 
-import 'package:chat_app/pages/sign_uppage.dart';
+import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
