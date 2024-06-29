@@ -18,7 +18,7 @@ class GetStart extends StatelessWidget {
               height: 45,
               width: 45,
               child: Image.asset(
-                'assets/Icons/ChatIcon.png',
+                'assets/images/chat.jpeg',
               ),
             ),
           )
@@ -46,7 +46,7 @@ class GetStart extends StatelessWidget {
               height: 100,
             ),
             Image.asset(
-              'assets/Icons/peoples.png',
+              'assets/icons/appIcon.jpeg',
               width: 300,
             ),
             SizedBox(

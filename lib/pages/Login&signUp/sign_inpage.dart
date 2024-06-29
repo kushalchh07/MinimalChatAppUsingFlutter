@@ -37,7 +37,7 @@ login(){}
             child: Container(
                 height: 45,
                 width: 45,
-                child: Image.asset("assets/Icons/ChatIcon.png")),
+                child: Image.asset("assets/images/chat.jpeg")),
           )
         ],
       ),

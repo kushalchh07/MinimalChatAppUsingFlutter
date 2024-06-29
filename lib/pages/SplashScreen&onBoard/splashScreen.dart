@@ -57,7 +57,7 @@ class SplashScreenState extends State<SplashScreen> {
                 // color: Colors.amber,
                 width: Get.width * 0.50,
                 child: Image.asset(
-                  "",
+                  "assets/icons/appIcon.jpeg",
                   fit: BoxFit.fitWidth,
                   scale: 2,
                   height: 200,
