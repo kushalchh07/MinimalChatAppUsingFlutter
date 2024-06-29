@@ -1,5 +1,6 @@
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/loginBloc/loginbloc_bloc.dart';
+import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
 import 'package:chat_app/pages/auth_page.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => LoginblocBloc(),
+          create: (context) => LoginBloc(),
         ),
         BlocProvider(
           create: (context) => SignupBloc(),
