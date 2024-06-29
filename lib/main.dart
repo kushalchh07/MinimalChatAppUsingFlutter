@@ -1,15 +1,14 @@
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
-import 'package:chat_app/Bloc/loginBloc/loginbloc_bloc.dart';
+
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
-import 'package:chat_app/pages/auth_page.dart';
-import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
-import 'package:chat_app/services/auth_services.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +31,7 @@ class MyApp extends StatelessWidget {
           create: (context) => SignupBloc(),
         ),
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         title: 'ChatRoom',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),

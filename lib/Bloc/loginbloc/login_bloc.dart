@@ -14,7 +14,8 @@ import 'package:meta/meta.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../constants/colors/colors.dart';
-import '../../constants/colors/Sharedpreferences/sharedpreferences.dart';
+import '../../constants/Sharedpreferences/sharedpreferences.dart';
+// import '../../constants/colors/Sharedpreferences/sharedpreferences.dart';
 import '../../services/auth_services.dart';
 
 part 'login_event.dart';
@@ -51,7 +52,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (value.user != null) {
           log(value.toString());
           saveStatus(true);
-          Get.offAll(() => ChatScreen());
+          
           Fluttertoast.showToast(
             msg: 'Login Sucessfully',
             toastLength: Toast.LENGTH_SHORT,
