@@ -17,7 +17,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-  static String KEYLOGIN = "login";
   @override
   void initState() {
     super.initState();
@@ -25,22 +24,16 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToHome() async {
-    var prefs = await SharedPreferences.getInstance();
-    var isLoggedin = prefs.getBool(KEYLOGIN);
-    // await Future.delayed(const Duration(seconds: 2));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isLoggedin = prefs.getBool(SplashScreen.KEYLOGIN);
+
     Future.delayed(Duration(seconds: 2), () {
-      if (isLoggedin != null) {
-        if (isLoggedin) {
-          Get.offAll(() => ChatScreen());
-        } else {
-          Get.offAll(() => SignIn());
-        }
+      if (isLoggedin != null && isLoggedin) {
+        Get.offAll(() => ChatScreen());
       } else {
         Get.offAll(() => SignIn());
       }
     });
-
-    // Get.offAll(() => Login());
   }
 
   @override
@@ -54,10 +47,9 @@ class SplashScreenState extends State<SplashScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
               child: SizedBox(
-                // color: Colors.amber,
                 width: Get.width * 0.50,
                 child: Image.asset(
-                  "assets/icons/appIcon.jpeg",
+                  "assets/icons/appicon.png",
                   fit: BoxFit.fitWidth,
                   scale: 2,
                   height: 200,
