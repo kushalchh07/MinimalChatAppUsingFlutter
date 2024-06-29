@@ -12,7 +12,7 @@ Color kgreyColor = const Color(0xFFD9D9D9);
 Color kborderColorReview = convert.hexColor(color: '#EAEAEA');
 Color questionContainerColor = whiteColor;
 
-Color appBackgroundColor = const Color.fromARGB(255, 197, 197, 185);
+Color appBackgroundColor = const Color.fromARGB(255, 197, 196, 184);
 Color greyColor = Colors.grey;
 Color lightGrey = Colors.grey[200]!;
 
@@ -43,7 +43,7 @@ Color myLightGrey = const Color(0xffADADAD);
 Color myLighterGrey = const Color(0xFFDCDCDC);
 Color myDarkGreen = const Color(0xff003400);
 Color textColor = const Color(0xff003400);
-Color myGreen = const Color(0xff18A55C);
+// Color myGreen = const Color(0xff18A55C);
 Color myWhite = const Color(0xffFFFFFF);
 Color myMainText = const Color.fromARGB(255, 0, 52, 0);
 Color myInputBorderColor = const Color.fromARGB(255, 197, 197, 197);
