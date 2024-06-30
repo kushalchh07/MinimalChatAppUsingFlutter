@@ -1,6 +1,7 @@
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
+import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
 
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SignupBloc(),
+        ),
+         BlocProvider(
+          create: (context) => UserBloc(),
         ),
       ],
       child: GetMaterialApp(

@@ -5,6 +5,7 @@ import 'dart:developer';
 // import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat_app/pages/Login&signUp/email_verification_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:meta/meta.dart';
-
 
 import '../../../constants/colors/colors.dart';
 import '../../constants/Sharedpreferences/sharedpreferences.dart';
@@ -45,14 +45,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
       await AuthService.createAccountWithEmail(email, password).then((value) {
         if (value == "Account Created") {
-          saveStatus(true);
           saveName(fname);
           saveEmail(email);
           saveContact(contact);
           AuthService.verifyEmail();
           emit(EmailSentState());
           log("Email Verification Sent");
-          // Get.offAll(() => VerifyEmailPage());
+          Get.offAll(() => VerifyEmailPage());
           // Get.to(() => Base());
           Fluttertoast.showToast(
             msg: 'Verification Email Sent Sucessfully',
@@ -97,9 +96,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           msg: 'SignUp SuccessFully',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.green,
           textColor: whiteColor,
         );
+        saveStatus(true);
         emit(SignupSuccessState());
       } else {
         emit(SignupErrorState(error: "Email Not Verified"));

@@ -3,6 +3,8 @@
 import 'dart:math';
 
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/pages/Chat/chat_screen.dart';
+import 'package:chat_app/pages/Login&signUp/email_verification_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -107,6 +110,9 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
     return BlocListener<SignupBloc, SignupState>(
       listener: (context, state) {
         // TODO: implement listener
+        if (state is SignupSuccessState) {
+          Get.offAll(() => ChatScreen());
+        }
       },
       child: registerScreen(context),
     );
