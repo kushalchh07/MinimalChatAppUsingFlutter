@@ -67,6 +67,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     BlocProvider.of<LoginBloc>(context).add(GoogleLoginTappedEvent());
   }
 
+  facebook() {}
   @override
   void initState() {
     super.initState();
@@ -156,7 +157,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                                   height: Get.height * 0.04,
                                 ),
                                 TextFormField(
-                                  cursorColor: yellowColor,
+                                  cursorColor: greenColor,
                                   controller: emailController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -191,7 +192,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                                   height: Get.height * 0.015,
                                 ),
                                 TextFormField(
-                                  cursorColor: primaryColor,
+                                  cursorColor: greenColor,
                                   controller: passController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -353,39 +354,80 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                         SizedBox(
                           height: Get.height * 0.01,
                         ),
-                        GestureDetector(
-                          child: Container(
-                            width: Get.width * 0.8,
-                            height: Get.height * 0.06,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black.withOpacity(0.06),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/google.png',
-                                  width: 30,
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  'Google',
-                                  style: GoogleFonts.inter(
-                                    color: myBlack,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
+                        Row(
+                          children: [
+                            GestureDetector(
+                              child: Container(
+                                width: Get.width * 0.4,
+                                height: Get.height * 0.06,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.06),
+                                    width: 2,
                                   ),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                              ],
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/google.png',
+                                      width: 30,
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Text(
+                                      'Google',
+                                      style: GoogleFonts.inter(
+                                        color: myBlack,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: google,
                             ),
-                          ),
-                          onTap: google,
+                            SizedBox(
+                              width: 4,
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                width: Get.width * 0.4,
+                                height: Get.height * 0.06,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.06),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/facebook.png',
+                                      width: 30,
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Text(
+                                      'Facebook',
+                                      style: GoogleFonts.inter(
+                                        color: myBlack,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: facebook,
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: Get.height * 0.03,
@@ -434,7 +476,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   OutlineInputBorder customFocusBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(25),
-      borderSide: BorderSide(color: browncolor, width: 2),
+      borderSide: BorderSide(color: greenColor, width: 2),
     );
   }
 

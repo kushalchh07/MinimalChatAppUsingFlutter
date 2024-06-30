@@ -1,9 +1,16 @@
+import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
+import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import '../../Bloc/userBloc/user_bloc.dart';
+import '../../Bloc/userBloc/user_event.dart';
+import '../../Bloc/userBloc/user_state.dart';
+import '../../constants/Sharedpreferences/sharedpreferences.dart';
+
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -13,12 +20,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  //create a instance of firebaseauth
-
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   void signOut() {
-    // final authService = Provider.of<AuthService>(context, listen: false);
-    // authService.signOut();
+    AuthService.logout();
+    saveStatus(false);
+    Get.offAll(() => SignIn());
   }
 
   @override
@@ -29,74 +36,76 @@ class _ChatScreenState extends State<ChatScreen> {
           'ChatRoom',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: appBackgroundColor,
       ),
       drawer: Drawer(
         child: IconButton(onPressed: signOut, icon: Icon(Icons.logout)),
       ),
-      body: _buildUserList(),
+      body: BlocProvider(
+        create: (context) => UserBloc()..add(LoadUsers()),
+        child: UserList(),
+      ),
     );
   }
-  //build a list of users except for the current logged in user
+}
 
-  Widget _buildUserList() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('users').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("error");
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('Loading...');
+class UserList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UserBloc, UserState>(
+      builder: (context, state) {
+        if (state is UsersLoading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is UsersLoaded) {
+          final users = state.users;
+          if (users.isEmpty) {
+            return Center(child: Text('No users found'));
           }
           return ListView(
-            children: snapshot.data!.docs
-                .map<Widget>((doc) => _buildUserListItem(doc))
+            children: users
+                .where((user) => user['email'] != FirebaseAuth.instance.currentUser?.email)
+                .map((user) => _buildUserListItem(context, user))
                 .toList(),
           );
-        });
+        } else if (state is UsersError) {
+          return Center(child: Text('Failed to load users'));
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 
-  //build individual user list items
-
-  Widget _buildUserListItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    //display all userrs except current user
-
-    if (_firebaseAuth.currentUser!.email != data['email']) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: ListTile(
-          leading: Icon(Icons.account_circle),
-          title: Text(
-            data['email'],
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChatPage(
-                        receiverUserEmail: data['email'],
-                        receiverUserId: data['uid'])));
-          },
-
-          contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.0, vertical: 8.0), // Padding around the content
-          dense: true, // Make the tile smaller
-          selected: true, // Indicate selection state
-          selectedTileColor:
-              Colors.blue.withOpacity(0.5), // Color when selected
-
-          tileColor: Colors.grey[200], // Background color of the tile
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3), // Border radius of the tile
-            side: BorderSide(color: Colors.black), // Border side of the tile
-          ),
+  Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: ListTile(
+        leading: Icon(Icons.account_circle),
+        title: Text(
+          user['email'] ?? 'No email',
+          style: TextStyle(fontSize: 20, color: Colors.black),
         ),
-      );
-    } else {
-      return Container();
-    }
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatPage(
+                receiverUserEmail: user['email'],
+                receiverUserId: user['uid'],
+              ),
+            ),
+          );
+        },
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        dense: true,
+        selected: true,
+        selectedTileColor: Colors.blue.withOpacity(0.5),
+        tileColor: Colors.grey[200],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(3),
+          side: BorderSide(color: Colors.black),
+        ),
+      ),
+    );
   }
 }
