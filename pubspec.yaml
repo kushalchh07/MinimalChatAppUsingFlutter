@@ -48,6 +48,7 @@ dependencies:
   google_login: ^1.0.3
   fluttertoast: ^8.2.6
   animations: ^2.0.11
+  equatable: ^2.0.5
   
 dev_dependencies:
   flutter_test:
