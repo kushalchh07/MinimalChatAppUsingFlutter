@@ -1,4 +1,5 @@
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Bloc/userBloc/user_bloc.dart';
 import '../../Bloc/userBloc/user_event.dart';
 import '../../Bloc/userBloc/user_state.dart';
@@ -27,13 +30,75 @@ class _ChatScreenState extends State<ChatScreen> {
     Get.offAll(() => SignIn());
   }
 
+  Future<String> getName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('name') ?? 'N/A';
+  }
+
+  String getFirstName(String fullName) {
+    if (fullName.isEmpty) {
+      return 'N/A';
+    }
+    return fullName.split(' ')[0];
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentTime = TimeOfDay.now();
+    String greeting = '';
+    if (currentTime.hour < 12) {
+      greeting = 'Good Morning!';
+    } else if (currentTime.hour < 18) {
+      greeting = 'Good Afternoon!';
+    } else {
+      greeting = 'Good Evening!';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'ChatRoom',
-          style: TextStyle(color: myBlack),
+        title: FutureBuilder<String>(
+          future: getName(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error');
+            } else {
+              String fullName = snapshot.data ?? 'N/A';
+              String firstName = getFirstName(fullName).toUpperCase();
+              return Padding(
+                padding: const EdgeInsets.only(top: 1, bottom: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      firstName == 'N/A' ? 'N/A' : 'Hi $firstName,',
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: myBlack,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Text(
+                        greeting,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: myBlack,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
         ),
         backgroundColor: appBackgroundColor,
       ),
@@ -43,7 +108,10 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: BlocProvider(
         create: (context) => UserBloc()..add(LoadUsers()),
-        child: Container(color: appBackgroundColor, child: UserList()),
+        child: Container(
+          color: appBackgroundColor,
+          child: UserList(),
+        ),
       ),
     );
   }
