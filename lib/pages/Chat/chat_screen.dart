@@ -11,7 +11,6 @@ import '../../Bloc/userBloc/user_event.dart';
 import '../../Bloc/userBloc/user_state.dart';
 import '../../constants/Sharedpreferences/sharedpreferences.dart';
 
-
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
@@ -34,16 +33,17 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Text(
           'ChatRoom',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: myBlack),
         ),
         backgroundColor: appBackgroundColor,
       ),
       drawer: Drawer(
+        backgroundColor: appBackgroundColor,
         child: IconButton(onPressed: signOut, icon: Icon(Icons.logout)),
       ),
       body: BlocProvider(
         create: (context) => UserBloc()..add(LoadUsers()),
-        child: UserList(),
+        child: Container(color: appBackgroundColor, child: UserList()),
       ),
     );
   }
@@ -63,7 +63,8 @@ class UserList extends StatelessWidget {
           }
           return ListView(
             children: users
-                .where((user) => user['email'] != FirebaseAuth.instance.currentUser?.email)
+                .where((user) =>
+                    user['email'] != FirebaseAuth.instance.currentUser?.email)
                 .map((user) => _buildUserListItem(context, user))
                 .toList(),
           );
