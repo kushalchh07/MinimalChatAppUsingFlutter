@@ -7,6 +7,9 @@ class ChatService extends ChangeNotifier {
   //get instance of auth and firestore
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // get user stream,
+  
 //Send Message
   Future<void> sendMessage(String receiverId, String message) async {
 //get current user info
@@ -21,11 +24,13 @@ class ChatService extends ChangeNotifier {
         receiverId: receiverId,
         message: message,
         timestamp: timestamp);
+
     //construct chat room id from current user id and receiver id()
     List<String> ids = [currentUser, receiverId];
     ids.sort(); //sort the ids(this ensures the chat room id is always the same for any pair of users)
     String chatRoomId = ids.join(
         "_"); //combine the ids into a single string to use as a chat roomid
+        
     // add new message to database
     await _firestore
         .collection('chat_rooms')

@@ -17,6 +17,7 @@ class Settings extends StatefulWidget {
 }
 
 void signOut() {
+  
   AuthService.logout();
   saveStatus(false);
   Get.offAll(() => SignIn());

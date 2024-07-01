@@ -1,4 +1,5 @@
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
+import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ProfileImageBloc(FirebaseStorage.instance,
               FirebaseFirestore.instance, ImagePicker()),
+        ),
+        BlocProvider(
+          create: (context) => ChatBloc(FirebaseFirestore.instance),
         ),
       ],
       child: GetMaterialApp(

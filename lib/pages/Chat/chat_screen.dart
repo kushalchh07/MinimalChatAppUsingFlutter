@@ -26,6 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void signOut() {
     AuthService.logout();
+    clearData();
     saveStatus(false);
     Get.offAll(() => SignIn());
   }
@@ -56,6 +57,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              signOut();
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
         title: FutureBuilder<String>(
           future: getName(),
           builder: (context, snapshot) {
@@ -101,10 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
           },
         ),
         backgroundColor: appBackgroundColor,
-      ),
-      drawer: Drawer(
-        backgroundColor: appBackgroundColor,
-        child: IconButton(onPressed: signOut, icon: Icon(Icons.logout)),
       ),
       body: BlocProvider(
         create: (context) => UserBloc()..add(LoadUsers()),

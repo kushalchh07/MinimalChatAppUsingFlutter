@@ -11,8 +11,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
     emit(UsersLoading());
     try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('users').get();
-      final users = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      final QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('users').get();
+      final users = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
       emit(UsersLoaded(users));
     } catch (_) {
       emit(UsersError());
