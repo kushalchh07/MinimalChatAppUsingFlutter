@@ -46,16 +46,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginError("Email or Password cannot be empty"));
         return;
       }
-      // AuthService.loginWithEmail(email, password);
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) {
-        if (value.user != null) {
-          log(value.toString());
-          saveStatus(true);
+      await AuthService.loginWithEmail(email, password).then((value) {
+        if (value == "Logged") {
+          
+          saveEmail(email);
+         
+          
+          log("Account Logged in ");
+
           
           Fluttertoast.showToast(
-            msg: 'Login Sucessfully',
+            msg: 'Logged in  Sucessfully',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.green,
@@ -69,11 +70,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             backgroundColor: Colors.red,
             textColor: whiteColor,
           );
-          emit(LoginError("Credentials are not valid"));
         }
       });
 
-      emit(LoginSuccessfullState());
       log("Loggeded in ");
     } catch (e) {
       log("Error occured during login $e");

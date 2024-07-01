@@ -2,6 +2,8 @@
 
 import 'dart:developer';
 
+import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -12,8 +14,17 @@ class AuthService {
       String email, String password) async {
     log("Signup Tapped");
     try {
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
+      );
       return "Account Created";
 
       // return user;
@@ -28,8 +39,17 @@ class AuthService {
   //Logging In with Email and password
   static Future<String> loginWithEmail(String email, String password) async {
     try {
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': email,
+        },
+      );
       return "Logged";
     } on FirebaseAuthException catch (e) {
       return e.message.toString();
@@ -68,6 +88,18 @@ class AuthService {
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      saveEmail(userCredential.user!.email.toString());
+      saveName(userCredential.user!.displayName.toString());
+      log(userCredential.user!.displayName.toString());
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .set(
+        {
+          'uid': userCredential.user!.uid,
+          'email': userCredential.user!.email,
+        },
+      );
       log("userCredential ${userCredential.toString()}");
 
       return "logged in";

@@ -48,6 +48,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           saveName(fname);
           saveEmail(email);
           saveContact(contact);
+          
           AuthService.verifyEmail();
           emit(EmailSentState());
           log("Email Verification Sent");
