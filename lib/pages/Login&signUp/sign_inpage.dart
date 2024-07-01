@@ -6,6 +6,7 @@ import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,7 +89,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccessfullState) {
-            Get.offAll(() => ChatScreen());
+            Get.offAll(() => Base());
           } else if (state is LoginError) {
             _showSnackBar(state.error, Colors.red);
           }

@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -89,7 +90,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (value == "logged in") {
           log(value.toString());
           saveStatus(true);
-          Get.offAll(() => ChatScreen());
+          Get.offAll(() => Base());
           Fluttertoast.showToast(
             msg: 'Login Sucessfully',
             toastLength: Toast.LENGTH_SHORT,

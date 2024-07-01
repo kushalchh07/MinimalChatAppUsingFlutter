@@ -6,6 +6,7 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Login&signUp/email_verification_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -85,10 +86,10 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: _text.length * _durationPerLetter),
+      duration: Duration(milliseconds: _text1.length * _durationPerLetter),
       vsync: this,
     )..forward();
-    _animation = Tween<double>(begin: 0, end: _text.length.toDouble())
+    _animation = Tween<double>(begin: 0, end: _text1.length.toDouble())
         .animate(_controller);
   }
 
@@ -111,7 +112,7 @@ class _SignUpState extends State<SignUp> with SingleTickerProviderStateMixin {
       listener: (context, state) {
         // TODO: implement listener
         if (state is SignupSuccessState) {
-          Get.offAll(() => ChatScreen());
+          Get.offAll(() => Base());
         }
       },
       child: registerScreen(context),
