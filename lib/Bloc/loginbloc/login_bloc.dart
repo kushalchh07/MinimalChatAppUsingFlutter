@@ -46,8 +46,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginError("Email or Password cannot be empty"));
         return;
       }
-      await AuthService.loginWithEmail(email, password).then((value) {
-        if (value == "Logged") {
+      AuthService authService = AuthService();
+      await authService.loginWithEmail(email, password).then((value) {
+        if (value == "logged") {
           saveEmail(email);
 
           log("Account Logged in ");
@@ -68,10 +69,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             backgroundColor: Colors.red,
             textColor: whiteColor,
           );
+          emit(LoginError("Invalid Email and Password."));
         }
       });
 
-      log("Loggeded in ");
+      ;
     } catch (e) {
       log("Error occured during login $e");
 

@@ -7,8 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 //creating new account
   static Future<String> createAccountWithEmail(
       String email, String password) async {
@@ -42,20 +44,27 @@ class AuthService {
   }
 
   //Logging In with Email and password
-  static Future<String> loginWithEmail(String email, String password) async {
+  Future<String> loginWithEmail(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(userCredential.user!.uid)
-          .set(
-        {
-          'uid': userCredential.user!.uid,
-          'email': email,
-        },
-      );
-      return "Logged";
+      log(userCredential.toString());
+      String uid = userCredential.user!.uid;
+
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        String? name = userDoc.data()?['name'];
+        log(name.toString());
+        if (name != null) {
+          // Store the user's name in SharedPreferences
+          saveName(name);
+
+          return "logged";
+        }
+      }
+      return "logged";
     } on FirebaseAuthException catch (e) {
       return e.message.toString();
     } catch (e) {
