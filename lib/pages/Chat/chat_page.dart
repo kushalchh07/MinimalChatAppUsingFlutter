@@ -1,4 +1,5 @@
 
+import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -95,7 +96,7 @@ class _ChatPageState extends State<ChatPage> {
                   : MainAxisAlignment.start,
           children: [
             Text(data['senderEmail']),
-            ChatBubble(message: data['message']),
+            ChatBubble(message: data['message'], color: greenColor),
           ],
         ),
       ),

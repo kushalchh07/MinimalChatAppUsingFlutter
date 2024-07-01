@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                           context
                               .read<SignupBloc>()
                               .add(CheckEmailVerificationEvent());
+                          saveStatus(true);
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

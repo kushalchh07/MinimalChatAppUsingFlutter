@@ -60,6 +60,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             backgroundColor: Colors.green,
             textColor: whiteColor,
           );
+          saveStatus(true);
           emit(LoginSuccessfullState());
         } else {
           Fluttertoast.showToast(
