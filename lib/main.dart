@@ -1,15 +1,18 @@
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
+import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,8 +34,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => SignupBloc(),
         ),
-         BlocProvider(
+        BlocProvider(
           create: (context) => UserBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ProfileImageBloc(FirebaseStorage.instance,
+              FirebaseFirestore.instance, ImagePicker()),
         ),
       ],
       child: GetMaterialApp(
