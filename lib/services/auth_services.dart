@@ -16,6 +16,9 @@ class AuthService {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      final name = await getName();
+      log(name.toString());
       FirebaseFirestore.instance
           .collection("users")
           .doc(userCredential.user!.uid)
@@ -23,8 +26,10 @@ class AuthService {
         {
           'uid': userCredential.user!.uid,
           'email': email,
+          'name': name,
         },
       );
+
       return "Account Created";
 
       // return user;
@@ -98,6 +103,7 @@ class AuthService {
         {
           'uid': userCredential.user!.uid,
           'email': userCredential.user!.email,
+          'name': userCredential.user!.displayName,
         },
       );
       log("userCredential ${userCredential.toString()}");

@@ -36,19 +36,18 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       final password = event.password;
       final fname = event.fname;
       final contact = event.contact;
-
+      saveName(fname);
+      saveEmail(email);
+      saveContact(contact);
+      final name = await getName();
       // emit(SignupLoadingState());
-      // log("Signup loading");
+      log(name.toString());
 
       // await Future.delayed(Duration(seconds: 1));
       // await AuthService.createAccountWithEmail(email, password);
 
       await AuthService.createAccountWithEmail(email, password).then((value) {
         if (value == "Account Created") {
-          saveName(fname);
-          saveEmail(email);
-          saveContact(contact);
-          
           AuthService.verifyEmail();
           emit(EmailSentState());
           log("Email Verification Sent");
@@ -62,6 +61,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             textColor: whiteColor,
           );
         } else {
+          log(getName().toString());
+
           Fluttertoast.showToast(
             msg: 'Invalid email or password',
             toastLength: Toast.LENGTH_SHORT,
@@ -80,6 +81,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       // return e.message.toString();
       log("$e");
     } catch (e) {
+      // clearData();
       log("Error occured during signup $e");
     }
   }

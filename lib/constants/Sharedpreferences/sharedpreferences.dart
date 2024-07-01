@@ -9,15 +9,18 @@ Future<void> saveName(String name) async {
   prefs.setString('name', name);
 
   print("Name saved to device.");
+  log("Name Saved to device" );
 }
-Future<void> clearData( ) async {
+
+Future<void> clearData() async {
   var prefs = await SharedPreferences.getInstance();
   prefs.remove('name');
-   prefs.remove('email_address');
- prefs.remove('contact');
-  
+  prefs.remove('email_address');
+  prefs.remove('contact');
+
   print("Cleared All the data.");
 }
+
 Future<String?> getName() async {
   var prefs = await SharedPreferences.getInstance();
   String? name = prefs.getString('name');

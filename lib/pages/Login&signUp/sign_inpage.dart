@@ -89,6 +89,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccessfullState) {
+           
             Get.offAll(() => Base());
           } else if (state is LoginError) {
             _showSnackBar(state.error, Colors.red);

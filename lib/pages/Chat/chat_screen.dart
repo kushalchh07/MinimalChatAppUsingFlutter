@@ -57,6 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset("assets/images/chat.png"),
         actions: [
           IconButton(
             onPressed: () {
@@ -110,6 +111,8 @@ class _ChatScreenState extends State<ChatScreen> {
           },
         ),
         backgroundColor: appBackgroundColor,
+        elevation: 0.2,
+        leadingWidth: 50,
       ),
       body: BlocProvider(
         create: (context) => UserBloc()..add(LoadUsers()),
@@ -153,31 +156,33 @@ class UserList extends StatelessWidget {
   Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: ListTile(
-        leading: Icon(Icons.account_circle),
-        title: Text(
-          user['email'] ?? 'No email',
-          style: TextStyle(fontSize: 20, color: Colors.black),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black), // Border color
+          borderRadius: BorderRadius.circular(5.0), // Border radius
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatPage(
-                receiverUserEmail: user['email'],
-                receiverUserId: user['uid'],
+        child: ListTile(
+          leading: Icon(Icons.account_circle),
+          title: Text(
+            user['name'] ?? 'No name',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  receiverUserEmail: user['name'],
+                  receiverUserId: user['uid'],
+                ),
               ),
-            ),
-          );
-        },
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        dense: true,
-        selected: true,
-        selectedTileColor: Colors.blue.withOpacity(0.5),
-        tileColor: Colors.grey[200],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(3),
-          side: BorderSide(color: Colors.black),
+            );
+          },
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          dense: true,
+          selected: true,
+          selectedTileColor: Colors.blue.withOpacity(0.5),
+          tileColor: Colors.grey[200],
         ),
       ),
     );

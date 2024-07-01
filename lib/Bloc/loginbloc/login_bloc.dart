@@ -48,13 +48,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
       await AuthService.loginWithEmail(email, password).then((value) {
         if (value == "Logged") {
-          
           saveEmail(email);
-         
-          
+
           log("Account Logged in ");
 
-          
           Fluttertoast.showToast(
             msg: 'Logged in  Sucessfully',
             toastLength: Toast.LENGTH_SHORT,
@@ -62,6 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             backgroundColor: Colors.green,
             textColor: whiteColor,
           );
+          emit(LoginSuccessfullState());
         } else {
           Fluttertoast.showToast(
             msg: 'Invalid email or password',
