@@ -36,10 +36,14 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
     try {
       User? user = FirebaseAuth.instance.currentUser!;
       String userId = user.uid; // Replace with the actual user ID
+      log(userId);
       String fileName = 'profile_images/$userId.png';
+      log(fileName);
       TaskSnapshot snapshot =
           await _storage.ref().child(fileName).putFile(event.image);
       String downloadUrl = await snapshot.ref.getDownloadURL();
+      
+      log(downloadUrl);
       await _firestore
           .collection('users')
           .doc(userId)

@@ -62,24 +62,24 @@ class _ProfileImageScreenState extends State<ProfileImageScreen> {
               },
               child: Text('Upload Image'),
             ),
-            Expanded(
-              child: BlocBuilder<ProfileImageBloc, ProfileImageState>(
-                builder: (context, state) {
-                  if (state is ProfileImagesLoaded) {
-                    return ListView.builder(
-                      itemCount: state.profileImageUrls.length,
-                      itemBuilder: (context, index) {
-                        return Image.network(state.profileImageUrls[index]);
-                      },
-                    );
-                  }
-                  if (state is ProfileImageLoadFailure) {
-                    return Center(child: Text('Error: ${state.error}'));
-                  }
-                  return Center(child: CircularProgressIndicator());
-                },
-              ),
-            ),
+            // Expanded(
+            //   child: BlocBuilder<ProfileImageBloc, ProfileImageState>(
+            //     builder: (context, state) {
+            //       if (state is ProfileImagesLoaded) {
+            //         return ListView.builder(
+            //           itemCount: state.profileImageUrls.length,
+            //           itemBuilder: (context, index) {
+            //             return Image.network(state.profileImageUrls[index]);
+            //           },
+            //         );
+            //       }
+            //       if (state is ProfileImageLoadFailure) {
+            //         return Center(child: Text('Error: ${state.error}'));
+            //       }
+            //       return Center(child: CircularProgressIndicator());
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
