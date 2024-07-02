@@ -17,7 +17,6 @@ class Settings extends StatefulWidget {
 }
 
 void signOut() {
-  
   AuthService.logout();
   saveStatus(false);
   Get.offAll(() => SignIn());
@@ -36,8 +35,6 @@ class SettingsState extends State<Settings> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Settings"),
-              ElevatedButton(onPressed: signOut, child: Text("SignOut")),
               ElevatedButton(
                   onPressed: () {
                     Get.to(() => ProfileImageScreen());

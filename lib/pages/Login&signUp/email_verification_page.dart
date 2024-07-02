@@ -3,6 +3,7 @@
 import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       body: BlocListener<SignupBloc, SignupState>(
         listener: (context, state) {
           if (state is SignupSuccessState) {
-            Get.offAll(() => ChatScreen());
+            Get.offAll(() => Base());
           } else if (state is SignupErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),

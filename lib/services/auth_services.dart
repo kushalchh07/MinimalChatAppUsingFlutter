@@ -21,6 +21,7 @@ class AuthService {
 
       final name = await getName();
       log(name.toString());
+      log(userCredential.user!.uid);
       FirebaseFirestore.instance
           .collection("users")
           .doc(userCredential.user!.uid)
@@ -29,6 +30,7 @@ class AuthService {
           'uid': userCredential.user!.uid,
           'email': email,
           'name': name,
+          'profileImageUrl': ''
         },
       );
 
@@ -113,6 +115,7 @@ class AuthService {
           'uid': userCredential.user!.uid,
           'email': userCredential.user!.email,
           'name': userCredential.user!.displayName,
+          'profileImageUrl': ''
         },
       );
       log("userCredential ${userCredential.toString()}");

@@ -3,22 +3,18 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/pages/screen/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../Bloc/loginbloc/login_bloc.dart';
+import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../constants/colors/colors.dart';
-import '../../constants/constants.dart';
+
+import '../../services/auth_services.dart';
 import '../../utils/customWidgets/alert_dialog_box.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -29,72 +25,28 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  String? contact;
-  int? isEmailVerified;
-  bool? isRememberme;
-  String? password;
-  int? boardingCount;
-  int googleLogin = 0;
   dynamic fullName;
-  // dynamic email;
+  dynamic email;
 
   // UserRepository user = UserRepository();
 
   @override
   void initState() {
     // loadContact();
-    // log('email splash bata aako $email');
-    super.initState();
-    isGoogleLogIn();
-  }
 
-  isGoogleLogIn() async {
-    // var res = await user.fecthUserDetails();
-    setState(() {
-      // googleLogin = res.user![0].googlelogin!;
-    });
+    super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    googleLogin;
   }
 
-  final email = getEmail();
-  Future<void> clearData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email =
-        prefs.getString('email_address'); // Get the current contact value
-    bool? isRememberme = prefs.getBool('rememberMe');
-    String? password = prefs.getString('password');
-    int? boardingCount = prefs.getInt('boardingCount');
-    isRememberme = isRememberme;
-    email = email;
-    password = password;
-    boardingCount = boardingCount;
-    log('email mathi $email');
-    log('password mathi $password');
-    log('isRememberme mathi $isRememberme');
-    log('boarding count mathi $boardingCount');
-
-    await prefs.clear(); // Clear all data
-    await GoogleSignIn().signOut();
-    // await GoogleSignIn().disconnect();
-
-    prefs.setBool('rememberMe', isRememberme ?? false);
-    prefs.setString('email_address', email ?? '');
-    prefs.setString('password', password ?? '');
-    prefs.setInt('boardingCount', boardingCount ?? 0);
-    log('boarding count $boardingCount');
-    log('email tala $email');
-    log("${isRememberme}isRememberme clear data bara aako value");
-    // log("$email email clear data bara aako value");
-    // log("$password password clear data bara aako value");
-
-    // log(email.toString() + "email");
-
-    // print("Data cleared, contact and remember me retained.");
+  void signOut() {
+    AuthService.logout();
+    clearData();
+    saveStatus(false);
+    Get.offAll(() => SignIn());
   }
 
   @override
@@ -105,6 +57,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         surfaceTintColor: whiteColor,
         titleSpacing: 0,
         title: Text("Settings"),
+        centerTitle: true,
       ),
       backgroundColor: appBackgroundColor.withOpacity(0.5),
       body: SingleChildScrollView(
@@ -145,7 +98,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                         ),
                         Text(
-                          (email ?? 'N/A').toString(),
+                          email ?? 'null',
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.grey,
@@ -204,7 +157,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       // googleLogin == 1
                                       //     ? await signout()
                                       //     : await clearData();
-
+                                      signOut();
                                       Get.offAll(() => const SignIn());
                                     },
                                     'No',

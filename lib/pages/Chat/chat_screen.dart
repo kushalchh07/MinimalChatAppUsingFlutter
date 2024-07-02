@@ -4,6 +4,7 @@ import 'package:chat_app/pages/Chat/chat_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -131,7 +132,7 @@ class UserList extends StatelessWidget {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UsersLoading) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CupertinoActivityIndicator());
         } else if (state is UsersLoaded) {
           final users = state.users;
           if (users.isEmpty) {
