@@ -90,6 +90,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (value == "logged in") {
           log(value.toString());
           saveStatus(true);
+          
           Get.offAll(() => Base());
           Fluttertoast.showToast(
             msg: 'Login Sucessfully',

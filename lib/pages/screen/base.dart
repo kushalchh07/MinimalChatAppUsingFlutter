@@ -15,10 +15,10 @@ class Base extends StatefulWidget {
   int? indexNum;
 
   @override
-  State<Base> createState() => _BaseState();
+  State<Base> createState() => BaseState();
 }
 
-class _BaseState extends State<Base> {
+class BaseState extends State<Base> {
   late int _selectedIndex;
 
   @override
@@ -29,24 +29,24 @@ class _BaseState extends State<Base> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
       widget.indexNum = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    int? _selectedIndex = (widget.indexNum == null) ? 0 : widget.indexNum;
     final screens = [ChatScreen(), Settings()];
 
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: appBackgroundColor,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: primaryColor,
+        currentIndex: _selectedIndex!,
+        selectedItemColor: greenColor,
         selectedFontSize: Get.height * 0.015,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: whiteColor,
+        unselectedItemColor: Colors.black,
+        backgroundColor: appBackgroundColor,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(

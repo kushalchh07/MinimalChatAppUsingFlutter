@@ -1,4 +1,3 @@
-
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
@@ -38,18 +37,22 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.receiverUserEmail),
+        backgroundColor: appBackgroundColor,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildMessageList(),
-          ),
-          //user input
-          _buildMessageInput(),
-          const SizedBox(
-            height: 25,
-          ),
-        ],
+      body: Container(
+        decoration: BoxDecoration(color: appBackgroundColor),
+        child: Column(
+          children: [
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            //user input
+            _buildMessageInput(),
+            const SizedBox(
+              height: 25,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -81,6 +84,9 @@ class _ChatPageState extends State<ChatPage> {
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? Alignment.centerRight
         : Alignment.centerLeft;
+    var color = (data['senderId'] == _firebaseAuth.currentUser!.uid)
+        ? greenColor
+        : yellowColor;
     return Container(
       alignment: alignment,
       child: Padding(
@@ -96,7 +102,7 @@ class _ChatPageState extends State<ChatPage> {
                   : MainAxisAlignment.start,
           children: [
             Text(data['senderEmail']),
-            ChatBubble(message: data['message'], color: greenColor),
+            ChatBubble(message: data['message'], color: color),
           ],
         ),
       ),
