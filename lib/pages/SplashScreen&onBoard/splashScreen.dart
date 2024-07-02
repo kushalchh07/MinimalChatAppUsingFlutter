@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -29,7 +30,7 @@ class SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration(seconds: 2), () {
       if (isLoggedin != null && isLoggedin) {
-        Get.offAll(() => ChatScreen());
+        Get.offAll(() => Base());
       } else {
         Get.offAll(() => SignIn());
       }
