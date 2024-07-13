@@ -64,7 +64,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           log(getName().toString());
 
           Fluttertoast.showToast(
-            msg: 'Invalid email or password',
+            msg: value.toString(),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red,

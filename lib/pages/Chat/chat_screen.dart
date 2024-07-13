@@ -59,14 +59,14 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: Image.asset("assets/images/chat.png"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              signOut();
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       signOut();
+        //     },
+        //     icon: const Icon(Icons.logout),
+        //   ),
+        // ],
         title: FutureBuilder<String>(
           future: getName(),
           builder: (context, snapshot) {

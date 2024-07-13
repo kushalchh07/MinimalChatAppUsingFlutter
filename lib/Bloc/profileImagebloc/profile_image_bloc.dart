@@ -23,6 +23,8 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
   Future<void> _onPickProfileImage(
       PickProfileImage event, Emitter<ProfileImageState> emit) async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    log(pickedFile.toString());
+    log(pickedFile!.path);
     if (pickedFile != null) {
       emit(ProfileImagePicked(File(pickedFile.path)));
     } else {
@@ -42,8 +44,8 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
       TaskSnapshot snapshot =
           await _storage.ref().child(fileName).putFile(event.image);
       String downloadUrl = await snapshot.ref.getDownloadURL();
-      
-      log(downloadUrl);
+
+      log('Download URL: $downloadUrl');
       await _firestore
           .collection('users')
           .doc(userId)

@@ -7,6 +7,7 @@ import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,6 +19,11 @@ import 'package:image_picker/image_picker.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseAppCheck.instance.activate(
+    // webRecaptchaSiteKey: 'your-recaptcha-v3-site-key', // If you're targeting web
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.deviceCheck,
+  );
   runApp(const MyApp());
 }
 

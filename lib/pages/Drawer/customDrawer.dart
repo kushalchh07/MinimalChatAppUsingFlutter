@@ -146,67 +146,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           onTap: () async {
                             // final prefs =
                             //     await SharedPreferences.getInstance();
-                            Platform.isAndroid
-                                ? customAlertBox(
-                                    context,
-                                    'Do you really want to Logout?',
-                                    'Yes',
-                                    () async {
-                                      // BlocProvider.of<LoginBloc>(context)
-                                      //     .add(LoginInitialEvent());
-                                      // googleLogin == 1
-                                      //     ? await signout()
-                                      //     : await clearData();
-                                      signOut();
-                                      Get.offAll(() => const SignIn());
-                                    },
-                                    'No',
-                                    () async {
-                                      Navigator.pop(context);
-                                    },
-                                  )
-                                : showCupertinoDialog(
-                                    context: context,
-                                    builder: (context) => CupertinoAlertDialog(
-                                      title: const Text(
-                                        'Logout',
-                                        style: TextStyle(
-                                            fontFamily: 'inter',
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      content: const Text(
-                                          'Do you really want to Logout?'),
-                                      actions: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            CupertinoButton(
-                                              onPressed: () async {
-                                                // Navigator.pop(context);
-                                                // clearData();
-                                                // await LoginApi.signOut;
-                                                // log("${isEmailVerified}email verify");
-                                                // log("${contact}contact");
-
-                                                // BlocProvider.of<LoginBloc>(
-                                                //         context)
-                                                //     .add(LoginInitialEvent());
-                                                // Get.offAll(() => const Login());
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
-                                            CupertinoButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('No'),
-                                            ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
+                            customAlertBox(
+                              context,
+                              'Do you really want to Logout?',
+                              'Yes',
+                              () {
+                                signOut();
+                               
+                              },
+                              'No',
+                              () {
+                                Navigator.pop(context);
+                              },
+                            );
                           },
                           title: const Text(
                             'Logout',

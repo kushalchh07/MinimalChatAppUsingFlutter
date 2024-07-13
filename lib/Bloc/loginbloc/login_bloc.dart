@@ -74,7 +74,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
       });
 
-      ;
+      
     } catch (e) {
       log("Error occured during login $e");
 
