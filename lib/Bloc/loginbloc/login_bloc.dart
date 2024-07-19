@@ -64,7 +64,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginSuccessfullState());
         } else {
           Fluttertoast.showToast(
-            msg: 'Invalid email or password',
+            msg: value.toString(),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.red,
@@ -73,8 +73,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginError("Invalid Email and Password."));
         }
       });
-
-      
     } catch (e) {
       log("Error occured during login $e");
 
@@ -90,7 +88,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (value == "logged in") {
           log(value.toString());
           saveStatus(true);
-          
+
           Get.offAll(() => Base());
           Fluttertoast.showToast(
             msg: 'Login Sucessfully',
