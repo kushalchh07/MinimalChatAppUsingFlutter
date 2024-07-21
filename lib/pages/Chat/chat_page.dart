@@ -30,6 +30,35 @@ class _ChatPageState extends State<ChatPage> {
           widget.receiverUserId, _messageController.text);
       _messageController.clear();
     }
+    scrollDown();
+  }
+
+  FocusNode myFocusNode = FocusNode();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myFocusNode.addListener(() {
+      if (myFocusNode.hasFocus) {
+        //wait so that keyboard has time to show up
+        Future.delayed(Duration(milliseconds: 500), () => scrollDown());
+      }
+    });
+    Future.delayed(Duration(milliseconds: 500), () => scrollDown());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    myFocusNode.dispose();
+    _messageController.dispose();
+  }
+
+  final ScrollController _scrollController = ScrollController();
+  scrollDown() {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
   }
 
   @override
@@ -70,6 +99,7 @@ class _ChatPageState extends State<ChatPage> {
             return Text('Loading...');
           }
           return ListView(
+            controller: _scrollController,
             children: snapshot.data!.docs
                 .map((document) => _buildMessageItem(document))
                 .toList(),
@@ -118,6 +148,7 @@ class _ChatPageState extends State<ChatPage> {
           //textfield
           Expanded(
             child: TextField(
+              focusNode: myFocusNode,
               controller: _messageController,
               obscureText: false,
               decoration: InputDecoration(hintText: 'Enter Message'),
