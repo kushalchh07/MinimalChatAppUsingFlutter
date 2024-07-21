@@ -26,6 +26,7 @@ class ChatService extends ChangeNotifier {
         senderEmail: currentUserEmail,
         receiverId: receiverId,
         message: message,
+        // messageId:messageId,
         timestamp: timestamp);
 
     //construct chat room id from current user id and receiver id()

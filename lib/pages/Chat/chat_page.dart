@@ -44,7 +44,7 @@ class _ChatPageState extends State<ChatPage> {
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
-    Future.delayed(Duration(milliseconds: 500), () => scrollDown());
+    Future.delayed(Duration(milliseconds: 300), () => scrollDown());
   }
 
   @override
@@ -138,7 +138,7 @@ class _ChatPageState extends State<ChatPage> {
               message: data['message'],
               color: color,
               isMe: isMe,
-              messageId:'',
+              messageId:document.id,
               userId: data["senderId"],
             ),
           ],
