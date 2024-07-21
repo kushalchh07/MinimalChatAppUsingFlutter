@@ -117,6 +117,8 @@ class _ChatPageState extends State<ChatPage> {
     var color = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? greenColor
         : yellowColor;
+    var isMe =
+        (data['senderId'] == _firebaseAuth.currentUser!.uid) ? true : false;
     return Container(
       alignment: alignment,
       child: Padding(
@@ -132,7 +134,13 @@ class _ChatPageState extends State<ChatPage> {
                   : MainAxisAlignment.start,
           children: [
             Text(data['senderEmail']),
-            ChatBubble(message: data['message'], color: color),
+            ChatBubble(
+              message: data['message'],
+              color: color,
+              isMe: isMe,
+              messageId:'',
+              userId: data["senderId"],
+            ),
           ],
         ),
       ),
