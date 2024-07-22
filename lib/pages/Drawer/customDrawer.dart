@@ -3,6 +3,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
+import 'package:chat_app/Bloc/profileImagebloc/profile_image_event.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/pages/Drawer/blocked_users.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
@@ -14,9 +17,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get/get.dart';
 
+import '../../Bloc/profileImagebloc/profile_image_state.dart';
 import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../constants/colors/colors.dart';
 
+import '../../constants/constants.dart';
 import '../../services/auth_services.dart';
 import '../../utils/customWidgets/alert_dialog_box.dart';
 
@@ -38,6 +43,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     // loadContact();
 
     super.initState();
+    BlocProvider.of<ProfileImageBloc>(context).add(LoadMyProfileImages());
   }
 
   @override
@@ -204,65 +210,87 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ],
                     ),
                   ),
-                  // Positioned(
-                  //   top: 0,
-                  //   left: 0,
-                  //   right: 0,
-                  //   child: Transform.translate(
-                  //     offset: const Offset(0, -70),
-                  //     child: Container(
-                  //       height: 150,
-                  //       width: 150,
-                  //       decoration: BoxDecoration(
-                  //         shape: BoxShape.circle,
-                  //         border: Border.all(
-                  //           color: Colors.transparent,
-                  //           width: 2,
-                  //         ),
-                  //       ),
-                  //       child: image == null || image == ''
-                  //           ? Container(
-                  //               height: 60,
-                  //               width: 60,
-                  //               decoration: BoxDecoration(
-                  //                   color: primaryColor,
-                  //                   shape: BoxShape.circle),
-                  //               child: Center(
-                  //                 child: Text(
-                  //                   getFirstandLastNameInitals(
-                  //                       fullName.toString().toUpperCase()),
-                  //                   style: TextStyle(
-                  //                       color: whiteColor, fontSize: 76),
-                  //                 ),
-                  //               ),
-                  //             )
-                  //           : CachedNetworkImage(
-                  //               imageBuilder: (context, imageProvider) {
-                  //                 return Container(
-                  //                   decoration: BoxDecoration(
-                  //                     shape: BoxShape.circle,
-                  //                     image: DecorationImage(
-                  //                       image: imageProvider,
-                  //                       fit: BoxFit.cover,
-                  //                     ),
-                  //                   ),
-                  //                 );
-                  //               },
-                  //               imageUrl: profileImageBaseUrl + '/' + image,
-                  //               placeholder: (context, url) => Image.asset(
-                  //                 'assets/others/no-image.png',
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //               errorWidget: (context, url, error) =>
-                  //                   Image.asset(
-                  //                 'assets/others/no-image.png',
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //               fit: BoxFit.cover,
-                  //             ),
-                  //     ),
-                  //   ),
-                  // ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Transform.translate(
+                      offset: const Offset(0, -70),
+                      child: BlocConsumer<ProfileImageBloc, ProfileImageState>(
+                        listener: (context, state) {
+                          // TODO: implement listener
+                        },
+                        builder: (context, state) {
+                          if (state is ProfileImageInitial) {
+                            return Container();
+                          }
+                          if (state is ProfileImageUploading) {
+                            return const Center(
+                              child: CupertinoActivityIndicator(),
+                            );
+                          } else if (state is MyProfileImagesLoaded) {
+                            final image = state.profileImageUrls[0];
+                            log("image: $image");
+                            return Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.transparent,
+                                  width: 2,
+                                ),
+                              ),
+                              child: image == null || image == ''
+                                  ? Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          shape: BoxShape.circle),
+                                      child: Center(
+                                        child: Text(
+                                          getFirstandLastNameInitals(fullName
+                                              .toString()
+                                              .toUpperCase()),
+                                          style: TextStyle(
+                                              color: whiteColor, fontSize: 76),
+                                        ),
+                                      ),
+                                    )
+                                  // : Image.network(image)
+                                  : CachedNetworkImage(
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      imageUrl: image,
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                        'assets/images/no-image.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(
+                                        'assets/images/no-image.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],

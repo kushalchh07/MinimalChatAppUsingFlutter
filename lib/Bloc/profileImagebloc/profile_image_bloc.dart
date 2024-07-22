@@ -1,3 +1,6 @@
+// ignore_for_file: empty_catches
+
+import 'dart:async';
 import 'dart:io';
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +21,7 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
     on<PickProfileImage>(_onPickProfileImage);
     on<UploadProfileImage>(_onUploadProfileImage);
     on<LoadProfileImages>(_onLoadProfileImages);
+    on<LoadMyProfileImages>(_onLoadMyProfileImages);
   }
 
   Future<void> _onPickProfileImage(
@@ -52,6 +56,7 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
           .update({'profileImageUrl': downloadUrl});
       log(user.uid);
       emit(ProfileImageUploaded());
+      emit(MyProfileImagesLoaded([downloadUrl]));
       add(LoadProfileImages()); // Trigger loading of images after upload
     } catch (e) {
       emit(ProfileImageLoadFailure(e.toString()));
@@ -66,8 +71,26 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
           .map((doc) => doc['profileImageUrl'] as String)
           .toList();
       emit(ProfileImagesLoaded(profileImageUrls));
+      log(profileImageUrls.toString());
     } catch (e) {
       emit(ProfileImageLoadFailure(e.toString()));
     }
+  }
+
+  FutureOr<void> _onLoadMyProfileImages(
+      LoadMyProfileImages event, Emitter<ProfileImageState> emit) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      String userId = user!.uid;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('uid', isEqualTo: userId)
+          .get();
+      List<String> profileImageUrls = querySnapshot.docs
+          .map((doc) => doc['profileImageUrl'] as String)
+          .toList();
+      emit(MyProfileImagesLoaded(profileImageUrls));
+      log(profileImageUrls.toString());
+    } catch (e) {}
   }
 }

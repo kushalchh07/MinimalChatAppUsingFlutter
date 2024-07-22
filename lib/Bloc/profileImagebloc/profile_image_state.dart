@@ -39,3 +39,12 @@ class ProfileImagesLoaded extends ProfileImageState {
   @override
   List<Object?> get props => [profileImageUrls];
 }
+class MyProfileImagesLoaded extends ProfileImageState {
+  final List<String> profileImageUrls;
+
+  MyProfileImagesLoaded(this.profileImageUrls);
+
+  @override
+  List<Object?> get props => [profileImageUrls];
+}
+

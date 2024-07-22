@@ -18,3 +18,4 @@ class UploadProfileImage extends ProfileImageEvent {
 }
 
 class LoadProfileImages extends ProfileImageEvent {}
+class LoadMyProfileImages extends ProfileImageEvent{}
