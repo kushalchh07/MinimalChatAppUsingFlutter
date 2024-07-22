@@ -6,3 +6,15 @@ abstract class UserEvent extends Equatable {
 }
 
 class LoadUsers extends UserEvent {}
+
+class LoadBlockedUsers extends UserEvent {}
+
+class UnBlockUserEvent extends UserEvent {
+  String blockedUserId;
+
+  UnBlockUserEvent(this.blockedUserId);
+}
+class BlockUserEvent extends UserEvent {
+  String blockedUserId;
+  BlockUserEvent(this.blockedUserId);
+}

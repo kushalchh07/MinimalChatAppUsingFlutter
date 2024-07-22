@@ -96,25 +96,36 @@ class ChatService extends ChangeNotifier {
   }
 
   //block user
-  Future<void> blockUser(String userId) async {
+  Future<String> blockUser(String userId) async {
     final currentUser = await FirebaseAuth.instance.currentUser!;
-    await _firestore
-        .collection('users')
-        .doc(currentUser!.uid)
-        .collection("BlockedUsers")
-        .doc(userId)
-        .set({});
+    try {
+      await _firestore
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection("BlockedUsers")
+          .doc(userId)
+          .set({});
+      return "blocked";
+    } catch (e) {
+      return "Error";
+    }
   }
 
   //unblock user
-  Future<void> unBlockUser(String blockeduserId) async {
+  Future<String> unBlockUser(String blockeduserId) async {
     final currentUser = await FirebaseAuth.instance.currentUser!;
-    await _firestore
-        .collection('users')
-        .doc(currentUser!.uid)
-        .collection("BlockedUsers")
-        .doc(blockeduserId)
-        .delete();
+    try {
+      await _firestore
+          .collection('users')
+          .doc(currentUser!.uid)
+          .collection("BlockedUsers")
+          .doc(blockeduserId)
+          .delete()
+          .then((value) => "Unblocked");
+      return "Unblocked";
+    } catch (e) {
+      return "Error";
+    }
   }
   //get blocked userr stream
 
