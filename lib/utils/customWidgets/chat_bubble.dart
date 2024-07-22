@@ -35,14 +35,14 @@ class ChatBubble extends StatelessWidget {
                   _reportContent(context, messageId, userId);
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.block),
-                title: const Text("Block User"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _blockUser(context, userId);
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.block),
+              //   title: const Text("Block User"),
+              //   onTap: () {
+              //     Navigator.pop(context);
+              //     _blockUser(context, userId);
+              //   },
+              // ),
               ListTile(
                 leading: const Icon(Icons.cancel),
                 title: const Text("Cancel"),
@@ -90,40 +90,40 @@ class ChatBubble extends StatelessWidget {
   }
 
 //block user
-  _blockUser(BuildContext context, String userId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure you want to block this user?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog
-              },
-            ),
-            TextButton(
-              child: Text('Block'),
-              onPressed: () {
-                ChatService _chatService = ChatService();
-                // Add your reporting logic here
-                _chatService.blockUser(userId);
-                Navigator.of(context).pop();
-                Fluttertoast.showToast(
-                    msg: "User Blocked",
-                    gravity: ToastGravity.CENTER,
-                    backgroundColor: Colors.green);
+  // _blockUser(BuildContext context, String userId) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Confirm'),
+  //         content: Text('Are you sure you want to block this user?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text('Cancel'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop(); // Dismiss the dialog
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: Text('Block'),
+  //             onPressed: () {
+  //               ChatService _chatService = ChatService();
+  //               // Add your reporting logic here
+  //               _chatService.blockUser(userId);
+  //               Navigator.of(context).pop();
+  //               Fluttertoast.showToast(
+  //                   msg: "User Blocked",
+  //                   gravity: ToastGravity.CENTER,
+  //                   backgroundColor: Colors.green);
 
-                // Dismiss the dialog
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  //               // Dismiss the dialog
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

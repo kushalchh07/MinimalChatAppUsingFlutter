@@ -6,14 +6,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
   final String receiverUserId;
-  ChatPage(
-      {super.key,
-      required this.receiverUserEmail,
-      required this.receiverUserId});
+
+  ChatPage({
+    Key? key,
+    required this.receiverUserEmail,
+    required this.receiverUserId,
+  }) : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -23,8 +26,10 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode myFocusNode = FocusNode();
+
   void sendMessage() async {
-    //only send message if there is something to send
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
           widget.receiverUserId, _messageController.text);
@@ -33,14 +38,19 @@ class _ChatPageState extends State<ChatPage> {
     scrollDown();
   }
 
-  FocusNode myFocusNode = FocusNode();
+  void scrollDown() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(seconds: 1),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
-        //wait so that keyboard has time to show up
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
@@ -49,16 +59,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     myFocusNode.dispose();
     _messageController.dispose();
-  }
-
-  final ScrollController _scrollController = ScrollController();
-  scrollDown() {
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+    super.dispose();
   }
 
   @override
@@ -75,70 +78,130 @@ class _ChatPageState extends State<ChatPage> {
             Expanded(
               child: _buildMessageList(),
             ),
-            //user input
             _buildMessageInput(),
-            const SizedBox(
-              height: 25,
-            ),
+            const SizedBox(height: 25),
           ],
         ),
       ),
     );
   }
 
-  //build message list
   Widget _buildMessageList() {
-    return StreamBuilder(
-        stream: _chatService.getMessages(
-            widget.receiverUserId, _firebaseAuth.currentUser!.uid),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error${snapshot.error}');
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text('Loading...');
-          }
-          return ListView(
-            controller: _scrollController,
-            children: snapshot.data!.docs
-                .map((document) => _buildMessageItem(document))
-                .toList(),
-          );
-        });
+    return StreamBuilder<QuerySnapshot>(
+      stream: _chatService.getMessages(
+          widget.receiverUserId, _firebaseAuth.currentUser!.uid),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return ListView(
+          controller: _scrollController,
+          children: snapshot.data!.docs.map((document) {
+            return _buildMessageItem(document);
+          }).toList(),
+        );
+      },
+    );
   }
-  //build message item
+
+  void _showOptions(BuildContext context, String userId) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.flag),
+                title: const Text("Report"),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Add reporting logic here
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.block),
+                title: const Text("Block User"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _blockUser(context, userId);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.cancel),
+                title: const Text("Cancel"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _blockUser(BuildContext context, String userId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text('Are you sure you want to block this user?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Block'),
+              onPressed: () {
+                _chatService.blockUser(userId);
+                Navigator.of(context).pop();
+                Fluttertoast.showToast(
+                  msg: "User Blocked",
+                  gravity: ToastGravity.CENTER,
+                  backgroundColor: Colors.green,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    //align the messages to the right if the sender is the current user , otherwise keep it on left
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? Alignment.centerRight
         : Alignment.centerLeft;
     var color = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? greenColor
         : yellowColor;
-    var isMe =
-        (data['senderId'] == _firebaseAuth.currentUser!.uid) ? true : false;
+    var isMe = (data['senderId'] == _firebaseAuth.currentUser!.uid);
+
     return Container(
       alignment: alignment,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment:
-              (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
+              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           mainAxisAlignment:
-              (data['senderId'] == _firebaseAuth.currentUser!.uid)
-                  ? MainAxisAlignment.end
-                  : MainAxisAlignment.start,
+              isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             Text(data['senderEmail']),
             ChatBubble(
               message: data['message'],
               color: color,
               isMe: isMe,
-              messageId:document.id,
+              messageId: document.id,
               userId: data["senderId"],
             ),
           ],
@@ -147,23 +210,18 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  // build message input
   Widget _buildMessageInput() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Row(
         children: [
-          //textfield
           Expanded(
             child: TextField(
               focusNode: myFocusNode,
               controller: _messageController,
-              obscureText: false,
               decoration: InputDecoration(hintText: 'Enter Message'),
             ),
           ),
-          //send Button
-
           IconButton(
             onPressed: sendMessage,
             icon: const Icon(Icons.send),

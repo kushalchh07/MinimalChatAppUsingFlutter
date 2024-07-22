@@ -3,11 +3,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
+import 'package:chat_app/pages/Drawer/blocked_users.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/pages/screen/settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:get/get.dart';
 
@@ -143,6 +146,25 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           height: 0,
                         ),
                         ListTile(
+                          onTap: () {
+                            // Navigate to the Learning Dashboard
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => BlocProvider(
+                                      create: (context) => UserBloc(),
+                                      child: const BlockedUsers(),
+                                    )));
+                          },
+                          title: const Text('Blocked Users'),
+                          leading: Icon(
+                            Icons.block_flipped,
+                            color: secondaryColor,
+                          ), // Customize the icon
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: secondaryColor,
+                          ),
+                        ),
+                        ListTile(
                           onTap: () async {
                             // final prefs =
                             //     await SharedPreferences.getInstance();
@@ -152,7 +174,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               'Yes',
                               () {
                                 signOut();
-                               
                               },
                               'No',
                               () {

@@ -138,12 +138,17 @@ class UserList extends StatelessWidget {
           if (users.isEmpty) {
             return Center(child: Text('No users found'));
           }
-          return ListView(
-            children: users
-                .where((user) =>
-                    user['email'] != FirebaseAuth.instance.currentUser?.email)
-                .map((user) => _buildUserListItem(context, user))
-                .toList(),
+          return GestureDetector(
+            onLongPress: () {
+              _showOptions(context, state.users[0]['uid']);
+            },
+            child: ListView(
+              children: users
+                  .where((user) =>
+                      user['email'] != FirebaseAuth.instance.currentUser?.email)
+                  .map((user) => _buildUserListItem(context, user))
+                  .toList(),
+            ),
           );
         } else if (state is UsersError) {
           return Center(child: Text('Failed to load users'));
@@ -186,6 +191,71 @@ class UserList extends StatelessWidget {
           tileColor: Colors.grey[200],
         ),
       ),
+    );
+  }
+
+  void _showOptions(BuildContext context, String userId) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.flag),
+                title: const Text("Report"),
+                onTap: () {
+                  Navigator.pop(context);
+                  // Add reporting logic here
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.block),
+                title: const Text("Block User"),
+                onTap: () {
+                  Navigator.pop(context);
+                  _blockUser(context, userId);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.cancel),
+                title: const Text("Cancel"),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _blockUser(BuildContext context, String userId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text('Are you sure you want to block this user?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Block'),
+              onPressed: () {
+                BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
+                BlocProvider.of<UserBloc>(context).add(LoadUsers());
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
