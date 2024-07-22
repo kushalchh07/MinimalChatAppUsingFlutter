@@ -58,11 +58,12 @@ class AuthService {
 
       if (userDoc.exists) {
         String? name = userDoc.data()?['name'];
+        String imageUrl = userDoc.data()?['profileImageUrl'];
         log(name.toString());
         if (name != null) {
           // Store the user's name in SharedPreferences
           saveName(name);
-
+          saveImage(imageUrl);
           return "logged";
         }
       }
@@ -157,13 +158,15 @@ class AuthService {
   //   }
   // }
   Future<Map<String, dynamic>> getUserDataFromFirebase(String userId) async {
-  Map<String, dynamic> userData = {};
+    Map<String, dynamic> userData = {};
 
-  DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    DocumentSnapshot userSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
-  if (userSnapshot.exists) {
-userData = userSnapshot.data() as Map<String, dynamic>;  }
+    if (userSnapshot.exists) {
+      userData = userSnapshot.data() as Map<String, dynamic>;
+    }
 
-  return userData;
-}
+    return userData;
+  }
 }
