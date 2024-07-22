@@ -142,12 +142,16 @@ class UserList extends StatelessWidget {
             onLongPress: () {
               _showOptions(context, state.users[0]['uid']);
             },
-            child: ListView(
-              children: users
-                  .where((user) =>
-                      user['email'] != FirebaseAuth.instance.currentUser?.email)
-                  .map((user) => _buildUserListItem(context, user))
-                  .toList(),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 2, right: 2),
+              child: ListView(
+                children: users
+                    .where((user) =>
+                        user['email'] !=
+                        FirebaseAuth.instance.currentUser?.email)
+                    .map((user) => _buildUserListItem(context, user))
+                    .toList(),
+              ),
             ),
           );
         } else if (state is UsersError) {
@@ -161,11 +165,14 @@ class UserList extends StatelessWidget {
 
   Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0), // Border radius
+          color: appSecondary,
+
+          // border: Border.all(color: Colors.black), // Border color
+          borderRadius: BorderRadius.circular(5.0),
+          // Border radius
         ),
         child: ListTile(
           leading: Icon(Icons.account_circle),

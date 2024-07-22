@@ -79,7 +79,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       // bottom: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: appSecondary,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
