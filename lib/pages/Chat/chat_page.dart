@@ -39,11 +39,15 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
-      duration: Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.fastOutSlowIn,
+        );
+      }
+    });
   }
 
   @override
@@ -54,13 +58,13 @@ class _ChatPageState extends State<ChatPage> {
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
-    Future.delayed(Duration(milliseconds: 300), () => scrollDown());
   }
 
   @override
   void dispose() {
     myFocusNode.dispose();
     _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -97,6 +101,9 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());
+
         return ListView(
           controller: _scrollController,
           children: snapshot.data!.docs.map((document) {
