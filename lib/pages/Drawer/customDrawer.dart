@@ -11,6 +11,7 @@ import 'package:chat_app/pages/Drawer/blocked_users.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/pages/screen/settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
 import '../../Bloc/profileImagebloc/profile_image_state.dart';
+import '../../Bloc/userBloc/user_event.dart';
+import '../../Bloc/userBloc/user_state.dart';
 import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../constants/colors/colors.dart';
 
@@ -33,22 +36,12 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  dynamic fullName;
-  dynamic email;
+  Future<Map<String, String?>> getProfileInfo() async {
+    final fullName = await getName();
+    final email = await getEmail();
+    final imageUrl = await getImage();
 
-  // UserRepository user = UserRepository();
-
-  @override
-  void initState() {
-    // loadContact();
-
-    super.initState();
-    BlocProvider.of<ProfileImageBloc>(context).add(LoadMyProfileImages());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    return {'fullName': fullName, 'email': email, 'imageUrl': imageUrl};
   }
 
   void signOut() {
@@ -56,6 +49,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
     clearData();
     saveStatus(false);
     Get.offAll(() => SignIn());
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -81,8 +79,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Container(
                     width: Get.width * 0.9,
                     padding: const EdgeInsets.only(
-                      top: 10,
-                      // bottom: 10,
+                      top: 50,
                     ),
                     decoration: BoxDecoration(
                       color: appSecondary,
@@ -99,31 +96,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(height: Get.height * 0.1),
-                        Text(
-                          fullName ?? 'Loading',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          email ?? 'null',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
                         ListTile(
                           onTap: () {
-                            // Navigate to the Learning Dashboard
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const Profile()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Profile()),
+                            );
                           },
                           title: const Text('My Information'),
                           leading: Icon(
                             Icons.person,
                             color: secondaryColor,
-                          ), // Customize the icon
+                          ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: secondaryColor,
@@ -134,15 +118,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         ListTile(
                           onTap: () {
-                            // Navigate to the Learning Dashboard
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const Settings()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Settings()),
+                            );
                           },
                           title: const Text('Settings'),
                           leading: Icon(
                             Icons.settings,
                             color: secondaryColor,
-                          ), // Customize the icon
+                          ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: secondaryColor,
@@ -153,18 +138,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         ListTile(
                           onTap: () {
-                            // Navigate to the Learning Dashboard
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => BlocProvider(
-                                      create: (context) => UserBloc(),
-                                      child: const BlockedUsers(),
-                                    )));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => BlocProvider(
+                                        create: (context) => UserBloc(),
+                                        child: const BlockedUsers(),
+                                      )),
+                            );
                           },
                           title: const Text('Blocked Users'),
                           leading: Icon(
                             Icons.block_flipped,
                             color: secondaryColor,
-                          ), // Customize the icon
+                          ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             color: secondaryColor,
@@ -172,8 +158,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         ListTile(
                           onTap: () async {
-                            // final prefs =
-                            //     await SharedPreferences.getInstance();
                             customAlertBox(
                               context,
                               'Do you really want to Logout?',
@@ -201,8 +185,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           trailing: Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: primaryColor,
-                          ), // Customize the icon
-                          // Customize the icon
+                          ),
                         ),
                         const SizedBox(
                           height: 20,
@@ -216,77 +199,100 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     right: 0,
                     child: Transform.translate(
                       offset: const Offset(0, -70),
-                      child: BlocConsumer<ProfileImageBloc, ProfileImageState>(
-                        listener: (context, state) {
-                          // TODO: implement listener
-                        },
-                        builder: (context, state) {
-                          if (state is ProfileImageInitial) {
-                            return Container();
-                          }
-                          if (state is ProfileImageUploading) {
-                            return const Center(
-                              child: CupertinoActivityIndicator(),
-                            );
-                          } else if (state is MyProfileImagesLoaded) {
-                            final image = state.profileImageUrls[0];
-                            log("image: $image");
-                            return Container(
-                              height: 150,
-                              width: 150,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.transparent,
-                                  width: 2,
-                                ),
-                              ),
-                              child: image == null || image == ''
-                                  ? Container(
-                                      height: 60,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                          color: primaryColor,
-                                          shape: BoxShape.circle),
-                                      child: Center(
-                                        child: Text(
-                                          getFirstandLastNameInitals(fullName
-                                              .toString()
-                                              .toUpperCase()),
-                                          style: TextStyle(
-                                              color: whiteColor, fontSize: 76),
-                                        ),
-                                      ),
-                                    )
-                                  // : Image.network(image)
-                                  : CachedNetworkImage(
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
+                      child: FutureBuilder<Map<String, String?>>(
+                        future: getProfileInfo(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Icon(Icons.error);
+                          } else {
+                            final profileInfo = snapshot.data!;
+                            final fullName =
+                                profileInfo['fullName'] ?? 'Unknown';
+                            final email = profileInfo['email'] ?? 'Unknown';
+                            final imageUrl = profileInfo['imageUrl'] ?? '';
+
+                            return Column(
+                              children: [
+                                Container(
+                                  height: 150,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.transparent,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: imageUrl.isEmpty
+                                      ? Container(
+                                          height: 60,
+                                          width: 60,
                                           decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
+                                              color: primaryColor,
+                                              shape: BoxShape.circle),
+                                          child: Center(
+                                            child: Text(
+                                              getFirstandLastNameInitals(
+                                                  fullName.toUpperCase()),
+                                              style: TextStyle(
+                                                  color: whiteColor,
+                                                  fontSize: 76),
                                             ),
                                           ),
-                                        );
-                                      },
-                                      imageUrl: image,
-                                      placeholder: (context, url) =>
-                                          Image.asset(
-                                        'assets/images/no-image.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                        'assets/images/no-image.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                      fit: BoxFit.cover,
-                                    ),
+                                        )
+                                      : CachedNetworkImage(
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: imageUrl,
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                            'assets/images/no-image.png',
+                                            fit: BoxFit.cover,
+                                            height: 60,
+                                            width: 60,
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                            'assets/images/no-image.png',
+                                            height: 60,
+                                            width: 60,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                SizedBox(height: 10), // Add some spacing
+                                Text(
+                                  fullName,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Text(
+                                  email,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             );
                           }
-                          return Container();
                         },
                       ),
                     ),

@@ -9,7 +9,21 @@ Future<void> saveName(String name) async {
   prefs.setString('name', name);
 
   print("Name saved to device.");
-  log("Name Saved to device" );
+  log("Name Saved to device");
+}
+
+Future<void> saveImage(String imageUrl) async {
+  var prefs = await SharedPreferences.getInstance();
+  prefs.setString('imageUrl', imageUrl);
+}
+
+Future<String?> getImage() async {
+  var prefs = await SharedPreferences.getInstance();
+  String? imageUrl = prefs.getString('imageUrl');
+  print(imageUrl);
+  print("imageUrl fetched from device.");
+  // getImage();
+  return imageUrl;
 }
 
 Future<void> clearData() async {
@@ -17,7 +31,7 @@ Future<void> clearData() async {
   prefs.remove('name');
   prefs.remove('email_address');
   prefs.remove('contact');
-
+  prefs.remove('imageUrl');
   print("Cleared All the data.");
 }
 

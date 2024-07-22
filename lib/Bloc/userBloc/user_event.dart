@@ -14,7 +14,14 @@ class UnBlockUserEvent extends UserEvent {
 
   UnBlockUserEvent(this.blockedUserId);
 }
+
 class BlockUserEvent extends UserEvent {
   String blockedUserId;
   BlockUserEvent(this.blockedUserId);
+}
+
+class LoadMyProfile extends UserEvent {
+  final String userId;
+
+  LoadMyProfile(this.userId);
 }

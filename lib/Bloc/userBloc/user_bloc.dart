@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoadBlockedUsers>(_onBlockedUsersLoad);
     on<UnBlockUserEvent>(_onUnBlockedUserEvent);
     on<BlockUserEvent>(_onBlockUserEvent);
+    on<LoadMyProfile>(_loadMyProfile);
   }
   ChatService _chatService = ChatService();
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
@@ -93,6 +95,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           backgroundColor: errorColor);
 
       emit(UsersError());
+    }
+  }
+
+  FutureOr<void> _loadMyProfile(LoadMyProfile event, Emitter<UserState> emit) async{
+    try{
+AuthService _authService = AuthService();
+      emit(MyProfileLoaded(await _authService.getUserDataFromFirebase(event.userId)));
+    }catch(e){
+
     }
   }
 }

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:developer';
+import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,6 +56,7 @@ class ProfileImageBloc extends Bloc<ProfileImageEvent, ProfileImageState> {
           .doc(userId)
           .update({'profileImageUrl': downloadUrl});
       log(user.uid);
+      saveImage(downloadUrl);
       emit(ProfileImageUploaded());
       emit(MyProfileImagesLoaded([downloadUrl]));
       add(LoadProfileImages()); // Trigger loading of images after upload

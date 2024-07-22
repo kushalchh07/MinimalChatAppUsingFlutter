@@ -23,4 +23,10 @@ class BlockedUsersLoaded extends UserState {
   @override
   List<Object> get props => [blockedusers];
 }
+
+class MyProfileLoaded extends UserState {
+  final Map<String, dynamic> myprofile;
+
+  MyProfileLoaded(this.myprofile);
+}
 class UsersError extends UserState {}

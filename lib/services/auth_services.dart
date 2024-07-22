@@ -156,4 +156,14 @@ class AuthService {
   //     return e.toString();
   //   }
   // }
+  Future<Map<String, dynamic>> getUserDataFromFirebase(String userId) async {
+  Map<String, dynamic> userData = {};
+
+  DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+
+  if (userSnapshot.exists) {
+userData = userSnapshot.data() as Map<String, dynamic>;  }
+
+  return userData;
+}
 }
