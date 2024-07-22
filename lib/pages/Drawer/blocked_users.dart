@@ -31,6 +31,7 @@ class _BlockedUsersState extends State<BlockedUsers> {
         centerTitle: true,
         backgroundColor: appBackgroundColor,
       ),
+      backgroundColor: appBackgroundColor,
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -68,21 +69,22 @@ class _BlockedUsersState extends State<BlockedUsers> {
 
   Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0), // Border radius
+          color: appSecondary,
+
+          // border: Border.all(color: Colors.black), // Border color
+          borderRadius: BorderRadius.circular(5.0),
+          // Border radius
         ),
         child: ListTile(
-          // onLongPress: () {
-          // _showoptions(context, widget.receiverUserId);
-          // },
           leading: Icon(Icons.account_circle),
           title: Text(
             user['name'] ?? 'No name',
             style: TextStyle(fontSize: 20, color: Colors.black),
           ),
+          onTap: () {},
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           dense: true,
           selected: true,

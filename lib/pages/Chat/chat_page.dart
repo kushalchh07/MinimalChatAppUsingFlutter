@@ -114,75 +114,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  void _showOptions(BuildContext context, String userId) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.flag),
-                title: const Text("Report"),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Add reporting logic here
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.block),
-                title: const Text("Block User"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _blockUser(context, userId);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.cancel),
-                title: const Text("Cancel"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _blockUser(BuildContext context, String userId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure you want to block this user?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Block'),
-              onPressed: () {
-                _chatService.blockUser(userId);
-                Navigator.of(context).pop();
-                Fluttertoast.showToast(
-                  msg: "User Blocked",
-                  gravity: ToastGravity.CENTER,
-                  backgroundColor: Colors.green,
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
@@ -225,6 +156,7 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: TextField(
               focusNode: myFocusNode,
+              keyboardType: TextInputType.text,
               controller: _messageController,
               decoration: InputDecoration(hintText: 'Enter Message'),
             ),

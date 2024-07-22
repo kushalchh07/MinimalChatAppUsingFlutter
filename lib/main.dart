@@ -4,6 +4,7 @@ import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
+import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         title: 'ChatRoom',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(seedColor: appSecondary),
           useMaterial3: true,
         ),
         home: SplashScreen(),

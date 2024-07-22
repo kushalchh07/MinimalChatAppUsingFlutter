@@ -64,6 +64,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               backgroundColor: successColor);
         }
       });
+
 // emit(BlockedUsersLoaded([]));
     } catch (e) {
       print(e);
