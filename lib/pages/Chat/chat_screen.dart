@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
@@ -126,7 +129,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-class UserList extends StatelessWidget {
+class UserList extends StatefulWidget {
+  @override
+  State<UserList> createState() => _UserListState();
+}
+
+class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
@@ -135,6 +143,7 @@ class UserList extends StatelessWidget {
           return Center(child: CupertinoActivityIndicator());
         } else if (state is UsersLoaded) {
           final users = state.users;
+          log(users.toString());
           if (users.isEmpty) {
             return Center(child: Text('No users found'));
           }
@@ -175,7 +184,57 @@ class UserList extends StatelessWidget {
           // Border radius
         ),
         child: ListTile(
-          leading: Icon(Icons.account_circle),
+          leading: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.transparent,
+                width: 2,
+              ),
+            ),
+            child: user['profileImageUrl'].isEmpty
+                ? Container(
+                    // height: 60,
+                    // width: 60,
+                    decoration: BoxDecoration(
+                        color: primaryColor, shape: BoxShape.circle),
+                    child: Center(
+                      child: Text(
+                        getFirstandLastNameInitals(user['name'].toUpperCase()),
+                        style: TextStyle(color: whiteColor, fontSize: 20),
+                      ),
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                    imageUrl: user['profileImageUrl'],
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/no-image.png',
+                      fit: BoxFit.cover,
+                      height: 60,
+                      width: 60,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/no-image.png',
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.cover,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+          ),
           title: Text(
             user['name'] ?? 'No name',
             style: TextStyle(fontSize: 20, color: Colors.black),

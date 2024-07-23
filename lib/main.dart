@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: GetMaterialApp(
-        title: 'ChatRoom',
+        title: 'Guff Gaff',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: appSecondary),
           useMaterial3: true,
