@@ -88,3 +88,4 @@ Future<void> saveStatus(bool status) async {
   var prefs = await SharedPreferences.getInstance();
   prefs.setBool(SplashScreen.KEYLOGIN, status);
 }
+

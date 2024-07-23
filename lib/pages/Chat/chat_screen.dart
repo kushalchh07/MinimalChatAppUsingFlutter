@@ -47,6 +47,14 @@ class _ChatScreenState extends State<ChatScreen> {
     return fullName.split(' ')[0];
   }
 
+  Future<Map<String, String?>> getProfileInfo() async {
+    final fullName = await getName();
+    final email = await getEmail();
+    final imageUrl = await getImage();
+
+    return {'fullName': fullName, 'email': email, 'imageUrl': imageUrl};
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentTime = TimeOfDay.now();
@@ -61,15 +69,87 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Image.asset("assets/images/chat.png"),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       signOut();
-        //     },
-        //     icon: const Icon(Icons.logout),
-        //   ),
-        // ],
+        toolbarHeight: 60,
+        leading: FutureBuilder<Map<String, String?>>(
+            future: getProfileInfo(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Icon(Icons.error);
+              } else {
+                final profileInfo = snapshot.data!;
+
+                final fullName = profileInfo['fullName'] ?? 'Unknown';
+                final email = profileInfo['email'] ?? 'Unknown';
+                final imageUrl = profileInfo['imageUrl'] ?? '';
+                return Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.transparent,
+                      // width: 2,
+                    ),
+                  ),
+                  child: imageUrl.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Container(
+                            // height: 60,
+                            // width: 60,
+                            decoration: BoxDecoration(
+                                color: primaryColor, shape: BoxShape.circle),
+                            child: Center(
+                              child: Text(
+                                getFirstandLastNameInitals(
+                                    fullName.toUpperCase()),
+                                style:
+                                    TextStyle(color: whiteColor, fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CachedNetworkImage(
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
+                            imageUrl: imageUrl,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/no-image.png',
+                              fit: BoxFit.cover,
+                              height: 40,
+                              width: 40,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/no-image.png',
+                              height: 40,
+                              width: 40,
+                              fit: BoxFit.cover,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                );
+              }
+            }),
+        actions: [
+          Image.asset(
+            "assets/images/chat.png",
+            height: 60,
+          ),
+        ],
         title: FutureBuilder<String>(
           future: getName(),
           builder: (context, snapshot) {
@@ -95,7 +175,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         color: myBlack,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    // const SizedBox(height: 5),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: Text(
@@ -116,7 +196,8 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         backgroundColor: appBackgroundColor,
         elevation: 0.2,
-        leadingWidth: 50,
+        leadingWidth: 70,
+        titleSpacing: 0,
       ),
       body: BlocProvider(
         create: (context) => UserBloc()..add(LoadUsers()),
@@ -184,6 +265,7 @@ class _UserListState extends State<UserList> {
           // Border radius
         ),
         child: ListTile(
+          minLeadingWidth: Checkbox.width,
           leading: Container(
             height: 60,
             width: 60,
@@ -191,7 +273,7 @@ class _UserListState extends State<UserList> {
               shape: BoxShape.circle,
               border: Border.all(
                 color: Colors.transparent,
-                width: 2,
+                // width: 2,
               ),
             ),
             child: user['profileImageUrl'].isEmpty

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Bloc/userBloc/user_event.dart';
 import '../../Bloc/userBloc/user_state.dart';
+import '../../constants/constants.dart';
 
 class BlockedUsers extends StatefulWidget {
   const BlockedUsers({super.key});
@@ -79,7 +81,57 @@ class _BlockedUsersState extends State<BlockedUsers> {
           // Border radius
         ),
         child: ListTile(
-          leading: Icon(Icons.account_circle),
+          leading: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.transparent,
+                // width: 2,
+              ),
+            ),
+            child: user['profileImageUrl'].isEmpty
+                ? Container(
+                    // height: 60,
+                    // width: 60,
+                    decoration: BoxDecoration(
+                        color: primaryColor, shape: BoxShape.circle),
+                    child: Center(
+                      child: Text(
+                        getFirstandLastNameInitals(user['name'].toUpperCase()),
+                        style: TextStyle(color: whiteColor, fontSize: 20),
+                      ),
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                    imageUrl: user['profileImageUrl'],
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/no-image.png',
+                      fit: BoxFit.cover,
+                      height: 60,
+                      width: 60,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/no-image.png',
+                      height: 60,
+                      width: 60,
+                      fit: BoxFit.cover,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+          ),
           title: Text(
             user['name'] ?? 'No name',
             style: TextStyle(fontSize: 20, color: Colors.black),
@@ -113,7 +165,7 @@ class _BlockedUsersState extends State<BlockedUsers> {
               // ),
               ListTile(
                 leading: const Icon(Icons.block),
-                title: const Text("UnBlock User"),
+                title: const Text("Unblock User."),
                 onTap: () {
                   Navigator.pop(context);
 
