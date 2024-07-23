@@ -121,8 +121,8 @@ class ChatService extends ChangeNotifier {
           .collection("BlockedUsers")
           .doc(blockeduserId)
           .delete()
-          .then((value) => "Unblocked");
-      return "Unblocked";
+          .then((value) => "unblocked");
+      return "unblocked";
     } catch (e) {
       return "Error";
     }

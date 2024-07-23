@@ -30,3 +30,8 @@ class MyProfileLoaded extends UserState {
   MyProfileLoaded(this.myprofile);
 }
 class UsersError extends UserState {}
+class UserBlockedActionState extends UserState{
+  final bool isBlocked;
+
+  UserBlockedActionState(this.isBlocked);
+}

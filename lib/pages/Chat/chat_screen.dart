@@ -6,10 +6,12 @@ import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
+import 'package:chat_app/services/chat_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -200,7 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
         titleSpacing: 0,
       ),
       body: BlocProvider(
-        create: (context) => UserBloc()..add(LoadUsers()),
+        create: (context) => UserBloc(ChatService())..add(LoadUsers()),
         child: Container(
           color: appBackgroundColor,
           child: UserList(),
@@ -218,7 +220,24 @@ class UserList extends StatefulWidget {
 class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserBloc, UserState>(
+    return BlocConsumer<UserBloc, UserState>(
+      listener: (context, state) {
+        if (state is UserBlockedActionState) {
+          if (state.isBlocked) {
+            Fluttertoast.showToast(
+                msg: "User Blocked",
+                gravity: ToastGravity.BOTTOM,
+                toastLength: Toast.LENGTH_SHORT,
+                backgroundColor: successColor);
+          } else {
+            Fluttertoast.showToast(
+                msg: "Failed to Block",
+                gravity: ToastGravity.BOTTOM,
+                toastLength: Toast.LENGTH_SHORT,
+                backgroundColor: successColor);
+          }
+        }
+      },
       builder: (context, state) {
         if (state is UsersLoading) {
           return Center(child: CupertinoActivityIndicator());
@@ -228,22 +247,22 @@ class _UserListState extends State<UserList> {
           if (users.isEmpty) {
             return Center(child: Text('No users found'));
           }
-          return GestureDetector(
-            onLongPress: () {
-              _showOptions(context, state.users[0]['uid']);
-            },
-            child: Padding(
+          return Padding(
               padding: const EdgeInsets.only(left: 2, right: 2),
-              child: ListView(
-                children: users
-                    .where((user) =>
-                        user['email'] !=
-                        FirebaseAuth.instance.currentUser?.email)
-                    .map((user) => _buildUserListItem(context, user))
-                    .toList(),
-              ),
-            ),
-          );
+              child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    return _buildUserListItem(context, users[index]);
+                  })
+              //   ListView(
+              //     children: users
+              //         .where((user) =>
+              //             user['email'] !=
+              //             FirebaseAuth.instance.currentUser?.email)
+              //         .map((user) => _buildUserListItem(context, user,index))
+              //         .toList(),
+              //   ),
+              );
         } else if (state is UsersError) {
           return Center(child: Text('Failed to load users'));
         } else {
@@ -256,87 +275,94 @@ class _UserListState extends State<UserList> {
   Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
-      child: Container(
-        decoration: BoxDecoration(
-          color: appSecondary,
+      child: GestureDetector(
+        onLongPress: () {
+          _showOptions(context, user['uid']);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: appSecondary,
 
-          // border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0),
-          // Border radius
-        ),
-        child: ListTile(
-          minLeadingWidth: Checkbox.width,
-          leading: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.transparent,
-                // width: 2,
-              ),
-            ),
-            child: user['profileImageUrl'].isEmpty
-                ? Container(
-                    // height: 60,
-                    // width: 60,
-                    decoration: BoxDecoration(
-                        color: primaryColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        getFirstandLastNameInitals(user['name'].toUpperCase()),
-                        style: TextStyle(color: whiteColor, fontSize: 20),
-                      ),
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
-                    imageUrl: user['profileImageUrl'],
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/no-image.png',
-                      fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/no-image.png',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+            // border: Border.all(color: Colors.black), // Border color
+            borderRadius: BorderRadius.circular(5.0),
+            // Border radius
           ),
-          title: Text(
-            user['name'] ?? 'No name',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  receiverUserEmail: user['name'],
-                  receiverUserId: user['uid'],
+          child: ListTile(
+            minLeadingWidth: Checkbox.width,
+            leading: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.transparent,
+                  // width: 2,
                 ),
               ),
-            );
-          },
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          dense: true,
-          selected: true,
-          selectedTileColor: Colors.blue.withOpacity(0.5),
-          tileColor: Colors.grey[200],
+              child: user['profileImageUrl'].isEmpty
+                  ? Container(
+                      // height: 60,
+                      // width: 60,
+                      decoration: BoxDecoration(
+                          color: primaryColor, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          getFirstandLastNameInitals(
+                              user['name'].toUpperCase()),
+                          style: TextStyle(color: whiteColor, fontSize: 20),
+                        ),
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      imageUrl: user['profileImageUrl'],
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/no-image.png',
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/no-image.png',
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            title: Text(
+              user['name'] ?? 'No name',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    receiverUserEmail: user['name'],
+                    receiverUserId: user['uid'],
+                  ),
+                ),
+              );
+            },
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            dense: true,
+            selected: true,
+            selectedTileColor: Colors.blue.withOpacity(0.5),
+            tileColor: Colors.grey[200],
+          ),
         ),
       ),
     );
@@ -398,6 +424,7 @@ class _UserListState extends State<UserList> {
               onPressed: () {
                 BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
                 BlocProvider.of<UserBloc>(context).add(LoadUsers());
+                log("LoadUsers Added Hai");
                 Navigator.of(context).pop();
               },
             ),

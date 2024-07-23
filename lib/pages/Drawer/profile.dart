@@ -1,3 +1,4 @@
+import 'package:chat_app/constants/colors/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,13 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appBackgroundColor,
+        title: const Text("My Information"),
+      ),
+      backgroundColor: appBackgroundColor,
+      body: Container(),
+    );
   }
 }

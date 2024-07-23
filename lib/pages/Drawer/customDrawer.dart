@@ -11,6 +11,7 @@ import 'package:chat_app/pages/Drawer/blocked_users.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/pages/screen/settings.dart';
+import 'package:chat_app/services/chat_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -141,7 +142,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
-                                        create: (context) => UserBloc(),
+                                        create: (context) => UserBloc(ChatService()),
                                         child: const BlockedUsers(),
                                       )),
                             );

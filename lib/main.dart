@@ -7,6 +7,7 @@ import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
+import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
           create: (context) => SignupBloc(),
         ),
         BlocProvider(
-          create: (context) => UserBloc(),
+          create: (context) => UserBloc(ChatService()),
         ),
         BlocProvider(
           create: (context) => ProfileImageBloc(FirebaseStorage.instance,
