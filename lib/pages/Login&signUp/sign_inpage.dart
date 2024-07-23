@@ -89,7 +89,6 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccessfullState) {
-           
             Get.offAll(() => Base());
           } else if (state is LoginError) {
             _showSnackBar(state.error, Colors.red);
@@ -98,373 +97,368 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
+              // physics: NeverScrollableScrollPhysics(),
               child: Container(
-                height: size.height(),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 30, left: 30),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          'assets/icons/appicon.png',
-                          width: 230,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Form(
-                            // key: formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AnimatedBuilder(
-                                  animation: _animation,
-                                  builder: (context, child) {
-                                    int currentLength =
-                                        _animation.value.round();
-                                    String currentText = _text.substring(
-                                        0, min(_text.length, currentLength));
+                height: Get.height,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 30, left: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        'assets/icons/appicon.png',
+                        width: 200,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Form(
+                          // key: formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AnimatedBuilder(
+                                animation: _animation,
+                                builder: (context, child) {
+                                  int currentLength = _animation.value.round();
+                                  String currentText = _text.substring(
+                                      0, min(_text.length, currentLength));
 
-                                    return Text(
-                                      currentText,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.w600,
-                                        color: myBlack,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                AnimatedBuilder(
-                                  animation: _animation,
-                                  builder: (context, child) {
-                                    int currentLength =
-                                        _animation.value.round();
-                                    String currentText1 = _text1.substring(
-                                        0, min(currentLength, _text1.length));
+                                  return Text(
+                                    currentText,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w600,
+                                      color: myBlack,
+                                    ),
+                                  );
+                                },
+                              ),
+                              AnimatedBuilder(
+                                animation: _animation,
+                                builder: (context, child) {
+                                  int currentLength = _animation.value.round();
+                                  String currentText1 = _text1.substring(
+                                      0, min(currentLength, _text1.length));
 
-                                    return Text(
-                                      currentText1,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        color: myGrey,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height: Get.height * 0.04,
-                                ),
-                                TextFormField(
-                                  cursorColor: greenColor,
-                                  controller: emailController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your Email';
-                                    }
-                                    if (value.length < 10) {
-                                      return 'Please enter valid Email';
-                                    }
-                                    return null;
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: InputDecoration(
-                                    floatingLabelStyle:
-                                        floatingLabelTextStyle(),
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      color: greyColor,
+                                  return Text(
+                                    currentText1,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: myGrey,
                                     ),
-                                    focusedBorder: customFocusBorder(),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide(
-                                          color: primaryColor, width: 2),
-                                    ),
-                                    labelStyle: TextStyle(
-                                        color: greyColor, fontSize: 13),
-                                    hintText: 'Email',
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: Get.height * 0.04,
+                              ),
+                              TextFormField(
+                                cursorColor: greenColor,
+                                controller: emailController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your Email';
+                                  }
+                                  if (value.length < 10) {
+                                    return 'Please enter valid Email';
+                                  }
+                                  return null;
+                                },
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  floatingLabelStyle: floatingLabelTextStyle(),
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: greyColor,
                                   ),
-                                ),
-                                SizedBox(
-                                  height: Get.height * 0.015,
-                                ),
-                                TextFormField(
-                                  cursorColor: greenColor,
-                                  controller: passController,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your password';
-                                    }
-                                    return null;
-                                  },
-                                  textInputAction: TextInputAction.go,
-                                  obscureText: !_showPassword,
-                                  decoration: InputDecoration(
-                                    floatingLabelStyle: TextStyle(
-                                        color: primaryColor, fontSize: 13),
-                                    focusedBorder: customFocusBorder(),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                      borderSide: BorderSide(
-                                          color: primaryColor, width: 2),
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.lock,
-                                      color: greyColor,
-                                    ),
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _showPassword = !_showPassword;
-                                        });
-                                      },
-                                      icon: (_showPassword)
-                                          ? Icon(
-                                              Icons.visibility,
-                                              color: greyColor,
-                                            )
-                                          : Icon(
-                                              Icons.visibility_off,
-                                              color: greyColor,
-                                            ),
-                                    ),
-                                    labelStyle: GoogleFonts.inter(
-                                        color: greyColor, fontSize: 13),
-                                    hintText: 'Password',
+                                  focusedBorder: customFocusBorder(),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide(
+                                        color: primaryColor, width: 2),
                                   ),
+                                  labelStyle:
+                                      TextStyle(color: greyColor, fontSize: 13),
+                                  hintText: 'Email',
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Checkbox(
-                                          value: _isRememberMe,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _isRememberMe = value!;
-                                            });
-                                            toggleRememberMe();
-                                          },
-                                        ),
-                                        Text("Remember Me",
-                                            style: GoogleFonts.inter(
-                                                fontSize: 14,
-                                                color: blackColor,
-                                                fontWeight: FontWeight.w400)),
-                                      ],
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        // Navigator.of(context).push(
-                                        //     MaterialPageRoute(
-                                        //         builder: (context) =>
-                                        //             const ForgetPassword()));
-                                      },
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: GoogleFonts.inter(
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                          color: myBlack,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15),
-                          child: BlocBuilder<LoginBloc, LoginState>(
-                            builder: (context, state) {
-                              if (state is LoginLoadingState) {
-                                return const SizedBox(
-                                    height: 50,
-                                    width: 50,
-                                    child: CupertinoActivityIndicator());
-                              }
-                              return SizedBox(
-                                height: 45,
-                                width: 300,
-                                child: MaterialButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25)),
-                                  color: greenColor,
-                                  onPressed: login,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Login',
-                                        style: GoogleFonts.inter(
-                                          textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600,
+                              ),
+                              SizedBox(
+                                height: Get.height * 0.015,
+                              ),
+                              TextFormField(
+                                cursorColor: greenColor,
+                                controller: passController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                                textInputAction: TextInputAction.go,
+                                obscureText: !_showPassword,
+                                decoration: InputDecoration(
+                                  floatingLabelStyle: TextStyle(
+                                      color: primaryColor, fontSize: 13),
+                                  focusedBorder: customFocusBorder(),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                    borderSide: BorderSide(
+                                        color: primaryColor, width: 2),
+                                  ),
+                                  prefixIcon: Icon(
+                                    Icons.lock,
+                                    color: greyColor,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _showPassword = !_showPassword;
+                                      });
+                                    },
+                                    icon: (_showPassword)
+                                        ? Icon(
+                                            Icons.visibility,
+                                            color: greyColor,
+                                          )
+                                        : Icon(
+                                            Icons.visibility_off,
+                                            color: greyColor,
                                           ),
-                                        ),
+                                  ),
+                                  labelStyle: GoogleFonts.inter(
+                                      color: greyColor, fontSize: 13),
+                                  hintText: 'Password',
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _isRememberMe,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _isRememberMe = value!;
+                                          });
+                                          toggleRememberMe();
+                                        },
                                       ),
+                                      Text("Remember Me",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              color: blackColor,
+                                              fontWeight: FontWeight.w400)),
                                     ],
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: Get.width * 0.8,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  color: yellowColor,
-                                  thickness: 2,
-                                  endIndent: 5,
-                                ),
-                              ),
-                              Text(
-                                'OR',
-                                style: GoogleFonts.inter(
-                                  color: greenColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Expanded(
-                                child: Divider(
-                                  color: yellowColor,
-                                  thickness: 2,
-                                  indent: 5,
-                                ),
+                                  TextButton(
+                                    onPressed: () {
+                                      // Navigator.of(context).push(
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) =>
+                                      //             const ForgetPassword()));
+                                    },
+                                    child: Text(
+                                      'Forgot Password?',
+                                      style: GoogleFonts.inter(
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: myBlack,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: Get.height * 0.01,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: BlocBuilder<LoginBloc, LoginState>(
+                          builder: (context, state) {
+                            if (state is LoginLoadingState) {
+                              return const SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: CupertinoActivityIndicator());
+                            }
+                            return SizedBox(
+                              height: 45,
+                              width: 300,
+                              child: MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25)),
+                                color: greenColor,
+                                onPressed: login,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Login',
+                                      style: GoogleFonts.inter(
+                                        textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        Row(
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Container(
+                        width: Get.width * 0.8,
+                        child: Row(
                           children: [
-                            GestureDetector(
-                              child: Container(
-                                width: Get.width * 0.4,
-                                height: Get.height * 0.06,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.06),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/google.png',
-                                      width: 30,
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Text(
-                                      'Google',
-                                      style: GoogleFonts.inter(
-                                        color: myBlack,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Expanded(
+                              child: Divider(
+                                color: yellowColor,
+                                thickness: 2,
+                                endIndent: 5,
                               ),
-                              onTap: google,
                             ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            GestureDetector(
-                              child: Container(
-                                width: Get.width * 0.4,
-                                height: Get.height * 0.06,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.06),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/facebook.png',
-                                      width: 30,
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Text(
-                                      'Facebook',
-                                      style: GoogleFonts.inter(
-                                        color: myBlack,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Text(
+                              'OR',
+                              style: GoogleFonts.inter(
+                                color: greenColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
-                              onTap: facebook,
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: yellowColor,
+                                thickness: 2,
+                                indent: 5,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: Get.height * 0.03,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.off(() => SignUp());
-                          },
-                          child: Container(
-                            child: RichText(
-                              text: TextSpan(
-                                text: "Haven't Registered? ",
-                                style: GoogleFonts.inter(
-                                    fontSize: 15,
-                                    color: myBlack,
-                                    fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        height: Get.height * 0.01,
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            child: Container(
+                              width: Get.width * 0.4,
+                              height: Get.height * 0.06,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.06),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  TextSpan(
-                                    text: "Register here",
+                                  Image.asset(
+                                    'assets/images/google.png',
+                                    width: 30,
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    'Google',
                                     style: GoogleFonts.inter(
-                                      decoration: TextDecoration.underline,
-                                      color: browncolor,
-                                      fontWeight: FontWeight.w500,
+                                      color: myBlack,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                            onTap: google,
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          GestureDetector(
+                            child: Container(
+                              width: Get.width * 0.4,
+                              height: Get.height * 0.06,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.06),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/facebook.png',
+                                    width: 30,
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    'Facebook',
+                                    style: GoogleFonts.inter(
+                                      color: myBlack,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onTap: facebook,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: Get.height * 0.03,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Get.off(() => SignUp());
+                        },
+                        child: Container(
+                          child: RichText(
+                            text: TextSpan(
+                              text: "Haven't Registered? ",
+                              style: GoogleFonts.inter(
+                                  fontSize: 15,
+                                  color: myBlack,
+                                  fontWeight: FontWeight.w400),
+                              children: [
+                                TextSpan(
+                                  text: "Register here",
+                                  style: GoogleFonts.inter(
+                                    decoration: TextDecoration.underline,
+                                    color: browncolor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: Get.height * 0.07,
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: Get.height * 0.07,
+                      ),
+                    ],
                   ),
                 ),
               ),

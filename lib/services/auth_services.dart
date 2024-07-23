@@ -105,6 +105,26 @@ class AuthService {
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
+      String uid = userCredential.user!.uid;
+      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
+          await _firestore.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        String? name = userDoc.data()?['name'];
+        String imageUrl = userDoc.data()?['profileImageUrl'];
+        String email = userDoc.data()?['email'];
+        log(name.toString());
+        if (name != null) {
+          // Store the user's name in SharedPreferences
+          saveName(name);
+          saveImage(imageUrl);
+          saveEmail(email);
+          log(imageUrl);
+          log(name);
+          return "logged in";
+        }
+      }
       saveEmail(userCredential.user!.email.toString());
       saveName(userCredential.user!.displayName.toString());
       log(userCredential.user!.displayName.toString());
@@ -119,6 +139,7 @@ class AuthService {
           'profileImageUrl': ''
         },
       );
+
       log("userCredential ${userCredential.toString()}");
 
       return "logged in";
