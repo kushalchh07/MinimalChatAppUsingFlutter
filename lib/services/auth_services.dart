@@ -106,42 +106,46 @@ class AuthService {
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      String uid = credential.providerId;
-      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await _firestore.collection('users').doc(uid).get();
+      String uid = userCredential.user!.uid;
 
+      saveEmail(userCredential.user!.email.toString());
+      saveName(userCredential.user!.displayName.toString());
+      log(userCredential.user!.displayName.toString());
+      log(userCredential.user!.email.toString());
+      log(uid);
+
+      // Check if user already exists in Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        // User does not exist, set the values in Firestore
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(userCredential.user!.uid)
+            .set(
+          {
+            'uid': userCredential.user!.uid,
+            'email': userCredential.user!.email,
+            'name': userCredential.user!.displayName,
+            'profileImageUrl': ''
+          },
+        );
+      }
       if (userDoc.exists) {
-        String? name = userDoc.data()?['name'];
-        String imageUrl = userDoc.data()?['photoUrl'];
-        // String email = userDoc.data()?['email'];
+        Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
+        String? name = data['name'];
+        String imageUrl = data['profileImageUrl'];
         log(name.toString());
         if (name != null) {
           // Store the user's name in SharedPreferences
           saveName(name);
           saveImage(imageUrl);
-          // saveEmail(email);
-
-          log(imageUrl);
-          log(name);
-          return "logged in";
+          // return "logged";
         }
       }
-      saveEmail(userCredential.user!.email.toString());
-      saveName(userCredential.user!.displayName.toString());
-      log(userCredential.user!.displayName.toString());
-      log(userCredential.user!.email.toString());
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(userCredential.user!.uid)
-          .set(
-        {
-          'uid': userCredential.user!.uid,
-          'email': userCredential.user!.email,
-          'name': userCredential.user!.displayName,
-          'profileImageUrl': ''
-        },
-      );
 
       log("userCredential ${userCredential.toString()}");
 

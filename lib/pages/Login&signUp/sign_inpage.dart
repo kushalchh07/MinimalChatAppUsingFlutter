@@ -10,6 +10,7 @@ import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -90,6 +91,13 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
         listener: (context, state) {
           if (state is LoginSuccessfullState) {
             Get.offAll(() => Base());
+            Fluttertoast.showToast(
+              msg: 'Login Sucessfully',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.green,
+              textColor: whiteColor,
+            );
           } else if (state is LoginError) {
             _showSnackBar(state.error, Colors.red);
           }
