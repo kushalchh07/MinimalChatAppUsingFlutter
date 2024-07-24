@@ -39,11 +39,7 @@ class SettingsState extends State<Settings> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => ProfileImageScreen());
-                  },
-                  child: Text("Profile Image")),
+              
             ],
           ),
         ),
