@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
@@ -15,12 +18,14 @@ import '../../constants/constants.dart';
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
   final String receiverUserId;
-  final String imageUrl;
+  final String receiverimageUrl;
+  final String senderImageUrl;
   ChatPage({
     Key? key,
     required this.receiverUserEmail,
     required this.receiverUserId,
-    required this.imageUrl,
+    required this.receiverimageUrl,
+    required this.senderImageUrl,
   }) : super(key: key);
 
   @override
@@ -63,6 +68,8 @@ class _ChatPageState extends State<ChatPage> {
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
     });
+    Future<String?> senderImageUrl = getImage();
+    log(senderImageUrl.toString());
   }
 
   @override
@@ -90,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
                   // width: 2,
                 ),
               ),
-              child: widget.imageUrl.isEmpty
+              child: widget.receiverimageUrl.isEmpty
                   ? Container(
                       // height: 60,
                       // width: 60,
@@ -116,7 +123,7 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                         );
                       },
-                      imageUrl: widget.imageUrl,
+                      imageUrl: widget.receiverimageUrl,
                       placeholder: (context, url) => Image.asset(
                         'assets/images/no-image.png',
                         fit: BoxFit.cover,
@@ -193,6 +200,9 @@ class _ChatPageState extends State<ChatPage> {
         : yellowColor;
     var isMe = (data['senderId'] == _firebaseAuth.currentUser!.uid);
 
+    var imageUrl = (data['senderId'] == _firebaseAuth.currentUser!.uid)
+        ? widget.senderImageUrl
+        : widget.receiverimageUrl;
     return Container(
       alignment: alignment,
       child: Padding(
@@ -203,7 +213,23 @@ class _ChatPageState extends State<ChatPage> {
           mainAxisAlignment:
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
-            Text(data['senderEmail']),
+            isMe
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // Text(data['senderEmail']),
+                      _buildImageWidget(imageUrl, data['senderEmail']),
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _buildImageWidget(imageUrl, data['senderEmail']),
+                      // Text(data['senderEmail']),
+                    ],
+                  ),
             ChatBubble(
               message: data['message'],
               color: color,
@@ -236,6 +262,60 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImageWidget(String imageUrl, String receiverUserEmail) {
+    return Container(
+      height: 20,
+      width: 20,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: Colors.transparent,
+          // width: 2,
+        ),
+      ),
+      child: imageUrl.isEmpty
+          ? Container(
+              // height: 60,
+              // width: 60,
+              decoration:
+                  BoxDecoration(color: primaryColor, shape: BoxShape.circle),
+              child: Center(
+                child: Text(
+                  getFirstandLastNameInitals(receiverUserEmail.toUpperCase()),
+                  style: TextStyle(color: whiteColor, fontSize: 20),
+                ),
+              ),
+            )
+          : CachedNetworkImage(
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+              imageUrl: imageUrl,
+              placeholder: (context, url) => Image.asset(
+                'assets/images/no-image.png',
+                fit: BoxFit.cover,
+                height: 60,
+                width: 60,
+              ),
+              errorWidget: (context, url, error) => Image.asset(
+                'assets/images/no-image.png',
+                height: 60,
+                width: 60,
+                fit: BoxFit.cover,
+              ),
+              fit: BoxFit.cover,
+            ),
     );
   }
 }

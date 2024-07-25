@@ -3,6 +3,7 @@
 import 'package:chat_app/services/chat_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
@@ -133,14 +134,23 @@ class ChatBubble extends StatelessWidget {
           _showoptions(context, messageId, userId);
         }
       },
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: color,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth:
+              Get.width * 0.55, // Adjust this value based on your requirement
         ),
-        child:
-            Text(message, style: TextStyle(fontSize: 16, color: Colors.white)),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: color,
+          ),
+          child: Text(
+            message,
+            style: TextStyle(fontSize: 16, color: Colors.white),
+            maxLines: null,
+          ),
+        ),
       ),
     );
   }

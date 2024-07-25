@@ -27,6 +27,8 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
+dynamic imageUrl;
+
 class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -55,6 +57,21 @@ class _ChatScreenState extends State<ChatScreen> {
     final imageUrl = await getImage();
 
     return {'fullName': fullName, 'email': email, 'imageUrl': imageUrl};
+  }
+
+  Future<void> getImageUrl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _imageUrl = prefs.getString('imageUrl') ?? 'N/A';
+    setState(() {
+      imageUrl = _imageUrl;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getImageUrl();
   }
 
   @override
@@ -341,9 +358,11 @@ class _UserListState extends State<UserList> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatPage(
-                      receiverUserEmail: user['name'],
-                      receiverUserId: user['uid'],
-                      imageUrl: user['profileImageUrl']),
+                    receiverUserEmail: user['name'],
+                    receiverUserId: user['uid'],
+                    receiverimageUrl: user['profileImageUrl'],
+                    senderImageUrl: imageUrl,
+                  ),
                 ),
               );
             },
