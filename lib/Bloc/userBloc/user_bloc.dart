@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
@@ -20,8 +21,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UnBlockUserEvent>(_onUnBlockedUserEvent);
     on<BlockUserEvent>(_onBlockUserEvent);
     on<LoadMyProfile>(_loadMyProfile);
+    on<UpdateProfile>(_updateProfile);
   }
-
+  final AuthService _authService = AuthService();
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
     emit(UsersLoading());
     try {
@@ -101,5 +103,25 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(MyProfileLoaded(
           await _authService.getUserDataFromFirebase(event.userId)));
     } catch (e) {}
+  }
+
+  FutureOr<void> _updateProfile(
+      UpdateProfile event, Emitter<UserState> emit) async {
+    try {
+      await _authService.updateProfile(event.fname).then((value) {
+        if (value == "updated") {
+        
+          saveName(event.fname);
+          emit(UpdateProfileSuccess());
+        }
+      });
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(
+          msg: "Failed To Update",
+          gravity: ToastGravity.BOTTOM,
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: errorColor);
+    }
   }
 }

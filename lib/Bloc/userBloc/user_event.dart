@@ -20,8 +20,26 @@ class BlockUserEvent extends UserEvent {
   BlockUserEvent(this.blockedUserId);
 }
 
+class LoadMyProfileLoading extends UserEvent {}
+
 class LoadMyProfile extends UserEvent {
   final String userId;
 
   LoadMyProfile(this.userId);
 }
+
+class LoadMyProfileError extends UserEvent {}
+
+class UpdateProfile extends UserEvent {
+  String fname;
+  // String lname;
+  // String email;
+  // String phone;
+  UpdateProfile({
+    required this.fname,
+    // required this.lname,
+    // required this.email,
+    // required this.phone,
+  });
+}
+

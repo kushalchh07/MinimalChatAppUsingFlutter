@@ -35,3 +35,4 @@ class UserBlockedActionState extends UserState{
 
   UserBlockedActionState(this.isBlocked);
 }
+class UpdateProfileSuccess extends UserState{}

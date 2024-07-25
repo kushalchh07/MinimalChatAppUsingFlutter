@@ -197,4 +197,25 @@ class AuthService {
 
     return userData;
   }
+
+  Future<String> updateProfile(String newName) async {
+    try {
+      // Get the current user's UID
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw Exception("No user is currently signed in.");
+      }
+
+      // Reference to the user's document in the 'users' collection
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(currentUser.uid);
+
+      // Update the 'name' field
+      await userDoc.update({'name': newName});
+      return "updated";
+      // print("User name updated successfully.");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
