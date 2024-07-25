@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
+import 'package:chat_app/Bloc/chatBloc/chat_event.dart';
 import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -84,7 +88,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 30,
+        leadingWidth: 40,
         title: Row(
           children: [
             Container(
@@ -143,11 +147,14 @@ class _ChatPageState extends State<ChatPage> {
             Text(widget.receiverUserEmail),
           ],
         ),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios)),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back_ios)),
+        ),
         backgroundColor: appBackgroundColor,
         actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
@@ -245,15 +252,37 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildMessageInput() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      padding: const EdgeInsets.only(left: 10.0, right: 8),
       child: Row(
         children: [
+          IconButton(
+              onPressed: () {
+                BlocProvider.of<ChatBloc>(context).add(ImagePickedEvent());
+              },
+              icon: Icon(Icons.image)),
           Expanded(
-            child: TextField(
+            child: TextFormField(
               focusNode: myFocusNode,
-              keyboardType: TextInputType.text,
+              cursorColor: greenColor,
               controller: _messageController,
-              decoration: InputDecoration(hintText: 'Enter Message'),
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                floatingLabelStyle: floatingLabelTextStyle(),
+                prefixIcon: Icon(
+                  Icons.email,
+                  color: greyColor,
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                focusedBorder: customFocusBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide(color: primaryColor, width: 2),
+                ),
+                labelStyle: TextStyle(color: greyColor, fontSize: 13),
+                hintText: 'Write a message',
+              ),
             ),
           ),
           IconButton(

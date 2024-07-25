@@ -16,3 +16,7 @@ class SendMessage extends ChatEvent {
 }
 
 class LoadMessages extends ChatEvent {}
+
+class ImagePickedEvent extends ChatEvent {}
+
+class ImageSendEvent extends ChatEvent {}

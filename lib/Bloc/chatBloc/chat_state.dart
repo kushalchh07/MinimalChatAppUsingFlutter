@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 
 abstract class ChatState extends Equatable {
@@ -26,3 +28,21 @@ class MessagesLoaded extends ChatState {
   @override
   List<Object> get props => [messages];
 }
+class ImagePicked extends ChatState{
+  final File image;
+
+  ImagePicked(this.image);
+
+  @override
+  List<Object> get props => [image];
+}
+class ImageLoadFailure extends ChatState{
+  final String error;
+
+  ImageLoadFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class ImageSent extends ChatState{}
