@@ -96,7 +96,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: Get.height * 0.1),
+                        SizedBox(height: Get.height * 0.14),
+                        // Divider(
+                        //   height: 0,
+                        //   color: greenColor,
+                        //   // color: Colors.black,
+                        // ),
                         ListTile(
                           onTap: () {
                             Navigator.of(context).push(
@@ -107,15 +112,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           title: const Text('My Information'),
                           leading: Icon(
                             Icons.person,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
                         ),
-                        const Divider(
+                        Divider(
                           height: 0,
+                          color: greenColor,
+                          // color: Colors.black,
                         ),
                         ListTile(
                           onTap: () {
@@ -127,22 +134,25 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           title: const Text('Settings'),
                           leading: Icon(
                             Icons.settings,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
                         ),
-                        const Divider(
+                        Divider(
                           height: 0,
+                          color: greenColor,
+                          // color: Colors.black,
                         ),
                         ListTile(
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => BlocProvider(
-                                        create: (context) => UserBloc(ChatService()),
+                                        create: (context) =>
+                                            UserBloc(ChatService()),
                                         child: const BlockedUsers(),
                                       )),
                             );
@@ -150,12 +160,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           title: const Text('Blocked Users'),
                           leading: Icon(
                             Icons.block_flipped,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: secondaryColor,
+                            color: greenColor,
                           ),
+                        ),
+                        Divider(
+                          height: 0,
+                          color: greenColor,
+                          // color: Colors.black,
                         ),
                         ListTile(
                           onTap: () async {
@@ -181,11 +196,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           leading: Icon(
                             Icons.power_settings_new_sharp,
-                            color: primaryColor,
+                            color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios_rounded,
-                            color: primaryColor,
+                            color: greenColor,
                           ),
                         ),
                         const SizedBox(
@@ -232,7 +247,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           height: 60,
                                           width: 60,
                                           decoration: BoxDecoration(
-                                              color: primaryColor,
+                                              color: greenColor,
                                               shape: BoxShape.circle),
                                           child: Center(
                                             child: Text(
@@ -286,9 +301,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                                 Text(
                                   email,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
                               ],

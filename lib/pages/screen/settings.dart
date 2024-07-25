@@ -4,6 +4,7 @@ import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 // import 'package:chat_app/pages/screen/profile_image_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
@@ -29,7 +30,10 @@ class SettingsState extends State<Settings> {
         context, MaterialPageRoute(builder: (context) => UserPassword()));
   }
 
-  void onTapDeleteAccount() {}
+  void onTapDeleteAccount() {
+    Fluttertoast.showToast(msg: "Work In progress");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
