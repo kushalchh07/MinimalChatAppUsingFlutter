@@ -254,14 +254,7 @@ class _UserListState extends State<UserList> {
                   itemBuilder: (context, index) {
                     return _buildUserListItem(context, users[index]);
                   })
-              //   ListView(
-              //     children: users
-              //         .where((user) =>
-              //             user['email'] !=
-              //             FirebaseAuth.instance.currentUser?.email)
-              //         .map((user) => _buildUserListItem(context, user,index))
-              //         .toList(),
-              //   ),
+              
               );
         } else if (state is UsersError) {
           return Center(child: Text('Failed to load users'));

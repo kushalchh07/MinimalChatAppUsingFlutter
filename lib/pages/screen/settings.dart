@@ -1,4 +1,5 @@
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/pages/Drawer/user_password.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 // import 'package:chat_app/pages/screen/profile_image_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,12 @@ void signOut() {
 }
 
 class SettingsState extends State<Settings> {
+  void onTapPassword() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => UserPassword()));
+  }
+
+  void onTapDeleteAccount() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,14 +41,41 @@ class SettingsState extends State<Settings> {
         height: Get.height,
         width: Get.width,
         color: appBackgroundColor,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              
-            ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildListItem("Change Password", onTapPassword),
+            buildListItem("Delete Account", onTapDeleteAccount)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildListItem(String title, void Function() onTap) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, right: 10, left: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+
+          // border: Border.all(color: Colors.black), // Border color
+          borderRadius: BorderRadius.circular(20.0),
+          // Border radius
+        ),
+        child: ListTile(
+          minLeadingWidth: Checkbox.width,
+          title: Text(
+            title,
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
+          onTap: onTap,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          dense: true,
+          selected: true,
+          selectedTileColor: Colors.blue.withOpacity(0.5),
+          tileColor: Color.fromARGB(255, 255, 255, 255),
         ),
       ),
     );
