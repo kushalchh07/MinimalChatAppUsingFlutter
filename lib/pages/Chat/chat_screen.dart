@@ -253,9 +253,7 @@ class _UserListState extends State<UserList> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     return _buildUserListItem(context, users[index]);
-                  })
-              
-              );
+                  }));
         } else if (state is UsersError) {
           return Center(child: Text('Failed to load users'));
         } else {
@@ -343,9 +341,9 @@ class _UserListState extends State<UserList> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChatPage(
-                    receiverUserEmail: user['name'],
-                    receiverUserId: user['uid'],
-                  ),
+                      receiverUserEmail: user['name'],
+                      receiverUserId: user['uid'],
+                      imageUrl: user['profileImageUrl']),
                 ),
               );
             },

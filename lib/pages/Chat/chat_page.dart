@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
@@ -7,15 +8,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+
+import '../../constants/constants.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUserEmail;
   final String receiverUserId;
-
+  final String imageUrl;
   ChatPage({
     Key? key,
     required this.receiverUserEmail,
     required this.receiverUserId,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -72,8 +77,72 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.receiverUserEmail),
+        leadingWidth: 30,
+        title: Row(
+          children: [
+            Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.transparent,
+                  // width: 2,
+                ),
+              ),
+              child: widget.imageUrl.isEmpty
+                  ? Container(
+                      // height: 60,
+                      // width: 60,
+                      decoration: BoxDecoration(
+                          color: primaryColor, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          getFirstandLastNameInitals(
+                              widget.receiverUserEmail.toUpperCase()),
+                          style: TextStyle(color: whiteColor, fontSize: 20),
+                        ),
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      imageUrl: widget.imageUrl,
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/no-image.png',
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/no-image.png',
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            SizedBox(width: Get.width * 0.03),
+            Text(widget.receiverUserEmail),
+          ],
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         backgroundColor: appBackgroundColor,
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
       body: Container(
         decoration: BoxDecoration(color: appBackgroundColor),
