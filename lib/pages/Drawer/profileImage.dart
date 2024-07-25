@@ -16,6 +16,12 @@ class ProfileImage extends StatefulWidget {
 
 class _ProfileImageState extends State<ProfileImage> {
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
@@ -27,7 +33,23 @@ class _ProfileImageState extends State<ProfileImage> {
             BlocBuilder<ProfileImageBloc, ProfileImageState>(
               builder: (context, state) {
                 if (state is ProfileImagePicked) {
-                  return Image.file(state.image, height: 150);
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<ProfileImageBloc>().add(PickProfileImage());
+                    },
+                    child: Container(
+                        height: 150,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(75),
+                        ),
+                        child: Image.file(
+                          state.image,
+                          // height: 150,
+
+                          fit: BoxFit.cover,
+                        )),
+                  );
                 }
                 if (state is ProfileImageUploading) {
                   return CircularProgressIndicator();
@@ -35,30 +57,39 @@ class _ProfileImageState extends State<ProfileImage> {
                 if (state is ProfileImageLoadFailure) {
                   return Text(state.error);
                 }
-                return Container(
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(75),
-                  ),
-                  child: Icon(
-                    Icons.person,
-                    size: 75,
-                    color: Colors.grey[600],
+                return GestureDetector(
+                  onTap: () {
+                    context.read<ProfileImageBloc>().add(PickProfileImage());
+                  },
+                  child: Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(75),
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      size: 75,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 );
               },
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                context.read<ProfileImageBloc>().add(PickProfileImage());
-              },
-              child: Text('Pick Image'),
-            ),
             SizedBox(height: 10),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: greenColor,
+                shape: StadiumBorder(),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                minimumSize: Size(200, 40),
+                maximumSize: Size(200, 40),
+                elevation: 0,
+                textStyle: TextStyle(color: Colors.white),
+                side: BorderSide(color: greenColor),
+              ),
               onPressed: () {
                 final state = context.read<ProfileImageBloc>().state;
                 if (state is ProfileImagePicked) {
@@ -67,7 +98,10 @@ class _ProfileImageState extends State<ProfileImage> {
                       .add(UploadProfileImage(state.image));
                 }
               },
-              child: Text('Upload Image'),
+              child: Text(
+                'Upload Image',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

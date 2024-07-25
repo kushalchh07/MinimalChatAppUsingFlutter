@@ -1,6 +1,6 @@
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
-import 'package:chat_app/pages/screen/profile_image_screen.dart';
+// import 'package:chat_app/pages/screen/profile_image_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
