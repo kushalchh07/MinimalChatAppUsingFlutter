@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unused_element
 
+import 'package:chat_app/pages/Chat/big_image_screen.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -148,9 +149,14 @@ class ChatBubble extends StatelessWidget {
               color: color,
             ),
             child: isImage
-                ? Image.network(
-                    message,
-                    fit: BoxFit.cover,
+                ? GestureDetector(
+                    onTap: () {
+                      Get.to(() => BigImageScreen(imageUrl: message));
+                    },
+                    child: Image.network(
+                      message,
+                      fit: BoxFit.cover,
+                    ),
                   )
                 : Text(
                     message,
