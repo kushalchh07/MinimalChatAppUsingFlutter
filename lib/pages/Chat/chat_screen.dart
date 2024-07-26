@@ -28,6 +28,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 dynamic imageUrl;
+bool isImage = false;
 
 class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -362,6 +363,7 @@ class _UserListState extends State<UserList> {
                     receiverUserId: user['uid'],
                     receiverimageUrl: user['profileImageUrl'],
                     senderImageUrl: imageUrl,
+                    isImage: isImage,
                   ),
                 ),
               );

@@ -18,6 +18,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<LoadMessages>(_onLoadMessages);
     on<ImagePickedEvent>(_imagePickedEvent);
     on<ImageSendEvent>(_sendImage);
+    on<ImageCancelEvent>(_imageCancelEvent);
   }
 
   void _onSendMessage(SendMessage event, Emitter<ChatState> emit) async {
@@ -63,5 +64,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else {
       emit(ImageLoadFailure('No image selected.'));
     }
+  }
+
+  FutureOr<void> _imageCancelEvent(
+      ImageCancelEvent event, Emitter<ChatState> emit) async {
+    emit(ImageCancelImage());
   }
 }

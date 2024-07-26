@@ -14,7 +14,7 @@ class ChatService extends ChangeNotifier {
   // get user stream,
 
 //Send Message
-  Future<void> sendMessage(String receiverId, String message) async {
+  Future<void> sendMessage(String receiverId, String message,bool isImage) async {
 //get current user info
     final String currentUser = _firebaseAuth.currentUser!.uid;
     final String currentUserEmail = _firebaseAuth.currentUser!.email.toString();

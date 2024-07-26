@@ -46,3 +46,4 @@ class ImageLoadFailure extends ChatState{
 }
 
 class ImageSent extends ChatState{}
+class ImageCancelImage extends ChatState{}

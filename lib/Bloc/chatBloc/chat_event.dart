@@ -20,3 +20,4 @@ class LoadMessages extends ChatEvent {}
 class ImagePickedEvent extends ChatEvent {}
 
 class ImageSendEvent extends ChatEvent {}
+class ImageCancelEvent extends ChatEvent{}

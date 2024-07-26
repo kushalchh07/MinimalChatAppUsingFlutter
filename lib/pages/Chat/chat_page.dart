@@ -1,4 +1,7 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
@@ -17,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../Bloc/chatBloc/chat_state.dart';
 import '../../constants/constants.dart';
 
 class ChatPage extends StatefulWidget {
@@ -24,12 +28,14 @@ class ChatPage extends StatefulWidget {
   final String receiverUserId;
   final String receiverimageUrl;
   final String senderImageUrl;
+  final bool isImage;
   ChatPage({
     Key? key,
     required this.receiverUserEmail,
     required this.receiverUserId,
     required this.receiverimageUrl,
     required this.senderImageUrl,
+    required this.isImage,
   }) : super(key: key);
 
   @override
@@ -46,7 +52,7 @@ class _ChatPageState extends State<ChatPage> {
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
-          widget.receiverUserId, _messageController.text);
+          widget.receiverUserId, _messageController.text, widget.isImage);
       _messageController.clear();
     }
     scrollDown();
@@ -251,46 +257,100 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageInput() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 8),
-      child: Row(
-        children: [
-          IconButton(
-              onPressed: () {
-                BlocProvider.of<ChatBloc>(context).add(ImagePickedEvent());
-              },
-              icon: Icon(Icons.image)),
-          Expanded(
-            child: TextFormField(
-              focusNode: myFocusNode,
-              cursorColor: greenColor,
-              controller: _messageController,
-              textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                floatingLabelStyle: floatingLabelTextStyle(),
-                prefixIcon: Icon(
-                  Icons.email,
-                  color: greyColor,
+    return BlocConsumer<ChatBloc, ChatState>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        if (state is ImagePicked) {
+          return ImageSentWidget(image: state.image);
+        }
+        if (state is ImageCancelImage) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 8, top: 10),
+            child: Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      BlocProvider.of<ChatBloc>(context)
+                          .add(ImagePickedEvent());
+                    },
+                    icon: Icon(Icons.image)),
+                Expanded(
+                  child: TextFormField(
+                    focusNode: myFocusNode,
+                    cursorColor: greenColor,
+                    controller: _messageController,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      floatingLabelStyle: floatingLabelTextStyle(),
+                      prefixIcon: Icon(
+                        Icons.email,
+                        color: greyColor,
+                      ),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                      focusedBorder: customFocusBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: primaryColor, width: 2),
+                      ),
+                      labelStyle: TextStyle(color: greyColor, fontSize: 13),
+                      hintText: 'Write a message',
+                    ),
+                  ),
                 ),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                focusedBorder: customFocusBorder(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide(color: primaryColor, width: 2),
+                IconButton(
+                  onPressed: sendMessage,
+                  icon: const Icon(Icons.send),
                 ),
-                labelStyle: TextStyle(color: greyColor, fontSize: 13),
-                hintText: 'Write a message',
-              ),
+              ],
             ),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 8, top: 10),
+          child: Row(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    BlocProvider.of<ChatBloc>(context).add(ImagePickedEvent());
+                  },
+                  icon: Icon(Icons.image)),
+              Expanded(
+                child: TextFormField(
+                  focusNode: myFocusNode,
+                  cursorColor: greenColor,
+                  controller: _messageController,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    floatingLabelStyle: floatingLabelTextStyle(),
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: greyColor,
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+                    focusedBorder: customFocusBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                    labelStyle: TextStyle(color: greyColor, fontSize: 13),
+                    hintText: 'Write a message',
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: sendMessage,
+                icon: const Icon(Icons.send),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: sendMessage,
-            icon: const Icon(Icons.send),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -346,5 +406,43 @@ class _ChatPageState extends State<ChatPage> {
               fit: BoxFit.cover,
             ),
     );
+  }
+
+  Widget ImageSentWidget({required File image}) {
+    return Container(
+        height: 60,
+        width: Get.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.image)),
+            Container(
+                height: 90,
+                width: Get.width * 0.3,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Image.file(image),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          BlocProvider.of<ChatBloc>(context)
+                              .add(ImageCancelEvent());
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          size: 20,
+                        ))
+                  ],
+                )),
+            IconButton(
+                onPressed: () {
+                  BlocProvider.of<ChatBloc>(context).add(ImageSendEvent());
+                },
+                icon: Icon(Icons.send))
+          ],
+        ));
   }
 }
