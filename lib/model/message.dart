@@ -6,15 +6,17 @@ class Message {
   final String receiverId;
   final String message;
   final Timestamp timestamp;
+  final bool isImage;
   // final String messageId;
-  Message(
-      {required this.senderId,
-      required this.senderEmail,
-      required this.receiverId,
-      required this.message,
-      required this.timestamp,
-      // required this.messageId
-      });
+  Message({
+    required this.senderId,
+    required this.senderEmail,
+    required this.receiverId,
+    required this.message,
+    required this.timestamp,
+    required this.isImage,
+    // required this.messageId
+  });
 
   // convert to a map
 
@@ -25,6 +27,7 @@ class Message {
       'receiverId': receiverId,
       'message': message,
       'timestamp': timestamp,
+      'isImage': isImage,
       // 'messageId': messageId,
     };
   }

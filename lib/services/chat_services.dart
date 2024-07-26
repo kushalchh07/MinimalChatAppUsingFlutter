@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:chat_app/model/message.dart';
+import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +27,7 @@ class ChatService extends ChangeNotifier {
         senderEmail: currentUserEmail,
         receiverId: receiverId,
         message: message,
+        isImage:isImage,
         // messageId:messageId,
         timestamp: timestamp);
 

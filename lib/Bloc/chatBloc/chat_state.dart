@@ -44,6 +44,6 @@ class ImageLoadFailure extends ChatState{
   @override
   List<Object> get props => [error];
 }
-
+class ImageSendingEvent extends ChatState{}
 class ImageSent extends ChatState{}
 class ImageCancelImage extends ChatState{}

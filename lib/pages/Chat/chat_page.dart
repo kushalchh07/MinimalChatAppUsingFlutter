@@ -247,6 +247,7 @@ class _ChatPageState extends State<ChatPage> {
               message: data['message'],
               color: color,
               isMe: isMe,
+              isImage: data['isImage'] ?? false,
               messageId: document.id,
               userId: data["senderId"],
             ),
@@ -409,40 +410,54 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget ImageSentWidget({required File image}) {
-    return Container(
-        height: 60,
-        width: Get.width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.image)),
-            Container(
-                height: 90,
-                width: Get.width * 0.3,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
-                      child: Image.file(image),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          BlocProvider.of<ChatBloc>(context)
-                              .add(ImageCancelEvent());
-                        },
-                        icon: Icon(
-                          Icons.close,
-                          size: 20,
-                        ))
-                  ],
-                )),
-            IconButton(
-                onPressed: () {
-                  BlocProvider.of<ChatBloc>(context).add(ImageSendEvent());
-                },
-                icon: Icon(Icons.send))
-          ],
-        ));
+    return BlocConsumer<ChatBloc, ChatState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is ImageSendingEvent) {
+          return CupertinoActivityIndicator();
+        }
+        return Container(
+            height: 60,
+            width: Get.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      BlocProvider.of<ChatBloc>(context)
+                          .add(ImagePickedEvent());
+                    },
+                    icon: Icon(Icons.image)),
+                Container(
+                    height: 90,
+                    width: Get.width * 0.3,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Image.file(image),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              BlocProvider.of<ChatBloc>(context)
+                                  .add(ImageCancelEvent());
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              size: 20,
+                            ))
+                      ],
+                    )),
+                IconButton(
+                    onPressed: () {
+                      BlocProvider.of<ChatBloc>(context)
+                          .add(ImageSendEvent(image, widget.receiverUserId));
+                    },
+                    icon: Icon(Icons.send))
+              ],
+            ));
+      },
+    );
   }
 }

@@ -11,13 +11,15 @@ class ChatBubble extends StatelessWidget {
   final bool isMe;
   final String messageId;
   final String userId;
+  final bool isImage;
   ChatBubble(
       {super.key,
       required this.message,
       required this.color,
       required this.isMe,
       required this.messageId,
-      required this.userId});
+      required this.userId,
+      required this.isImage});
 
 //show options
   void _showoptions(BuildContext context, String messageId, String userId) {
@@ -140,17 +142,21 @@ class ChatBubble extends StatelessWidget {
               Get.width * 0.55, // Adjust this value based on your requirement
         ),
         child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: color,
-          ),
-          child: Text(
-            message,
-            style: TextStyle(fontSize: 16, color: Colors.white),
-            maxLines: null,
-          ),
-        ),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: color,
+            ),
+            child: isImage
+                ? Image.network(
+                    message,
+                    fit: BoxFit.cover,
+                  )
+                : Text(
+                    message,
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    maxLines: null,
+                  )),
       ),
     );
   }
