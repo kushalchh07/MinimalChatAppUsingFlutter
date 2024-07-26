@@ -308,7 +308,8 @@ class _UserListState extends State<UserList> {
                   // width: 2,
                 ),
               ),
-              child: user['profileImageUrl'].isEmpty
+              child: user['profileImageUrl'] == null ||
+                      user['profileImageUrl'].isEmpty
                   ? Container(
                       // height: 60,
                       // width: 60,
@@ -317,7 +318,7 @@ class _UserListState extends State<UserList> {
                       child: Center(
                         child: Text(
                           getFirstandLastNameInitals(
-                              user['name'].toUpperCase()),
+                              user['name'] ?? ''.toUpperCase()),
                           style: TextStyle(color: whiteColor, fontSize: 20),
                         ),
                       ),

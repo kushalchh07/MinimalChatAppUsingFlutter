@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:chat_app/Api/firebase_api.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Drawer/customDrawer.dart';
 import 'package:chat_app/pages/screen/settings.dart';
@@ -25,6 +26,7 @@ class BaseState extends State<Base> {
   @override
   void initState() {
     super.initState();
+    Api.saveUserToken();
     _selectedIndex = widget.indexNum ?? 0;
   }
 
@@ -38,7 +40,7 @@ class BaseState extends State<Base> {
   Widget build(BuildContext context) {
     int? _selectedIndex = (widget.indexNum == null) ? 0 : widget.indexNum;
     final screens = [ChatScreen(), CustomDrawer()];
-setState(() {});
+    setState(() {});
     return Scaffold(
       backgroundColor: appBackgroundColor,
       bottomNavigationBar: BottomNavigationBar(

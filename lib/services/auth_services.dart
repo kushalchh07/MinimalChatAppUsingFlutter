@@ -30,7 +30,8 @@ class AuthService {
           'uid': userCredential.user!.uid,
           'email': email,
           'name': name,
-          'profileImageUrl': ''
+          'profileImageUrl': '',
+          "pushToken":'',
         },
       );
 
@@ -97,7 +98,7 @@ class AuthService {
         .then((_) => "Password reset email sent");
   }
 
-  static Future<String> googleLogin() async {
+  static Future<String> googleLogin(pushToken) async {
     try {
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
@@ -130,7 +131,8 @@ class AuthService {
             'uid': userCredential.user!.uid,
             'email': userCredential.user!.email,
             'name': userCredential.user!.displayName,
-            'profileImageUrl': ''
+            'profileImageUrl': '',
+            'pushToken':'',
           },
         );
       }

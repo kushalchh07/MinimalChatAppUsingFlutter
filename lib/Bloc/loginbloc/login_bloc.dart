@@ -84,7 +84,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       GoogleLoginTappedEvent event, Emitter<LoginState> emit) async {
     try {
       emit(LoginLoadingState());
-      await AuthService.googleLogin().then((value) {
+      await AuthService.googleLogin("pushtoken").then((value) {
         if (value == "logged in") {
           // log(value.toString());
           saveStatus(true);

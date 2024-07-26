@@ -1,3 +1,4 @@
+import 'package:chat_app/Api/firebase_api.dart';
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 
@@ -26,6 +27,7 @@ void main() async {
     androidProvider: AndroidProvider.playIntegrity,
     appleProvider: AppleProvider.deviceCheck,
   );
+  await Api.init();
   runApp(const MyApp());
 }
 
