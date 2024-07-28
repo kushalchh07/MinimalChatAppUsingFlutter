@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'dart:async';
 import 'dart:developer';
 
@@ -6,8 +8,11 @@ import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:get/get.dart';
 import 'user_event.dart';
 import 'user_state.dart';
@@ -22,6 +27,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<BlockUserEvent>(_onBlockUserEvent);
     on<LoadMyProfile>(_loadMyProfile);
     on<UpdateProfile>(_updateProfile);
+    on<DeleteMyProfileWithEmail>(_deleteMyProfile);
+    on<DeleteMyProfileWithGoogle>(_deleteMyProfileGoogle);
   }
   final AuthService _authService = AuthService();
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
@@ -110,7 +117,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       await _authService.updateProfile(event.fname).then((value) {
         if (value == "updated") {
-        
           saveName(event.fname);
           emit(UpdateProfileSuccess());
         }
@@ -122,6 +128,62 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           gravity: ToastGravity.BOTTOM,
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: errorColor);
+    }
+  }
+
+  FutureOr<void> _deleteMyProfile(
+      DeleteMyProfileWithEmail event, Emitter<UserState> emit) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null && user.email != null) {
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: event.password,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.delete();
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .delete();
+        emit(DeleteProfileSuccess());
+      }
+    } catch (e) {
+      print(e);
+      emit(DeleteProfileFailed());
+    }
+  }
+
+  FutureOr<void> _deleteMyProfileGoogle(
+      DeleteMyProfileWithGoogle event, Emitter<UserState> emit) async {
+    try {
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        // The user canceled the sign-in
+        return null;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+      final User user = userCredential.user!;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .delete();
+      await user.delete();
+      emit(DeleteProfileSuccess());
+    } catch (e) {
+      log(e.toString());
+      emit(DeleteProfileFailed());
     }
   }
 }

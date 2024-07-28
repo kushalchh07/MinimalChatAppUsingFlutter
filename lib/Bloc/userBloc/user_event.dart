@@ -43,3 +43,9 @@ class UpdateProfile extends UserEvent {
   });
 }
 
+class DeleteMyProfileWithEmail extends UserEvent {
+  String password;
+
+  DeleteMyProfileWithEmail(this.password);
+}
+class DeleteMyProfileWithGoogle extends UserEvent {}

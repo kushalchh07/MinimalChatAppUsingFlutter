@@ -375,7 +375,7 @@ class _ChatPageState extends State<ChatPage> {
               child: Center(
                 child: Text(
                   getFirstandLastNameInitals(receiverUserEmail.toUpperCase()),
-                  style: TextStyle(color: whiteColor, fontSize: 20),
+                  style: TextStyle(color: whiteColor, fontSize: 10),
                 ),
               ),
             )

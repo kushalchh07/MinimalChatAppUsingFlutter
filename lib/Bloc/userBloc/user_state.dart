@@ -36,3 +36,5 @@ class UserBlockedActionState extends UserState{
   UserBlockedActionState(this.isBlocked);
 }
 class UpdateProfileSuccess extends UserState{}
+class DeleteProfileSuccess extends UserState{}
+class DeleteProfileFailed extends UserState{}
