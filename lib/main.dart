@@ -3,6 +3,7 @@ import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
+import 'package:chat_app/Bloc/passwordbloc/password_bloc.dart';
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
@@ -54,6 +55,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ChatBloc(FirebaseFirestore.instance),
+        ),
+        BlocProvider(
+          create: (context) => PasswordBloc(),
         ),
       ],
       child: GetMaterialApp(

@@ -33,8 +33,27 @@ void signOut() {
 class SettingsState extends State<Settings> {
   TextEditingController _passwordController = TextEditingController();
   void onTapPassword() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => UserPassword()));
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      bool isGoogleSignIn = false;
+      for (UserInfo userInfo in user.providerData) {
+        if (userInfo.providerId == 'google.com') {
+          isGoogleSignIn = true;
+          break;
+        }
+      }
+
+      if (isGoogleSignIn) {
+        // Google Sign-In
+        Fluttertoast.showToast(
+            msg: "Only User from email can change password.",
+            timeInSecForIosWeb: 2);
+      } else {
+        // Email/Password Sign-In
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => UserPassword()));
+      }
+    }
   }
 
   void onTapDeleteAccount() async {
