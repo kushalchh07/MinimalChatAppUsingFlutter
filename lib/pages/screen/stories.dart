@@ -2,29 +2,26 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class Users extends StatefulWidget {
-  const Users({super.key});
+class Stories extends StatefulWidget {
+  const Stories({super.key});
 
   @override
-  State<Users> createState() => _UsersState();
+  State<Stories> createState() => _StoriesState();
 }
 
-class _UsersState extends State<Users> {
+class _StoriesState extends State<Stories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Stories"),
         backgroundColor: appBackgroundColor,
-        title: Text("Users"),actions: [
+        actions: [
           Image.asset(
             "assets/images/chat.png",
             height: 60,
           ),
         ],
-      ),
-      backgroundColor: appBackgroundColor,
-      body: Center(
-        child: Text("Users"),
       ),
     );
   }
