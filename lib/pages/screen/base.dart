@@ -6,6 +6,7 @@ import 'package:chat_app/Api/firebase_api.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Drawer/customDrawer.dart';
 import 'package:chat_app/pages/screen/settings.dart';
+import 'package:chat_app/pages/screen/users.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -40,7 +41,7 @@ class BaseState extends State<Base> {
   @override
   Widget build(BuildContext context) {
     int? _selectedIndex = (widget.indexNum == null) ? 0 : widget.indexNum;
-    final screens = [ChatScreen(), GroupChatScreen(), CustomDrawer()];
+    final screens = [ChatScreen(), GroupChatScreen(), Users(), CustomDrawer()];
     setState(() {});
     return Scaffold(
       backgroundColor: appBackgroundColor,
@@ -60,6 +61,10 @@ class BaseState extends State<Base> {
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Users',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
