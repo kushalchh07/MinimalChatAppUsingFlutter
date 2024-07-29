@@ -38,3 +38,5 @@ class UserBlockedActionState extends UserState{
 class UpdateProfileSuccess extends UserState{}
 class DeleteProfileSuccess extends UserState{}
 class DeleteProfileFailed extends UserState{}
+
+class UserUnblockedState extends UserState{}

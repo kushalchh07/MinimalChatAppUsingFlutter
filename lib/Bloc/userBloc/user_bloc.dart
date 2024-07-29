@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -67,9 +68,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               gravity: ToastGravity.BOTTOM,
               toastLength: Toast.LENGTH_SHORT,
               backgroundColor: successColor);
+          Get.offAll(() => Base());
         }
       });
+
       // Wait for LoadBlockedUsers event to complete
+      emit(UserUnblockedState());
       await _onBlockedUsersLoad(LoadBlockedUsers(), emit);
     } catch (e) {
       print(e);
@@ -87,6 +91,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               gravity: ToastGravity.BOTTOM,
               toastLength: Toast.LENGTH_SHORT,
               backgroundColor: successColor);
+          Get.offAll(() => Base());
           emit(UserBlockedActionState(true));
         }
       });

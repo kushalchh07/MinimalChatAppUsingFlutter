@@ -73,6 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: implement initState
     super.initState();
     getImageUrl();
+    BlocProvider.of<UserBloc>(context).add(LoadUsers());
   }
 
   @override
@@ -436,8 +437,8 @@ class _UserListState extends State<UserList> {
               child: Text('Block'),
               onPressed: () {
                 BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
-                BlocProvider.of<UserBloc>(context).add(LoadUsers());
-                log("LoadUsers Added Hai");
+                // initState();
+                // Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
             ),

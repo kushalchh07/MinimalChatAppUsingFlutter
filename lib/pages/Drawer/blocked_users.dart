@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../../Bloc/userBloc/user_event.dart';
 import '../../Bloc/userBloc/user_state.dart';
@@ -37,7 +39,9 @@ class _BlockedUsersState extends State<BlockedUsers> {
       backgroundColor: appBackgroundColor,
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is UserUnblockedState) {
+            
+          }
         },
         builder: (context, state) {
           if (state is UsersLoading) {
@@ -189,6 +193,7 @@ class _BlockedUsersState extends State<BlockedUsers> {
               onPressed: () {
                 BlocProvider.of<UserBloc>(context)
                     .add(UnBlockUserEvent(userId));
+
                 BlocProvider.of<UserBloc>(context).add(LoadBlockedUsers());
                 Navigator.of(context).pop(); // Dismiss the dialog
               },
