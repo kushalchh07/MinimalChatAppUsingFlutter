@@ -175,4 +175,15 @@ class ChatService extends ChangeNotifier {
       return userDocs.map((doc) => doc.data() as Map<String, dynamic>).toList();
     });
   }
+
+  // Future<void> createGroupChat(String chatRoomTitle) async {
+  //   final currentUser = _firebaseAuth.currentUser;
+  //   final chatRoomId = currentUser!.uid + chatRoomTitle;
+  //   if (currentUser == null) {
+  //     throw Exception("something went wrong creating group chat");
+  //   }
+  //   // final now = currentDate();
+  //   final selectedMembers;
+  //   final chatRoom = ChatRoom();
+  // }
 }

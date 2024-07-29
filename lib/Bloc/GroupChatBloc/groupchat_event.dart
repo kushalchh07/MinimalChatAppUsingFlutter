@@ -6,3 +6,13 @@ sealed class GroupchatEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+class GroupChatAddedEvent extends GroupchatEvent{
+// final List<String> members;
+//   GroupChatAddedEvent({required this.members});
+}
+class GroupChatLoadEvent extends GroupchatEvent{
+  
+}
+class GroupChatDeleteEvent extends GroupchatEvent{
+  
+}
