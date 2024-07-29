@@ -11,6 +11,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 import '../../constants/colors/colors.dart';
+import '../Chat/groupchat.dart/groupchat.dart';
 
 class Base extends StatefulWidget {
   Base({super.key, this.indexNum});
@@ -39,7 +40,7 @@ class BaseState extends State<Base> {
   @override
   Widget build(BuildContext context) {
     int? _selectedIndex = (widget.indexNum == null) ? 0 : widget.indexNum;
-    final screens = [ChatScreen(), CustomDrawer()];
+    final screens = [ChatScreen(), GroupChatScreen(), CustomDrawer()];
     setState(() {});
     return Scaffold(
       backgroundColor: appBackgroundColor,
@@ -55,6 +56,10 @@ class BaseState extends State<Base> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
