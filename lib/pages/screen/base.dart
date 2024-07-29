@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:developer';
 
@@ -60,7 +60,7 @@ class BaseState extends State<Base> {
         unselectedItemColor: Colors.black,
         backgroundColor: appBackgroundColor,
         onTap: _onItemTapped,
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -74,7 +74,10 @@ class BaseState extends State<Base> {
             label: 'Users',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.image),
+            icon: Icon(
+              Icons.image,
+              color: Colors.black,
+            ),
             label: 'Stories',
           ),
           BottomNavigationBarItem(

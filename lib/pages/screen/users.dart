@@ -14,7 +14,7 @@ class _UsersState extends State<Users> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appBackgroundColor,
+        backgroundColor: appBackgroundColor,elevation: 0.2,
         title: Text("Users"),actions: [
           Image.asset(
             "assets/images/chat.png",

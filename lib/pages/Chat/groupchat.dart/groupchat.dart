@@ -18,6 +18,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBackgroundColor,
+        elevation: 0.2,
         title: Text('Group Chat'),
         actions: <Widget>[
           PopupMenuButton<String>(

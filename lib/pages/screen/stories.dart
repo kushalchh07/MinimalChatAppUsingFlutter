@@ -14,7 +14,7 @@ class _StoriesState extends State<Stories> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Stories"),
+        title: Text("Stories"),elevation: 0.2,
         backgroundColor: appBackgroundColor,
         actions: [
           Image.asset(
@@ -23,6 +23,7 @@ class _StoriesState extends State<Stories> {
           ),
         ],
       ),
+      backgroundColor: appBackgroundColor,
     );
   }
 }
