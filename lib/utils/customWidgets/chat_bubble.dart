@@ -1,10 +1,14 @@
 // ignore_for_file: prefer_const_constructors, unused_element
 
+import 'package:chat_app/Bloc/chatBloc/chat_event.dart';
 import 'package:chat_app/pages/Chat/big_image_screen.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+
+import '../../Bloc/chatBloc/chat_bloc.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
@@ -12,6 +16,7 @@ class ChatBubble extends StatelessWidget {
   final bool isMe;
   final String messageId;
   final String userId;
+  final String otherUserId;
   final bool isImage;
   ChatBubble(
       {super.key,
@@ -20,10 +25,12 @@ class ChatBubble extends StatelessWidget {
       required this.isMe,
       required this.messageId,
       required this.userId,
-      required this.isImage});
+      required this.isImage,
+      required this.otherUserId});
 
 //show options
-  void _showoptions(BuildContext context, String messageId, String userId) {
+  void _showoptions(BuildContext context, String messageId, String userId,
+      String otherUserId, bool isMe) {
     showBottomSheet(
         context: context,
         builder: (context) {
@@ -31,22 +38,25 @@ class ChatBubble extends StatelessWidget {
               child: Wrap(
             // ignore: prefer_const_literals_to_create_immutables
             children: [
-              ListTile(
-                leading: const Icon(Icons.flag),
-                title: const Text("Report"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _reportContent(context, messageId, userId);
-                },
-              ),
-              // ListTile(
-              //   leading: const Icon(Icons.block),
-              //   title: const Text("Block User"),
-              //   onTap: () {
-              //     Navigator.pop(context);
-              //     _blockUser(context, userId);
-              //   },
-              // ),
+              if (!isMe)
+                ListTile(
+                  leading: const Icon(Icons.flag),
+                  title: const Text("Report"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _reportContent(context, messageId, userId);
+                  },
+                ),
+              if (isMe)
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: const Text("Remove Message"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _removeMessage(context, messageId, userId, otherUserId);
+                    // _blockUser(context, userId);
+                  },
+                ),
               ListTile(
                 leading: const Icon(Icons.cancel),
                 title: const Text("Cancel"),
@@ -93,49 +103,12 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-//block user
-  // _blockUser(BuildContext context, String userId) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text('Confirm'),
-  //         content: Text('Are you sure you want to block this user?'),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: Text('Cancel'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop(); // Dismiss the dialog
-  //             },
-  //           ),
-  //           TextButton(
-  //             child: Text('Block'),
-  //             onPressed: () {
-  //               ChatService _chatService = ChatService();
-  //               // Add your reporting logic here
-  //               _chatService.blockUser(userId);
-  //               Navigator.of(context).pop();
-  //               Fluttertoast.showToast(
-  //                   msg: "User Blocked",
-  //                   gravity: ToastGravity.CENTER,
-  //                   backgroundColor: Colors.green);
-
-  //               // Dismiss the dialog
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
+    bool isDeleted;
     return GestureDetector(
       onLongPress: () {
-        if (!isMe) {
-          _showoptions(context, messageId, userId);
-        }
+        _showoptions(context, messageId, userId, otherUserId, isMe);
       },
       child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -164,6 +137,49 @@ class ChatBubble extends StatelessWidget {
                     maxLines: null,
                   )),
       ),
+    );
+  }
+
+  void _removeMessage(BuildContext context, String messageId, String userId,
+      String otherUserId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm'),
+          content: Text('Are you sure you want to remove this message?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Remove'),
+              onPressed: () {
+                ChatService _chatService = ChatService();
+                // Add your reporting logic here
+                _chatService
+                    .deleteMessage(userId, otherUserId, messageId)
+                    .then((value) {
+                  if (value) {
+                    Get.back();
+
+                    BlocProvider.of<ChatBloc>(context).add(FetchChatEvent());
+                    Fluttertoast.showToast(
+                        msg: "Message Deleted",
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: Colors.green);
+                  }
+                });
+
+                // Dismiss the dialog
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

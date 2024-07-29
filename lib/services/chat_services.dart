@@ -1,5 +1,7 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:developer';
+
 import 'package:chat_app/model/message.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/services/auth_services.dart';
@@ -15,7 +17,8 @@ class ChatService extends ChangeNotifier {
   // get user stream,
 
 //Send Message
-  Future<void> sendMessage(String receiverId, String message,bool isImage) async {
+  Future<void> sendMessage(
+      String receiverId, String message, bool isImage) async {
 //get current user info
     final String currentUser = _firebaseAuth.currentUser!.uid;
     final String currentUserEmail = _firebaseAuth.currentUser!.email.toString();
@@ -27,7 +30,7 @@ class ChatService extends ChangeNotifier {
         senderEmail: currentUserEmail,
         receiverId: receiverId,
         message: message,
-        isImage:isImage,
+        isImage: isImage,
         // messageId:messageId,
         timestamp: timestamp);
 
@@ -95,6 +98,32 @@ class ChatService extends ChangeNotifier {
       'timestamp': FieldValue.serverTimestamp()
     };
     await _firestore.collection('Reports').add(report);
+  }
+
+  Future<bool> deleteMessage(
+      String userId, String otherUserId, String messageId) async {
+    log(userId);
+    log(otherUserId);
+    log(messageId);
+    try {
+      List<String> ids = [userId, otherUserId];
+      ids.sort();
+      String chatRoomId = ids.join("_");
+      // Reference to the specific message document
+      await FirebaseFirestore.instance
+          .collection('chat_rooms')
+          .doc(chatRoomId)
+          .collection('messages')
+          .doc(messageId)
+          .delete();
+
+      // Delete the document
+
+      return true;
+    } catch (e) {
+      rethrow;
+      log('Error deleting message: $e');
+    }
   }
 
   //block user

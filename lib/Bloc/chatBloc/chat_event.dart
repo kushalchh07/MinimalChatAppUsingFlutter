@@ -28,3 +28,4 @@ String userId;
 ImageSendEvent(this.image, this.userId);
 }
 class ImageCancelEvent extends ChatEvent{}
+class FetchChatEvent extends ChatEvent{}

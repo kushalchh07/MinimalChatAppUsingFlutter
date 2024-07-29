@@ -28,7 +28,8 @@ class MessagesLoaded extends ChatState {
   @override
   List<Object> get props => [messages];
 }
-class ImagePicked extends ChatState{
+
+class ImagePicked extends ChatState {
   final File image;
 
   ImagePicked(this.image);
@@ -36,7 +37,8 @@ class ImagePicked extends ChatState{
   @override
   List<Object> get props => [image];
 }
-class ImageLoadFailure extends ChatState{
+
+class ImageLoadFailure extends ChatState {
   final String error;
 
   ImageLoadFailure(this.error);
@@ -44,6 +46,13 @@ class ImageLoadFailure extends ChatState{
   @override
   List<Object> get props => [error];
 }
-class ImageSendingEvent extends ChatState{}
-class ImageSent extends ChatState{}
-class ImageCancelImage extends ChatState{}
+
+class ImageSendingEvent extends ChatState {}
+
+class ImageSent extends ChatState {}
+
+class ImageCancelImage extends ChatState {}
+
+class ChatLoadingState extends ChatState {}
+
+class ChatSuccessState extends ChatState {}

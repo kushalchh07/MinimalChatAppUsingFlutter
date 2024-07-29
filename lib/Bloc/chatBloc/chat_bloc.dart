@@ -4,12 +4,14 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../constants/constants.dart';
 import 'chat_event.dart';
 import 'chat_state.dart';
 
@@ -28,6 +30,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ImagePickedEvent>(_imagePickedEvent);
     on<ImageSendEvent>(_sendImage);
     on<ImageCancelEvent>(_imageCancelEvent);
+    on<FetchChatEvent>(_fetchChat);
   }
 
   void _onSendMessage(SendMessage event, Emitter<ChatState> emit) async {
@@ -78,8 +81,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       emit(ImageSendingEvent());
       User? user = FirebaseAuth.instance.currentUser!;
-      String userId = user.uid;
-      String fileName = 'profile_images/$userId.png';
+      int userId = generate4DigitRandomNumber();
+
+      String fileName = 'chat_images/$userId.png';
       log(fileName);
       TaskSnapshot snapshot =
           await _storage.ref().child(fileName).putFile(event.image);
@@ -97,5 +101,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   FutureOr<void> _imageCancelEvent(
       ImageCancelEvent event, Emitter<ChatState> emit) async {
     emit(ImageCancelImage());
+  }
+
+  FutureOr<void> _fetchChat(
+      FetchChatEvent event, Emitter<ChatState> emit) async {
+    emit(ChatLoadingState());
+    emit(ChatSuccessState());
   }
 }

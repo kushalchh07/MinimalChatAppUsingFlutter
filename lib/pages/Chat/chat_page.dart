@@ -180,24 +180,54 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessageList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _chatService.getMessages(
-          widget.receiverUserId, _firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+    return BlocBuilder<ChatBloc, ChatState>(
+      builder: (context, state) {
+        if (state is ChatLoadingState) {
+          return CupertinoActivityIndicator();
         }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+        if (state is ChatSuccessState) {
+          return StreamBuilder<QuerySnapshot>(
+            stream: _chatService.getMessages(
+                widget.receiverUserId, _firebaseAuth.currentUser!.uid),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());
+
+              return ListView(
+                controller: _scrollController,
+                children: snapshot.data!.docs.map((document) {
+                  return _buildMessageItem(document);
+                }).toList(),
+              );
+            },
+          );
         }
+        return StreamBuilder<QuerySnapshot>(
+          stream: _chatService.getMessages(
+              widget.receiverUserId, _firebaseAuth.currentUser!.uid),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-        WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());
+            WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());
 
-        return ListView(
-          controller: _scrollController,
-          children: snapshot.data!.docs.map((document) {
-            return _buildMessageItem(document);
-          }).toList(),
+            return ListView(
+              controller: _scrollController,
+              children: snapshot.data!.docs.map((document) {
+                return _buildMessageItem(document);
+              }).toList(),
+            );
+          },
         );
       },
     );
@@ -216,6 +246,12 @@ class _ChatPageState extends State<ChatPage> {
     var imageUrl = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? widget.senderImageUrl
         : widget.receiverimageUrl;
+    var userId = (data['senderId'] == _firebaseAuth.currentUser!.uid)
+        ? widget.receiverUserId
+        : data['senderId'];
+    var otherUserId = (data['senderId'] == _firebaseAuth.currentUser!.uid)
+        ? data['senderId']
+        : widget.receiverUserId;
     return Container(
       alignment: alignment,
       child: Padding(
@@ -249,7 +285,8 @@ class _ChatPageState extends State<ChatPage> {
               isMe: isMe,
               isImage: data['isImage'] ?? false,
               messageId: document.id,
-              userId: data["senderId"],
+              userId: userId,
+              otherUserId: otherUserId,
             ),
           ],
         ),
