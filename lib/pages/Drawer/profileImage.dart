@@ -1,4 +1,5 @@
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -30,7 +31,12 @@ class _ProfileImageState extends State<ProfileImage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BlocBuilder<ProfileImageBloc, ProfileImageState>(
+            BlocConsumer<ProfileImageBloc, ProfileImageState>(
+              listener: (context, state) {
+                if (state is ProfileImageUploaded) {
+                  Get.offAll(() => Base());
+                }
+              },
               builder: (context, state) {
                 if (state is ProfileImagePicked) {
                   return GestureDetector(
