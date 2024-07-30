@@ -1,6 +1,7 @@
 import 'package:chat_app/Api/firebase_api.dart';
 import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
+import 'package:chat_app/Bloc/StoriesBloc/stories_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
@@ -62,6 +63,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => GroupchatBloc(),
+        ),
+        BlocProvider(
+          create: (context) => StoriesBloc(),
         ),
       ],
       child: GetMaterialApp(

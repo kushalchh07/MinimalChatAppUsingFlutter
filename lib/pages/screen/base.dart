@@ -76,7 +76,6 @@ class BaseState extends State<Base> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.image,
-              color: Colors.black,
             ),
             label: 'Stories',
           ),

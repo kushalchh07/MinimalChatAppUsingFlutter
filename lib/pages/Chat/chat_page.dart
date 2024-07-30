@@ -49,9 +49,9 @@ class _ChatPageState extends State<ChatPage> {
   final ScrollController _scrollController = ScrollController();
   final FocusNode myFocusNode = FocusNode();
 
-  void sendMessage() async {
+  void sendMessage() {
     if (_messageController.text.isNotEmpty) {
-      await _chatService.sendMessage(
+      _chatService.sendMessage(
           widget.receiverUserId, _messageController.text, widget.isImage);
       _messageController.clear();
     }
@@ -320,7 +320,7 @@ class _ChatPageState extends State<ChatPage> {
                     cursorColor: greenColor,
                     controller: _messageController,
                     textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       floatingLabelStyle: floatingLabelTextStyle(),
                       prefixIcon: Icon(
