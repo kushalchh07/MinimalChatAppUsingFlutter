@@ -6,5 +6,16 @@ sealed class StoriesEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
-class StoryPick extends StoriesEvent{}
-class StoryUpload extends StoriesEvent{}
+
+class StoryPick extends StoriesEvent {}
+
+class StoryUpload extends StoriesEvent {
+  final File image;
+
+  StoryUpload(this.image);
+
+  @override
+  List<Object> get props => [image];
+}
+
+

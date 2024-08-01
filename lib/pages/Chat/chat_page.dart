@@ -320,7 +320,7 @@ class _ChatPageState extends State<ChatPage> {
                     cursorColor: greenColor,
                     controller: _messageController,
                     textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.text,
+                    // keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       floatingLabelStyle: floatingLabelTextStyle(),
                       prefixIcon: Icon(
