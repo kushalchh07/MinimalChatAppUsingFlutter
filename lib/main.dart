@@ -3,6 +3,7 @@ import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/StoriesBloc/stories_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
+import 'package:chat_app/Bloc/fetchStoryBloc/fetch_story_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/Bloc/passwordbloc/password_bloc.dart';
@@ -19,6 +20,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_emoji_gif_picker/flutter_emoji_gif_picker.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -31,6 +33,34 @@ void main() async {
     appleProvider: AppleProvider.deviceCheck,
   );
   await Api.init();
+  EmojiGifPickerPanel.setup(
+      sizes: MenuSizes(width: 2000, height: 500),
+      texts: MenuTexts(
+          searchEmojiHintText: "Search Emoji?",
+          searchGifHintText: "Search with Giphy"),
+      colors: MenuColors(
+        backgroundColor: const Color(0xFFf6f5f3),
+        searchBarBackgroundColor: Colors.white,
+        searchBarBorderColor: const Color(0xFFe6e5e2),
+        searchBarEnabledColor: Colors.white,
+        searchBarFocusedColor: const Color(0xFF00a884),
+        menuSelectedIconColor: const Color(0xFF1d6e5f),
+        buttonColor: const Color(0xFF909090),
+        iconBackgroundColor: null,
+        iconHoveredBackgroundColor: const Color.fromARGB(255, 224, 224, 224),
+        indicatorColor: Colors.transparent,
+      ),
+      styles: MenuStyles(
+          menuSelectedTextStyle:
+              const TextStyle(fontSize: 20, color: Colors.black),
+          menuUnSelectedTextStyle:
+              const TextStyle(fontSize: 20, color: Color(0xFF7a7a7a)),
+          searchBarHintStyle:
+              const TextStyle(fontSize: 12, color: Color(0xFF8d8d8d)),
+          searchBarTextStyle:
+              const TextStyle(fontSize: 12, color: Colors.black)),
+      giphyApiKey: "yourgiphyapikey",
+      mode: Mode.light);
   runApp(const MyApp());
 }
 
@@ -66,6 +96,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => StoriesBloc(),
+        ),
+        BlocProvider(
+          create: (context) => FetchStoryBloc(),
         ),
       ],
       child: GetMaterialApp(
