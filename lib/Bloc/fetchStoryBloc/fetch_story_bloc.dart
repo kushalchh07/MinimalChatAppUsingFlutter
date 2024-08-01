@@ -1,12 +1,14 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'fetch_story_state.dart';
+
 part 'fetch_story_event.dart';
-part 'fetch_story_state.dart';
 
 class FetchStoryBloc extends Bloc<FetchStoryEvent, FetchStoryState> {
   FetchStoryBloc() : super(FetchStoryInitial()) {
@@ -18,7 +20,9 @@ class FetchStoryBloc extends Bloc<FetchStoryEvent, FetchStoryState> {
     emit(StoriesLoading());
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      String currentUserId = user!.uid;
+      if (user == null) throw Exception('User not authenticated');
+
+      String currentUserId = user.uid;
 
       // Fetch blocked users
       final blockedUsersSnapshot = await _firestore
@@ -29,35 +33,30 @@ class FetchStoryBloc extends Bloc<FetchStoryEvent, FetchStoryState> {
 
       List<String> blockedUsers =
           blockedUsersSnapshot.docs.map((doc) => doc.id).toList();
-
-      // Fetch all stories excluding the current user and blocked users
-      final storiesSnapshot = await _firestore
-          .collection('stories')
-          .where('userId', isNotEqualTo: currentUserId)
-          .get();
-
-
-      final  mystories = await _firestore
-          .collection('stories')
-          .doc(currentUserId)
-          .collection('storiesUrl')
-          .get();
-
-          DocumentSnapshot<Map<String, dynamic>> userDoc =
+      log('BlockedUsers: $blockedUsers');
+      // Fetch current user's stories URLs
+      DocumentSnapshot<Map<String, dynamic>> userDoc =
           await _firestore.collection('stories').doc(currentUserId).get();
 
-          
-        // String? name = userDoc.data()?['name'];
-        String imageUrl = userDoc.data()?['storiesUrl'];
-      
-      
-      List<Map<String, dynamic>> stories = storiesSnapshot.docs.map((doc) {
-        return doc.data();
-      }).where((story) {
-        return !blockedUsers.contains(story['userId']);
-      }).toList();
-      // String myStoriesData = mystories.docs.map((doc) => doc.data()).toString();
-      emit(StoriesLoaded(stories, imageUrl));
+      List<dynamic> myStoriesUrls = userDoc.data()?['storiesUrl'] ?? [];
+      log('My Stories URLs: $myStoriesUrls');
+
+      // Fetch all stories
+      final storiesSnapshot = await _firestore.collection('stories').get();
+      log('Total stories fetched: ${storiesSnapshot.docs.length}');
+
+      // Filter out the current user's and blocked users' stories
+      List<Map<String, dynamic>> otherUsersStories = storiesSnapshot.docs
+          .where((doc) {
+            String userId = doc.id;
+            return userId != currentUserId && !blockedUsers.contains(userId);
+          })
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      log('Other users\' stories (after filtering): $otherUsersStories');
+
+      emit(StoriesLoaded(myStoriesUrls, otherUsersStories));
     } catch (e) {
       emit(StoryLoadFailure(e.toString()));
     }

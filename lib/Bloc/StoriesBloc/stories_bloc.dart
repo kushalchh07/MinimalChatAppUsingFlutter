@@ -36,30 +36,48 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     }
   }
 
+  // This function handles the StoryUpload event, which is triggered when a user wants to upload a new story.
+  // It takes in the StoryUpload event and the emitter object, which allows the bloc to emit new states.
   FutureOr<void> _storyUpload(
       StoryUpload event, Emitter<StoriesState> emit) async {
-    emit(StoryUploading());
     try {
+      // Get the currently authenticated user
       User? user = FirebaseAuth.instance.currentUser;
-      String userId = user!.uid;
+      if (user == null) throw Exception('User is not authenticated');
+
+      String userId = user.uid;
       int userid = generate4DigitRandomNumber();
-      log(userId);
+
+      // Define the path and upload the file
       String fileName = 'stories_url/$userid.png';
-      log(fileName);
-      TaskSnapshot snapshot =
-          await _storage.ref().child(fileName).putFile(event.image);
+      TaskSnapshot snapshot = await FirebaseStorage.instance
+          .ref()
+          .child(fileName)
+          .putFile(event.image);
+
+      // Get the download URL
       String downloadUrl = await snapshot.ref.getDownloadURL();
 
-      log('Download URL: $downloadUrl');
-      await _firestore.collection('stories').doc(userId).set({
-        'storiesUrl': downloadUrl,
-        'userId': userId,
-        'timeStamp': FieldValue.serverTimestamp()
-      });
-      log(user.uid);
+      // Create the story data
+      Map<String, dynamic> storyData = {
+        'url': downloadUrl,
+        'timeStamp': DateTime.now().millisecondsSinceEpoch,
+      };
 
+      // Reference to the user's document in the 'stories' collection
+      DocumentReference userDocRef =
+          FirebaseFirestore.instance.collection('stories').doc(userId);
+
+      // Update the user document with the new story URL
+      await userDocRef.set({
+        'storiesUrl': FieldValue.arrayUnion([storyData]),
+      }, SetOptions(merge: true));
+
+      // Emit the appropriate event
       emit(StoryUploaded(downloadUrl));
     } catch (e) {
+      // Log any errors that occur during the upload process
+      log('Story upload failed: $e');
       emit(StoryUpLoadFailure(e.toString()));
     }
   }
