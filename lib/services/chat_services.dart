@@ -85,7 +85,28 @@ class ChatService extends ChangeNotifier {
           .toList();
     });
   }
-
+// Get all the users  
+  Stream<List<Map<String, dynamic>>> getUsersStream() {
+    final currentUser = _firebaseAuth.currentUser;
+    return _firestore
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .snapshots()
+        .asyncMap((snapshot) async {
+      //get blocked users id
+      final blockedUsersIds = snapshot.docs.map((doc) => doc.id).toList();
+      //get all users
+      final userSnapshot = await _firestore.collection('users').get();
+      //return as stream list, excluding current user and blocked users
+      return userSnapshot.docs
+          .where((doc) =>
+              doc.data()['email'] != currentUser.email &&
+              !blockedUsersIds.contains(doc.id))
+          .map((doc) => doc.data())
+          .toList();
+    });
+  }
   // report user
   Future<void> reportUser(String messageId, String userId) async {
     // AuthService _authservice = AuthService();

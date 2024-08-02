@@ -46,12 +46,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return prefs.getString('name') ?? 'N/A';
   }
 
-  // String getFirstName(String fullName) {
-  //   if (fullName.isEmpty) {
-  //     return 'N/A';
-  //   }
-  //   return fullName.split(' ')[0];
-  // }
+  String getFirstName(String fullName) {
+    if (fullName.isEmpty) {
+      return 'N/A';
+    }
+    return fullName.split(' ')[0];
+  }
 
   Future<Map<String, String?>> getProfileInfo() async {
     final fullName = await getName();
@@ -61,26 +61,27 @@ class _ChatScreenState extends State<ChatScreen> {
     return {'fullName': fullName, 'email': email, 'imageUrl': imageUrl};
   }
 
-  // Future<void> getImageUrl() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String _imageUrl = prefs.getString('imageUrl') ?? 'N/A';
-  //   setState(() {
-  //     imageUrl = _imageUrl;
-  //   });
-  // }
+  Future<void> getImageUrl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _imageUrl = prefs.getString('imageUrl') ?? 'N/A';
+    setState(() {
+      imageUrl = _imageUrl;
+    });
+  }
 
   TextEditingController _searchController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getImageUrl();
+    getImageUrl();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentTime = TimeOfDay.now();
     String greeting = '';
+
     if (currentTime.hour < 12) {
       greeting = 'Good Morning!';
     } else if (currentTime.hour < 18) {
@@ -189,9 +190,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: TextFormField(
                   autofocus: false,
                   controller: _searchController,
-                  // focusNode: FocusNode(),
+                  focusNode: FocusNode(),
                   onTap: () {},
-
+                  // onChanged: (query) {
+                  //   BlocProvider.of<UserBloc>(context).add(SearchUsers(query));
+                  // },
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -209,10 +212,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         vertical: 12, horizontal: 20),
                     suffixIcon: GestureDetector(
                       onTap: () {
-                        // BlocProvider.of<CoursesCubit>(context).fetchCourses(
-                        //   url: '/api/all-courses/$user_id',
-                        // );
-                        // _searchController.clear();
+                        _searchController.clear();
+                        FocusScope.of(context).unfocus();
+                        // Dispatch the search event with an empty query
+                        BlocProvider.of<UserBloc>(context).add(SearchUsers(''));
                       },
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -334,7 +337,7 @@ class _UserListState extends State<UserList> {
         }
       },
       builder: (context, state) {
-        if (state is ChatInitial) {
+        if (state is UsersInitial) {
           BlocProvider.of<UserBloc>(context).add(LoadUsers());
         }
         if (state is UsersLoading) {
@@ -360,170 +363,173 @@ class _UserListState extends State<UserList> {
       },
     );
   }
+}
 
-  Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
-      child: GestureDetector(
-        onLongPress: () {
-          _showOptions(context, user['uid']);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: appSecondary,
-
-            // border: Border.all(color: Colors.black), // Border color
-            borderRadius: BorderRadius.circular(5.0),
-            // Border radius
+void _blockUser(BuildContext context, String userId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm'),
+        content: Text('Are you sure you want to block this user?'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          child: ListTile(
-            minLeadingWidth: Checkbox.width,
-            leading: Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.transparent,
-                  // width: 2,
-                ),
+          TextButton(
+            child: Text('Block'),
+            onPressed: () {
+              BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
+              // initState();
+              // Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+_buildUserListItem(BuildContext context, Map<String, dynamic> user) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
+    child: GestureDetector(
+      onLongPress: () {
+        _showOptions(context, user['uid']);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: appSecondary,
+
+          // border: Border.all(color: Colors.black), // Border color
+          borderRadius: BorderRadius.circular(5.0),
+          // Border radius
+        ),
+        child: ListTile(
+          minLeadingWidth: Checkbox.width,
+          leading: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.transparent,
+                // width: 2,
               ),
-              child: user['profileImageUrl'] == null ||
-                      user['profileImageUrl'].isEmpty
-                  ? Container(
-                      // height: 60,
-                      // width: 60,
-                      decoration: BoxDecoration(
-                          color: primaryColor, shape: BoxShape.circle),
-                      child: Center(
-                        child: Text(
-                          getFirstandLastNameInitals(
-                              user['name'] ?? ''.toUpperCase()),
-                          style: TextStyle(color: whiteColor, fontSize: 20),
-                        ),
+            ),
+            child: user['profileImageUrl'] == null ||
+                    user['profileImageUrl'].isEmpty
+                ? Container(
+                    // height: 60,
+                    // width: 60,
+                    decoration: BoxDecoration(
+                        color: primaryColor, shape: BoxShape.circle),
+                    child: Center(
+                      child: Text(
+                        getFirstandLastNameInitals(
+                            user['name'] ?? ''.toUpperCase()),
+                        style: TextStyle(color: whiteColor, fontSize: 20),
                       ),
-                    )
-                  : CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
                           ),
-                        );
-                      },
-                      imageUrl: user['profileImageUrl'],
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/no-image.png',
-                        fit: BoxFit.cover,
-                        height: 60,
-                        width: 60,
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        'assets/images/no-image.png',
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
-                      ),
+                        ),
+                      );
+                    },
+                    imageUrl: user['profileImageUrl'],
+                    placeholder: (context, url) => Image.asset(
+                      'assets/images/no-image.png',
+                      fit: BoxFit.cover,
+                      height: 60,
+                      width: 60,
+                    ),
+                    errorWidget: (context, url, error) => Image.asset(
+                      'assets/images/no-image.png',
+                      height: 60,
+                      width: 60,
                       fit: BoxFit.cover,
                     ),
-            ),
-            title: Text(
-              user['name'] ?? 'No name',
-              style: TextStyle(fontSize: 20, color: Colors.black),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatPage(
-                    receiverUserEmail: user['name'],
-                    receiverUserId: user['uid'],
-                    receiverimageUrl: user['profileImageUrl'],
-                    senderImageUrl: imageUrl,
-                    isImage: isImage,
+                    fit: BoxFit.cover,
                   ),
-                ),
-              );
-            },
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            dense: true,
-            selected: true,
-            selectedTileColor: Colors.blue.withOpacity(0.5),
-            tileColor: Colors.grey[200],
           ),
+          title: Text(
+            user['name'] ?? 'No name',
+            style: TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          subtitle: Text(
+            "Hello I am  New Here.",
+            style: TextStyle(fontFamily: 'poppins', fontSize: 16),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  receiverUserEmail: user['name'],
+                  receiverUserId: user['uid'],
+                  receiverimageUrl: user['profileImageUrl'],
+                  senderImageUrl: imageUrl,
+                  isImage: isImage,
+                ),
+              ),
+            );
+          },
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          dense: true,
+          selected: true,
+          selectedTileColor: Colors.blue.withOpacity(0.5),
+          tileColor: Colors.grey[200],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  void _showOptions(BuildContext context, String userId) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.flag),
-                title: const Text("Report"),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Add reporting logic here
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.block),
-                title: const Text("Block User"),
-                onTap: () {
-                  Navigator.pop(context);
-                  _blockUser(context, userId);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.cancel),
-                title: const Text("Cancel"),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _blockUser(BuildContext context, String userId) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm'),
-          content: Text('Are you sure you want to block this user?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
+void _showOptions(BuildContext context, String userId) {
+  showModalBottomSheet(
+    context: context,
+    builder: (context) {
+      return SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.flag),
+              title: const Text("Report"),
+              onTap: () {
+                Navigator.pop(context);
+                // Add reporting logic here
               },
             ),
-            TextButton(
-              child: Text('Block'),
-              onPressed: () {
-                BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
-                // initState();
-                // Navigator.of(context).pop();
-                Navigator.of(context).pop();
+            ListTile(
+              leading: const Icon(Icons.block),
+              title: const Text("Block User"),
+              onTap: () {
+                Navigator.pop(context);
+                _blockUser(context, userId);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.cancel),
+              title: const Text("Cancel"),
+              onTap: () {
+                Navigator.pop(context);
               },
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }

@@ -8,6 +8,7 @@ import 'package:chat_app/pages/Drawer/customDrawer.dart';
 import 'package:chat_app/pages/screen/settings.dart';
 import 'package:chat_app/pages/screen/stories.dart';
 import 'package:chat_app/pages/screen/users.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -62,25 +63,25 @@ class BaseState extends State<Base> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
+            icon: Icon(CupertinoIcons.chat_bubble_2),
             label: 'Chat',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: Icon(CupertinoIcons.group),
             label: 'Groups',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.language),
+            icon: Icon(CupertinoIcons.globe),
             label: 'People',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.image,
+              CupertinoIcons.photo_on_rectangle,
             ),
             label: 'Stories',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(CupertinoIcons.settings),
             label: 'Settings',
           ),
         ],
