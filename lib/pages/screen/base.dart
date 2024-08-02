@@ -62,16 +62,16 @@ class BaseState extends State<Base> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Chat',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
-            label: 'Users',
+            label: 'Groups',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.language),
+            label: 'People',
           ),
           BottomNavigationBarItem(
             icon: Icon(

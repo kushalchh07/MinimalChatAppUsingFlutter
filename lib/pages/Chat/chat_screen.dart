@@ -46,12 +46,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return prefs.getString('name') ?? 'N/A';
   }
 
-  String getFirstName(String fullName) {
-    if (fullName.isEmpty) {
-      return 'N/A';
-    }
-    return fullName.split(' ')[0];
-  }
+  // String getFirstName(String fullName) {
+  //   if (fullName.isEmpty) {
+  //     return 'N/A';
+  //   }
+  //   return fullName.split(' ')[0];
+  // }
 
   Future<Map<String, String?>> getProfileInfo() async {
     final fullName = await getName();
@@ -61,19 +61,20 @@ class _ChatScreenState extends State<ChatScreen> {
     return {'fullName': fullName, 'email': email, 'imageUrl': imageUrl};
   }
 
-  Future<void> getImageUrl() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _imageUrl = prefs.getString('imageUrl') ?? 'N/A';
-    setState(() {
-      imageUrl = _imageUrl;
-    });
-  }
+  // Future<void> getImageUrl() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String _imageUrl = prefs.getString('imageUrl') ?? 'N/A';
+  //   setState(() {
+  //     imageUrl = _imageUrl;
+  //   });
+  // }
 
+  TextEditingController _searchController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getImageUrl();
+    // getImageUrl();
   }
 
   @override
@@ -95,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
             future: getProfileInfo(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return CupertinoActivityIndicator();
               } else if (snapshot.hasError) {
                 return Icon(Icons.error);
               } else {
@@ -165,6 +166,81 @@ class _ChatScreenState extends State<ChatScreen> {
                 );
               }
             }),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(80.0),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Container(
+              height: Get.height * 0.06,
+              decoration: BoxDecoration(
+                color: appBackgroundColor,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              child: Container(
+                width: Get.width * 0.9,
+                height: 45.0,
+                decoration: BoxDecoration(
+                  color: myWhite,
+                  borderRadius: BorderRadius.circular(13.0),
+                ),
+                child: TextFormField(
+                  autofocus: false,
+                  controller: _searchController,
+                  // focusNode: FocusNode(),
+                  onTap: () {},
+
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: appSecondary,
+                    ),
+                    hintText: 'Search ',
+                    hintStyle: TextStyle(
+                        color: greyColor,
+                        fontSize: 14,
+                        fontFamily: 'inter',
+                        fontWeight: FontWeight.w600),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 20),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        // BlocProvider.of<CoursesCubit>(context).fetchCourses(
+                        //   url: '/api/all-courses/$user_id',
+                        // );
+                        // _searchController.clear();
+                      },
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: _searchController.text.isNotEmpty &&
+                                  _searchController.text != ''
+                              ? GestureDetector(
+                                  onTap: () {
+                                    _searchController.text == ''
+                                        ? null
+                                        : {
+                                            _searchController.clear(),
+                                            FocusScope.of(context).unfocus(),
+                                          };
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 20,
+                                  ),
+                                )
+                              : const SizedBox.shrink()),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         actions: [
           Image.asset(
             "assets/images/chat.png",
@@ -175,7 +251,7 @@ class _ChatScreenState extends State<ChatScreen> {
           future: getName(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return CupertinoActivityIndicator();
             } else if (snapshot.hasError) {
               return Text('Error');
             } else {
