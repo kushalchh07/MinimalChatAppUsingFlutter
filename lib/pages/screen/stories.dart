@@ -241,6 +241,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 
+import '../../utils/customWidgets/loading_helper.dart';
+
 class Stories extends StatefulWidget {
   const Stories({super.key});
 
@@ -252,7 +254,7 @@ class _StoriesState extends State<Stories> {
   @override
   void initState() {
     super.initState();
-    // context.read<FetchStoryBloc>().add(FetchStories());
+    context.read<FetchStoryBloc>().add(FetchStories());
   }
 
   @override
@@ -374,13 +376,26 @@ class _StoriesState extends State<Stories> {
                         childAspectRatio: 1.0,
                         mainAxisExtent: 220,
                       ),
-                      itemCount: otherUsersStories.length,
+                      itemCount: otherUsersStories
+                          .map((story) => story['storiesUrl'])
+                          .fold<int>(
+                              0,
+                              (prev, list) =>
+                                  prev + (list?.length as int ?? 0)),
+                      // itemCount: 3,
+                      // scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         // Safely access the story
                         if (index < otherUsersStories.length) {
                           final story = otherUsersStories[index];
                           // log("Story: $story");
-
+                          // log(otherUsersStories
+                          //     .map((story) => story['storiesUrl'])
+                          //     .fold<int>(
+                          //         0,
+                          //         (prev, list) =>
+                          //             prev + (list?.length as int ?? 0))
+                          //     .toString());
                           final urlList =
                               story['storiesUrl'] as List<dynamic>? ?? [];
                           // log("urlList: $urlList");
@@ -399,8 +414,8 @@ class _StoriesState extends State<Stories> {
 
                           // log("Extracted URLs: $urls");
                           // Ensure urlList is not empty and url is a string
-                          if (urls.isNotEmpty && urls.length > index) {
-                            final ur = urls[0];
+                          if (urls.isNotEmpty) {
+                            // final ur = urls[index];
                             // log("url matra yo ho hai " + ur);
                             return Card(
                               color: appSecondary,
@@ -409,13 +424,14 @@ class _StoriesState extends State<Stories> {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                               child: InkWell(
-                                onTap: () => Get.to(Bigstoryscreen(url: ur)),
+                                onTap: () =>
+                                    Get.to(Bigstoryscreen(url: urls[index])),
                                 child: Container(
-                                  height: 220,
+                                  // height: 220,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                     image: DecorationImage(
-                                      image: NetworkImage(ur),
+                                      image: NetworkImage(urls[index]),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -424,7 +440,7 @@ class _StoriesState extends State<Stories> {
                             );
                           }
                         }
-                        return SizedBox.shrink();
+                        // return SizedBox.shrink();
                       },
                     ),
                   ),
@@ -437,14 +453,17 @@ class _StoriesState extends State<Stories> {
       floatingActionButton: BlocBuilder<StoriesBloc, StoriesState>(
         builder: (context, state) {
           if (state is StoryUploading) {
-            return CupertinoActivityIndicator();
+            // showLoadingScreen(context);
+
+            // Simulate a network request or some async task
           }
           if (state is StoryPicked) {
             return FloatingActionButton(
               onPressed: () {
                 context.read<StoriesBloc>().add(StoryUpload(state.image));
-                Future.delayed(Duration(seconds: 4), () {
+                Future.delayed(Duration(seconds: 5), () {
                   context.read<FetchStoryBloc>().add(FetchStories());
+                  // hideLoadingScreen(context);
                 });
               },
               child: Text("Upload"),
