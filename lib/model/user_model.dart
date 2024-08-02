@@ -8,6 +8,12 @@ class UserModel {
   final bool isOnline;
   final String pushToken;
   final Timestamp lastActive;
+  List<String> friendsUids;
+  List<String> friendRequestsUids;
+  List<String> blockedUsersUids;
+  List<String> blockedByUsersUids;
+  List<String> friendRequestsSentUids;
+
 
   UserModel({
     required this.email,
@@ -17,6 +23,11 @@ class UserModel {
     required this.isOnline,
     required this.pushToken,
     required this.lastActive,
+    required this.friendsUids,
+    required this.friendRequestsUids,
+    required this.blockedUsersUids,
+    required this.blockedByUsersUids,
+    required this.friendRequestsSentUids,
   });
 
   // convert to a map
@@ -29,6 +40,11 @@ class UserModel {
       'isOnline': isOnline,
       'pushToken': pushToken,
       'lastActive': lastActive,
+      'friendsUids': friendsUids,
+      'friendRequestsUids': friendRequestsUids,
+      'blockedUsersUids': blockedUsersUids,
+      'blockedByUsersUids': blockedByUsersUids,
+      'friendRequestsSentUids': friendRequestsSentUids,
     };
   }
 
@@ -42,6 +58,11 @@ class UserModel {
       isOnline: map['isOnline'],
       pushToken: map['pushToken'],
       lastActive: map['lastActive'],
+      friendsUids: List<String>.from(map['friendsUids']),
+      friendRequestsUids: List<String>.from(map['friendRequestsUids']),
+      blockedUsersUids: List<String>.from(map['blockedUsersUids']),
+      blockedByUsersUids: List<String>.from(map['blockedByUsersUids']),
+      friendRequestsSentUids: List<String>.from(map['friendRequestsSentUids']),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:chat_app/model/user_model.dart';
 import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
@@ -23,6 +24,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc(this._chatService) : super(UsersLoading()) {
     on<LoadUsers>(_onLoadUsers);
+    on<LoadAllUsers>(_onLoadAllUsers);
     on<LoadBlockedUsers>(_onBlockedUsersLoad);
     on<UnBlockUserEvent>(_onUnBlockedUserEvent);
     on<BlockUserEvent>(_onBlockUserEvent);
@@ -30,6 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateProfile>(_updateProfile);
     on<DeleteMyProfileWithEmail>(_deleteMyProfile);
     on<DeleteMyProfileWithGoogle>(_deleteMyProfileGoogle);
+    // on<SearchUsers>(_onSearchUsers);  
   }
   final AuthService _authService = AuthService();
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
@@ -191,4 +194,34 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(DeleteProfileFailed());
     }
   }
+
+  FutureOr<void> _onLoadAllUsers(
+      LoadAllUsers event, Emitter<UserState> emit) async {
+    try {
+      final usersStream = _chatService.getUsersStream();
+      final users = await usersStream.first;
+      emit(AllUsersLoaded(users));
+    } catch (e) {
+      print(e);
+      emit(UsersError());
+    }
+  }
+//   Future<void> _onSearchUsers(SearchUsers event, Emitter<UserState> emit) async {
+//   emit(UsersLoading());
+//   try {
+//     final allUsersStream = _chatService.getUsersStreamExcludingBlocked();
+//     final allUsers = await allUsersStream.first;
+
+//     // Filter the users based on the search query
+//    final filteredUsers = allUsers.where((user) {
+//      final name = user['name'].toLowerCase();
+//      return name.contains(event.query.toLowerCase());
+//    }).map((user) => UserModel.fromMap(user)).toList();
+
+//     emit(UsersSearchLoaded(filteredUsers));
+//   } catch (e) {
+//     print(e);
+//     emit(UsersError());
+//   }
+// }
 }

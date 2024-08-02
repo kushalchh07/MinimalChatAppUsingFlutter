@@ -6,7 +6,7 @@ abstract class UserEvent extends Equatable {
 }
 
 class LoadUsers extends UserEvent {}
-
+class LoadAllUsers extends UserEvent{}
 class LoadBlockedUsers extends UserEvent {}
 
 class UnBlockUserEvent extends UserEvent {
@@ -49,3 +49,10 @@ class DeleteMyProfileWithEmail extends UserEvent {
   DeleteMyProfileWithEmail(this.password);
 }
 class DeleteMyProfileWithGoogle extends UserEvent {}
+
+
+class SearchUsers extends UserEvent {
+  final String query;
+
+  SearchUsers(this.query);
+}

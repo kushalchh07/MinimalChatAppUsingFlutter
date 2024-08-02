@@ -1,9 +1,13 @@
+import 'package:chat_app/model/user_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class UserState extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class UsersInitial extends UserState {}
 
 class UsersLoading extends UserState {}
 
@@ -15,6 +19,16 @@ class UsersLoaded extends UserState {
   @override
   List<Object> get props => [users];
 }
+
+class AllUsersLoaded extends UserState {
+  final List<Map<String, dynamic>> users;
+
+  AllUsersLoaded(this.users);
+
+  @override
+  List<Object> get props => [users];
+}
+
 class BlockedUsersLoaded extends UserState {
   final List<Map<String, dynamic>> blockedusers;
 
@@ -29,14 +43,25 @@ class MyProfileLoaded extends UserState {
 
   MyProfileLoaded(this.myprofile);
 }
+
 class UsersError extends UserState {}
-class UserBlockedActionState extends UserState{
+
+class UserBlockedActionState extends UserState {
   final bool isBlocked;
 
   UserBlockedActionState(this.isBlocked);
 }
-class UpdateProfileSuccess extends UserState{}
-class DeleteProfileSuccess extends UserState{}
-class DeleteProfileFailed extends UserState{}
 
-class UserUnblockedState extends UserState{}
+class UpdateProfileSuccess extends UserState {}
+
+class DeleteProfileSuccess extends UserState {}
+
+class DeleteProfileFailed extends UserState {}
+
+class UserUnblockedState extends UserState {}
+class UsersSearchLoaded extends UserState {
+
+  final List<UserModel> users;
+
+  UsersSearchLoaded(this.users);
+}
