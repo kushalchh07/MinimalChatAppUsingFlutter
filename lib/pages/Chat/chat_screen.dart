@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/Bloc/chatBloc/chat_state.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
@@ -73,7 +74,6 @@ class _ChatScreenState extends State<ChatScreen> {
     // TODO: implement initState
     super.initState();
     getImageUrl();
-    BlocProvider.of<UserBloc>(context).add(LoadUsers());
   }
 
   @override
@@ -258,6 +258,9 @@ class _UserListState extends State<UserList> {
         }
       },
       builder: (context, state) {
+        if (state is ChatInitial) {
+          BlocProvider.of<UserBloc>(context).add(LoadUsers());
+        }
         if (state is UsersLoading) {
           return Center(child: CupertinoActivityIndicator());
         } else if (state is UsersLoaded) {

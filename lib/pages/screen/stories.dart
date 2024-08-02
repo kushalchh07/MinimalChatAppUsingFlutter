@@ -252,7 +252,7 @@ class _StoriesState extends State<Stories> {
   @override
   void initState() {
     super.initState();
-    context.read<FetchStoryBloc>().add(FetchStories());
+    // context.read<FetchStoryBloc>().add(FetchStories());
   }
 
   @override
@@ -285,6 +285,9 @@ class _StoriesState extends State<Stories> {
           }
         },
         builder: (context, state) {
+          if (state is FetchStoryInitial) {
+            context.read<FetchStoryBloc>().add(FetchStories());
+          }
           if (state is StoriesLoading) {
             return Center(child: CupertinoActivityIndicator());
           }
@@ -361,14 +364,15 @@ class _StoriesState extends State<Stories> {
                 // Display Other Users' Stories
                 if (otherUsersStories.isNotEmpty)
                   SizedBox(
-                    height: 200,
+                    height: 220,
                     child: GridView.builder(
                       padding: EdgeInsets.all(8),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: otherUsersStories.length == 1 ? 1 : 2,
+                        crossAxisCount: 2,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                         childAspectRatio: 1.0,
+                        mainAxisExtent: 220,
                       ),
                       itemCount: otherUsersStories.length,
                       itemBuilder: (context, index) {
@@ -407,7 +411,7 @@ class _StoriesState extends State<Stories> {
                               child: InkWell(
                                 onTap: () => Get.to(Bigstoryscreen(url: ur)),
                                 child: Container(
-                                  height: 200,
+                                  height: 220,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                     image: DecorationImage(
@@ -432,6 +436,9 @@ class _StoriesState extends State<Stories> {
       ),
       floatingActionButton: BlocBuilder<StoriesBloc, StoriesState>(
         builder: (context, state) {
+          if (state is StoryUploading) {
+            return CupertinoActivityIndicator();
+          }
           if (state is StoryPicked) {
             return FloatingActionButton(
               onPressed: () {

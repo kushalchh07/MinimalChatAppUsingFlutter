@@ -40,6 +40,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   // It takes in the StoryUpload event and the emitter object, which allows the bloc to emit new states.
   FutureOr<void> _storyUpload(
       StoryUpload event, Emitter<StoriesState> emit) async {
+    emit(StoryUploading());
     try {
       // Get the currently authenticated user
       User? user = FirebaseAuth.instance.currentUser;
