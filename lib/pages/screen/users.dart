@@ -2,15 +2,23 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_state.dart';
+import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
+import 'package:chat_app/Bloc/friendRequest/friend_request_event.dart';
+import 'package:chat_app/Bloc/friendRequest/friend_request_state.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/Bloc/userBloc/user_event.dart';
 import 'package:chat_app/Bloc/userBloc/user_state.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
+import 'package:chat_app/pages/screen/friend_request_screen.dart';
+import 'package:chat_app/pages/screen/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class Users extends StatefulWidget {
   const Users({super.key});
@@ -24,7 +32,8 @@ class _UsersState extends State<Users> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
+    // BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
+    BlocProvider.of<UserBloc>(context).add(LoadUsers());
   }
 
   @override
@@ -35,9 +44,14 @@ class _UsersState extends State<Users> {
         elevation: 0.2,
         title: Text("Users"),
         actions: [
-          Image.asset(
-            "assets/images/chat.png",
-            height: 60,
+          GestureDetector(
+            onTap: () {
+              Get.to(() => FriendRequestScreen());
+            },
+            child: Image.asset(
+              "assets/images/chat.png",
+              height: 60,
+            ),
           ),
         ],
       ),
@@ -60,11 +74,16 @@ class _UsersState extends State<Users> {
             }
             return Padding(
                 padding: const EdgeInsets.only(left: 2, right: 2),
-                child: ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      return _buildUserListItem(context, users[index]);
-                    }));
+                child: RefreshIndicator.adaptive(
+                  onRefresh: () async {
+                    BlocProvider.of<UserBloc>(context).add(LoadUsers());
+                  },
+                  child: ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        return _buildUserListItem(context, users[index]);
+                      }),
+                ));
           } else if (state is UsersError) {
             return Center(child: Text('Failed to load users'));
           } else {
@@ -77,6 +96,7 @@ class _UsersState extends State<Users> {
 }
 
 _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
+
   return Padding(
     padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
     child: GestureDetector(
@@ -150,12 +170,46 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
             user['name'] ?? 'No name',
             style: TextStyle(fontSize: 20, color: Colors.black),
           ),
-          onTap: () {},
+          onTap: () {
+            Get.to(() => ProfilePage(
+                imageUrl: user['profileImageUrl'],
+                uid: user['uid'],
+                fullname: user['name']));
+          },
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           dense: true,
           selected: true,
           selectedTileColor: Colors.blue.withOpacity(0.5),
           tileColor: Colors.grey[200],
+          // trailing: BlocConsumer<FriendRequestBloc, FriendRequestState>(
+          //   listener: (context, state) {
+          //     if (state is FriendRequestSent) {
+          //       Fluttertoast.showToast(
+          //           msg: "Friend request sent",
+          //           backgroundColor: successColor,
+          //           gravity: ToastGravity.CENTER);
+          //     }
+          //   },
+          //   builder: (context, state) {
+          //     if (state is FriendRequestSending) {
+          //       return CupertinoActivityIndicator();
+          //     }
+          //     if (state is FriendRequestSent) {
+          //       return IconButton(
+          //           onPressed: () {
+          //             // BlocProvider.of<FriendRequestBloc>(context)
+          //             //     .add(CancelFriendRequest(userId, user['uid']));
+          //           },
+          //           icon: Icon(Icons.check_circle_outline));
+          //     }
+          //     return IconButton(
+          //         onPressed: () {
+          //           BlocProvider.of<FriendRequestBloc>(context)
+          //               .add(SendFriendRequest(userId, user['uid']));
+          //         },
+          //         icon: Icon(Icons.person_add_outlined));
+          //   },
+          // ),
         ),
       ),
     ),

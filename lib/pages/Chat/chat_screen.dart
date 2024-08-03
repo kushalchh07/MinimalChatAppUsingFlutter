@@ -8,6 +8,7 @@ import 'package:chat_app/pages/Chat/chat_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getImageUrl();
+    // getImageUrl();
   }
 
   @override
@@ -195,7 +196,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   onTap: () {},
                   onChanged: (query) {
                     username = query;
-                    setState(() {});
                   },
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
@@ -301,15 +301,13 @@ class _ChatScreenState extends State<ChatScreen> {
         leadingWidth: 70,
         titleSpacing: 0,
       ),
-      body: (username != null && username!.length > 3)
-          ? Text("hello")
-          : BlocProvider(
-              create: (context) => UserBloc(ChatService())..add(LoadUsers()),
-              child: Container(
-                color: appBackgroundColor,
-                child: UserList(),
-              ),
-            ),
+      body: BlocProvider(
+        create: (context) => UserBloc(ChatService())..add(LoadUsers()),
+        child: Container(
+          color: appBackgroundColor,
+          child: UserList(),
+        ),
+      ),
     );
   }
 }
@@ -352,13 +350,18 @@ class _UserListState extends State<UserList> {
           if (users.isEmpty) {
             return Center(child: Text('No users found'));
           }
-          return Padding(
-              padding: const EdgeInsets.only(left: 2, right: 2),
-              child: ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    return _buildUserListItem(context, users[index]);
-                  }));
+          return RefreshIndicator.adaptive(
+            onRefresh: () async {
+              BlocProvider.of<UserBloc>(context).add(LoadUsers());
+            },
+            child: Padding(
+                padding: const EdgeInsets.only(left: 2, right: 2),
+                child: ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      return _buildUserListItem(context, users[index]);
+                    })),
+          );
         } else if (state is UsersError) {
           return Center(child: Text('Failed to load users'));
         } else {
