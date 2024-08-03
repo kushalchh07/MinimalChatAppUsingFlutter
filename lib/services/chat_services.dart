@@ -85,7 +85,8 @@ class ChatService extends ChangeNotifier {
           .toList();
     });
   }
-// Get all the users  
+
+// Get all the users
   Stream<List<Map<String, dynamic>>> getUsersStream() {
     final currentUser = _firebaseAuth.currentUser;
     return _firestore
@@ -107,6 +108,7 @@ class ChatService extends ChangeNotifier {
           .toList();
     });
   }
+
   // report user
   Future<void> reportUser(String messageId, String userId) async {
     // AuthService _authservice = AuthService();
@@ -157,6 +159,12 @@ class ChatService extends ChangeNotifier {
           .collection("BlockedUsers")
           .doc(userId)
           .set({});
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection("BlockedUsers")
+          .doc(currentUser.uid)
+          .set({});
       return "blocked";
     } catch (e) {
       return "Error";
@@ -172,8 +180,14 @@ class ChatService extends ChangeNotifier {
           .doc(currentUser!.uid)
           .collection("BlockedUsers")
           .doc(blockeduserId)
-          .delete()
-          .then((value) => "unblocked");
+          .delete();
+      await _firestore
+          .collection('users')
+          .doc(blockeduserId)
+          .collection("BlockedUsers")
+          .doc(currentUser.uid)
+          .delete();
+
       return "unblocked";
     } catch (e) {
       return "Error";

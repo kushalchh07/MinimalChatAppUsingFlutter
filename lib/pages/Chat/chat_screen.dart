@@ -30,6 +30,7 @@ class ChatScreen extends StatefulWidget {
 
 dynamic imageUrl;
 bool isImage = false;
+String? username;
 
 class _ChatScreenState extends State<ChatScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -192,9 +193,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: _searchController,
                   focusNode: FocusNode(),
                   onTap: () {},
-                  // onChanged: (query) {
-                  //   BlocProvider.of<UserBloc>(context).add(SearchUsers(query));
-                  // },
+                  onChanged: (query) {
+                    username = query;
+                    setState(() {});
+                  },
                   textInputAction: TextInputAction.search,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -299,13 +301,15 @@ class _ChatScreenState extends State<ChatScreen> {
         leadingWidth: 70,
         titleSpacing: 0,
       ),
-      body: BlocProvider(
-        create: (context) => UserBloc(ChatService())..add(LoadUsers()),
-        child: Container(
-          color: appBackgroundColor,
-          child: UserList(),
-        ),
-      ),
+      body: (username != null && username!.length > 3)
+          ? Text("hello")
+          : BlocProvider(
+              create: (context) => UserBloc(ChatService())..add(LoadUsers()),
+              child: Container(
+                color: appBackgroundColor,
+                child: UserList(),
+              ),
+            ),
     );
   }
 }
