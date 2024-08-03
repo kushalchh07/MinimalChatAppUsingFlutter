@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -7,40 +8,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
   final FirebaseFirestore firestore;
-
+StreamSubscription<QuerySnapshot>? _friendRequestListener;
   FriendRequestBloc(this.firestore) : super(FriendRequestInitial()) {
     on<SendFriendRequest>(_onSendFriendRequest);
     on<AcceptFriendRequest>(_onAcceptFriendRequest);
     on<RejectFriendRequest>(_onRejectFriendRequest);
     on<CancelFriendRequest>(_onCancelFriendRequest);
     on<CheckFriendRequestStatus>(_onCheckFriendRequestStatus);
+    on<StartListeningForFriendRequests>(_onStartListeningForFriendRequests);
   }
 
   void _onSendFriendRequest(
       SendFriendRequest event, Emitter<FriendRequestState> emit) async {
     emit(FriendRequestSending());
     try {
-      String path =
-          'users/${event.toUserId}/friendRequests/${event.fromUserId}';
-      log("Creating/updating document at path: $path");
-
-      await firestore.doc(path).set({
+      await firestore
+          .collection('users')
+          .doc(event.toUserId)
+          .collection('friendRequests')
+          .doc(event.fromUserId)
+          .set({
+        'fromUserId': event.fromUserId,
+        'toUserId': event.toUserId,
         'status': 'pending',
         'timestamp': FieldValue.serverTimestamp(),
       });
-
-      // Verify document creation
-      DocumentSnapshot doc = await firestore.doc(path).get();
-      if (doc.exists) {
-        log("Document created successfully: ${doc.data()}");
-      } else {
-        log("Failed to create document or document not found after creation");
-      }
-
+      log("Friend Request sent");
       emit(FriendRequestSent());
       emit(FriendRequestStatusLoaded(true));
     } catch (e) {
-      log("Error sending friend request: ${e.toString()}");
       emit(FriendRequestError(e.toString()));
       emit(FriendRequestStatusLoaded(false));
     }
@@ -95,11 +91,22 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
       CancelFriendRequest event, Emitter<FriendRequestState> emit) async {
     emit(FriendRequestSending());
     try {
-      await firestore.collection('users').doc(event.toUserId).update({
-        'friendRequests.${event.fromUserId}': FieldValue.delete(),
+      // await firestore.collection('users').doc(event.toUserId).update({
+      //   'friendRequests.${event.fromUserId}': FieldValue.delete(),
+      // });
+
+      await firestore
+          .collection('users')
+          .doc(event.toUserId)
+          .collection('friendRequests')
+          .doc(event.fromUserId)
+          .update({
+        'status': 'cancelled',
+        'timestamp': FieldValue.serverTimestamp(),
       });
       log("Friend Request cancelled");
       emit(FriendRequestCancelled());
+      emit(FriendRequestStatusLoaded(false));
     } catch (e) {
       emit(FriendRequestError(e.toString()));
     }
@@ -108,12 +115,15 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
   void _onCheckFriendRequestStatus(
       CheckFriendRequestStatus event, Emitter<FriendRequestState> emit) async {
     log("CheckStatus function started");
-
+    emit(FriendRequestInitial());
     try {
-      String path = 'users/${event.friendId}/friendRequests/${event.userId}';
-      log("Fetching document from path: $path");
-
-      DocumentSnapshot doc = await firestore.doc(path).get();
+      // Fetch the friend request status
+      DocumentSnapshot doc = await firestore
+          .collection('users')
+          .doc(event.friendId) // Target user
+          .collection('friendRequests')
+          .doc(event.userId) // Current user
+          .get();
 
       log("Document snapshot: ${doc.toString()}");
 
@@ -126,6 +136,7 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
 
         log("Retrieved status: '$status'");
 
+        // Check the status and emit the appropriate state
         if (status.trim() == 'pending') {
           log("Status is 'pending'");
           emit(FriendRequestStatusLoaded(true));
@@ -135,6 +146,7 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
         }
       } else {
         log("Document does not exist");
+        // No document means no friend request exists
         emit(FriendRequestStatusLoaded(false));
       }
     } catch (e) {
@@ -142,4 +154,38 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
       emit(FriendRequestError(e.toString()));
     }
   }
+  void _onStartListeningForFriendRequests(
+    StartListeningForFriendRequests event, Emitter<FriendRequestState> emit) {
+  _friendRequestListener = firestore
+      .collection('users')
+      .doc(event.userId) // Listening for friend requests to this user
+      .collection('friendRequests')
+      .snapshots()
+      .listen((snapshot) {
+    List<Map<String, dynamic>> friendRequests = [];
+    for (var change in snapshot.docChanges) {
+      if (change.type == DocumentChangeType.added) {
+        Map<String, dynamic>? data = change.doc.data() as Map<String, dynamic>?;
+        String status = data?['status'] ?? 'none';
+        if (status == 'pending') {
+          // Add pending friend request to the list
+          friendRequests.add({
+            'fromUserId': data?['fromUserId'],
+            'status': status,
+            'timestamp': data?['timestamp'],
+          });
+        }
+      }
+    }
+    // Emit the state with the updated list of friend requests
+    emit(FriendRequestNotification(true, friendRequests));
+  });
+}
+@override
+Future<void> close() {
+  _friendRequestListener?.cancel();
+  return super.close();
+}
+
+
 }

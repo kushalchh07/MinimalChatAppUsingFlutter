@@ -32,13 +32,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateProfile>(_updateProfile);
     on<DeleteMyProfileWithEmail>(_deleteMyProfile);
     on<DeleteMyProfileWithGoogle>(_deleteMyProfileGoogle);
-    // on<SearchUsers>(_onSearchUsers);  
+    // on<SearchUsers>(_onSearchUsers);
   }
   final AuthService _authService = AuthService();
   Future<void> _onLoadUsers(LoadUsers event, Emitter<UserState> emit) async {
     emit(UsersLoading());
     try {
-      final usersStream = _chatService.getUsersStreamExcludingBlocked();
+      final usersStream =
+          _chatService.getUsersStreamExcludingBlockedAndFriends();
       final users = await usersStream.first;
       log(users.toString());
       emit(UsersLoaded(users));
@@ -198,8 +199,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   FutureOr<void> _onLoadAllUsers(
       LoadAllUsers event, Emitter<UserState> emit) async {
     try {
-      final usersStream = _chatService.getUsersStream();
+      final usersStream = _chatService.getNotAddedUsersStream();
       final users = await usersStream.first;
+      log(users.toString());
       emit(AllUsersLoaded(users));
     } catch (e) {
       print(e);

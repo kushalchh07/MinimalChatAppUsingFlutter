@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,7 +35,7 @@ class _UsersState extends State<Users> {
     // TODO: implement initState
     super.initState();
     // BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
-    BlocProvider.of<UserBloc>(context).add(LoadUsers());
+    BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
   }
 
   @override
@@ -45,14 +47,16 @@ class _UsersState extends State<Users> {
         title: Text("Users"),
         actions: [
           GestureDetector(
-            onTap: () {
-              Get.to(() => FriendRequestScreen());
-            },
-            child: Image.asset(
-              "assets/images/chat.png",
-              height: 60,
-            ),
-          ),
+              onTap: () {
+                Get.to(() => FriendRequestScreen());
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 14.0),
+                child: Icon(
+                  Icons.notifications_active_outlined,
+                  size: 30,
+                ),
+              )),
         ],
       ),
       backgroundColor: appBackgroundColor,
@@ -62,7 +66,7 @@ class _UsersState extends State<Users> {
         },
         builder: (context, state) {
           if (state is UsersInitial) {
-            BlocProvider.of<UserBloc>(context).add(LoadUsers());
+            BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
           }
           if (state is UsersLoading) {
             return Center(child: CupertinoActivityIndicator());
@@ -96,7 +100,6 @@ class _UsersState extends State<Users> {
 }
 
 _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
-
   return Padding(
     padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
     child: GestureDetector(

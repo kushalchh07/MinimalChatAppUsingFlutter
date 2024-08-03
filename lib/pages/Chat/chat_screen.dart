@@ -487,7 +487,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
                   receiverUserEmail: user['name'],
                   receiverUserId: user['uid'],
                   receiverimageUrl: user['profileImageUrl'],
-                  senderImageUrl: imageUrl,
+                  senderImageUrl: imageUrl ?? '',
                   isImage: isImage,
                 ),
               ),

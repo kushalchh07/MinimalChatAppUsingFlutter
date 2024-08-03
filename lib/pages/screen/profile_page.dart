@@ -128,6 +128,9 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
             builder: (context, state) {
+              if (state is FriendRequestInitial) {
+                return CupertinoActivityIndicator();
+              }
               if (state is FriendRequestSending) {
                 return CupertinoActivityIndicator();
               } else if (state is FriendRequestStatusLoaded) {

@@ -25,3 +25,10 @@ class FriendRequestStatusLoaded extends FriendRequestState {
   @override
   List<Object> get props => [isRequestSent];
 }
+
+class FriendRequestNotification extends FriendRequestState {
+  final bool hasPendingRequest; // Indicates if there's a pending request
+  final List<Map<String, dynamic>> friendRequests; // List of friend requests
+
+  FriendRequestNotification(this.hasPendingRequest, [this.friendRequests = const []]);
+}
