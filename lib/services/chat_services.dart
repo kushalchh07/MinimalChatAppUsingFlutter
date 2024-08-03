@@ -76,11 +76,59 @@ class ChatService extends ChangeNotifier {
       final blockedUsersIds = snapshot.docs.map((doc) => doc.id).toList();
       //get all users
       final userSnapshot = await _firestore.collection('users').get();
+      // Get accepted friends IDs
+      final friendsSnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('friendRequests')
+          .where('status', isNotEqualTo: 'accepted')
+          .get();
+      final acceptedFriendsIds =
+          friendsSnapshot.docs.map((doc) => doc.id).toList();
       //return as stream list, excluding current user and blocked users
       return userSnapshot.docs
           .where((doc) =>
               doc.data()['email'] != currentUser.email &&
               !blockedUsersIds.contains(doc.id))
+          .map((doc) => doc.data())
+          .toList();
+    });
+  }
+
+// Get all the users which are friends and arenot blocked
+  Stream<List<Map<String, dynamic>>>
+      getUsersStreamExcludingBlockedAndAcceptedFriends() {
+    final currentUser = _firebaseAuth.currentUser;
+    return _firestore
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .snapshots()
+        .asyncMap((blockedSnapshot) async {
+      // Get blocked users IDs
+      final blockedUsersIds =
+          blockedSnapshot.docs.map((doc) => doc.id).toList();
+
+      // Get accepted friends IDs
+      final friendsSnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('friendRequests')
+          .where('status', isEqualTo: 'accepted')
+          .get();
+      final acceptedFriendsIds =
+          friendsSnapshot.docs.map((doc) => doc.id).toList();
+
+      // Get all users
+      final userSnapshot = await _firestore.collection('users').get();
+
+      // Return as stream list, excluding current user, blocked users, and accepted friends
+      return userSnapshot.docs
+          .where((doc) =>
+              doc.data()['email'] != currentUser.email &&
+              !blockedUsersIds.contains(doc.id) &&
+              acceptedFriendsIds.contains(
+                  doc.id)) // Only include users who are accepted friends
           .map((doc) => doc.data())
           .toList();
     });
@@ -106,6 +154,20 @@ class ChatService extends ChangeNotifier {
               !blockedUsersIds.contains(doc.id))
           .map((doc) => doc.data())
           .toList();
+    });
+  }
+
+// Get accepted friend requests
+  Stream<List<String>> getAcceptedFriendRequestIdsStream() {
+    final currentUser = _firebaseAuth.currentUser;
+    return _firestore
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('friendRequests')
+        .where('status', isEqualTo: 'accepted')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => doc.id).toList();
     });
   }
 

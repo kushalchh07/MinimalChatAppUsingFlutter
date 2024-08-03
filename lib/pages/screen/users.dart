@@ -70,7 +70,7 @@ class _UsersState extends State<Users> {
           }
           if (state is UsersLoading) {
             return Center(child: CupertinoActivityIndicator());
-          } else if (state is UsersLoaded) {
+          } else if (state is AllUsersLoaded) {
             final users = state.users;
             log(users.toString());
             if (users.isEmpty) {
@@ -91,6 +91,7 @@ class _UsersState extends State<Users> {
           } else if (state is UsersError) {
             return Center(child: Text('Failed to load users'));
           } else {
+            log("Container dekhhiracha");
             return Container();
           }
         },

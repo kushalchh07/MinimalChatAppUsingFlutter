@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
   final FirebaseFirestore firestore;
-StreamSubscription<QuerySnapshot>? _friendRequestListener;
+  StreamSubscription<QuerySnapshot>? _friendRequestListener;
   FriendRequestBloc(this.firestore) : super(FriendRequestInitial()) {
     on<SendFriendRequest>(_onSendFriendRequest);
     on<AcceptFriendRequest>(_onAcceptFriendRequest);
@@ -27,6 +27,18 @@ StreamSubscription<QuerySnapshot>? _friendRequestListener;
           .doc(event.toUserId)
           .collection('friendRequests')
           .doc(event.fromUserId)
+          .set({
+        'fromUserId': event.fromUserId,
+        'toUserId': event.toUserId,
+        'status': 'pending',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      await firestore
+          .collection('users')
+          .doc(event.fromUserId)
+          .collection('friendRequests')
+          .doc(event.toUserId)
           .set({
         'fromUserId': event.fromUserId,
         'toUserId': event.toUserId,
@@ -104,6 +116,16 @@ StreamSubscription<QuerySnapshot>? _friendRequestListener;
         'status': 'cancelled',
         'timestamp': FieldValue.serverTimestamp(),
       });
+      await firestore
+          .collection('users')
+          .doc(event.fromUserId)
+          .collection('friendRequests')
+          .doc(event.toUserId)
+          .update({
+        'status': 'cancelled',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
       log("Friend Request cancelled");
       emit(FriendRequestCancelled());
       emit(FriendRequestStatusLoaded(false));
@@ -154,38 +176,39 @@ StreamSubscription<QuerySnapshot>? _friendRequestListener;
       emit(FriendRequestError(e.toString()));
     }
   }
+
   void _onStartListeningForFriendRequests(
-    StartListeningForFriendRequests event, Emitter<FriendRequestState> emit) {
-  _friendRequestListener = firestore
-      .collection('users')
-      .doc(event.userId) // Listening for friend requests to this user
-      .collection('friendRequests')
-      .snapshots()
-      .listen((snapshot) {
-    List<Map<String, dynamic>> friendRequests = [];
-    for (var change in snapshot.docChanges) {
-      if (change.type == DocumentChangeType.added) {
-        Map<String, dynamic>? data = change.doc.data() as Map<String, dynamic>?;
-        String status = data?['status'] ?? 'none';
-        if (status == 'pending') {
-          // Add pending friend request to the list
-          friendRequests.add({
-            'fromUserId': data?['fromUserId'],
-            'status': status,
-            'timestamp': data?['timestamp'],
-          });
+      StartListeningForFriendRequests event, Emitter<FriendRequestState> emit) {
+    _friendRequestListener = firestore
+        .collection('users')
+        .doc(event.userId) // Listening for friend requests to this user
+        .collection('friendRequests')
+        .snapshots()
+        .listen((snapshot) {
+      List<Map<String, dynamic>> friendRequests = [];
+      for (var change in snapshot.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          Map<String, dynamic>? data =
+              change.doc.data() as Map<String, dynamic>?;
+          String status = data?['status'] ?? 'none';
+          if (status == 'pending') {
+            // Add pending friend request to the list
+            friendRequests.add({
+              'fromUserId': data?['fromUserId'],
+              'status': status,
+              'timestamp': data?['timestamp'],
+            });
+          }
         }
       }
-    }
-    // Emit the state with the updated list of friend requests
-    emit(FriendRequestNotification(true, friendRequests));
-  });
-}
-@override
-Future<void> close() {
-  _friendRequestListener?.cancel();
-  return super.close();
-}
+      // Emit the state with the updated list of friend requests
+      emit(FriendRequestNotification(true, friendRequests));
+    });
+  }
 
-
+  @override
+  Future<void> close() {
+    _friendRequestListener?.cancel();
+    return super.close();
+  }
 }

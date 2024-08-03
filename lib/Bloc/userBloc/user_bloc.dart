@@ -39,7 +39,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(UsersLoading());
     try {
       final usersStream =
-          _chatService.getUsersStreamExcludingBlockedAndFriends();
+          _chatService.getUsersStreamExcludingBlockedAndAcceptedFriends();
       final users = await usersStream.first;
       log(users.toString());
       emit(UsersLoaded(users));
@@ -199,9 +199,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   FutureOr<void> _onLoadAllUsers(
       LoadAllUsers event, Emitter<UserState> emit) async {
     try {
-      final usersStream = _chatService.getNotAddedUsersStream();
+      final usersStream = _chatService.getUsersStreamExcludingBlocked();
       final users = await usersStream.first;
-      log(users.toString());
       emit(AllUsersLoaded(users));
     } catch (e) {
       print(e);
