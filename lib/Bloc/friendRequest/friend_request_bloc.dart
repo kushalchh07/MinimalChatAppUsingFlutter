@@ -6,6 +6,7 @@ import 'package:chat_app/Bloc/friendRequest/friend_request_event.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_state.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
   final FirebaseFirestore firestore;
@@ -263,7 +264,19 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
       final usersStream =
           _chatService.getUsersStreamExcludingBlockedAndPending();
       final users = await usersStream.first;
-      emit(RequestedUsersLoaded(users));
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      final requestedUsers = await firestore
+          .collection("users")
+          .doc(currentUserId)
+          .collection("friendRequests")
+          .get();
+      log("Requested Users: ${requestedUsers.docs.length}");
+
+      emit(RequestedUsersLoaded(
+          users,
+          requestedUsers.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList()));
     } catch (e) {
       log("Error In loading requested users:" + e.toString());
       // emit(UsersError());

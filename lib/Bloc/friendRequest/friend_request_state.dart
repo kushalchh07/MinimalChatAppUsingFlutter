@@ -41,9 +41,9 @@ class FriendRequestNotification extends FriendRequestState {
 
 class RequestedUsersLoaded extends FriendRequestState {
   final List<Map<String, dynamic>> requestedUsers;
+  final List<Map<String, dynamic>> rUsers;
 
-  RequestedUsersLoaded(this.requestedUsers);
+  RequestedUsersLoaded(this.requestedUsers, this.rUsers);
 
-  @override
-  List<Object> get props => [requestedUsers];
+
 }

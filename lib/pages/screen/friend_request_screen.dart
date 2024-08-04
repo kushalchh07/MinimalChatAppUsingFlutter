@@ -77,6 +77,8 @@
 //     );
 //   }
 // }
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_event.dart';
@@ -120,7 +122,15 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
       backgroundColor: appBackgroundColor,
       body: BlocConsumer<FriendRequestBloc, FriendRequestState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is FriendRequestAccepted) {
+            Fluttertoast.showToast(
+                msg: "Request Accepted Successfully.",
+                backgroundColor: successColor);
+          }
+          if (state is FriendRequestRejected) {
+            Fluttertoast.showToast(
+                msg: "Request Rejected.", backgroundColor: successColor);
+          }
         },
         builder: (context, state) {
           if (state is RequestedUsersLoaded) {
@@ -135,7 +145,9 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
                   itemCount: state.requestedUsers.length,
                   itemBuilder: (context, index) {
                     final user = state.requestedUsers[index];
-                    return _buildUserListItem(context, user);
+                    final requesteduser = state.rUsers[index];
+                    log(requesteduser.toString());
+                    return _buildUserListItem(context, user, requesteduser);
                   },
                 ),
               ),
@@ -150,131 +162,129 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
   }
 }
 
-_buildUserListItem(BuildContext context, Map<String, dynamic> user) {
+_buildUserListItem(BuildContext context, Map<String, dynamic> user,
+    Map<String, dynamic> rUsers) {
   String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-  return Padding(
-    padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
-    child: GestureDetector(
-      onLongPress: () {},
-      child: Container(
-        decoration: BoxDecoration(
-          color: appSecondary,
+  return rUsers['fromUserId'] != FirebaseAuth.instance.currentUser!.uid
+      ? Padding(
+          padding: const EdgeInsets.only(top: 8.0, right: 4, left: 4),
+          child: GestureDetector(
+            onLongPress: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                color: appSecondary,
 
-          // border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0),
-          // Border radius
-        ),
-        child: ListTile(
-          minLeadingWidth: Checkbox.width,
-          leading: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.transparent,
-                // width: 2,
+                // border: Border.all(color: Colors.black), // Border color
+                borderRadius: BorderRadius.circular(5.0),
+                // Border radius
               ),
-            ),
-            child: user['profileImageUrl'] == null ||
-                    user['profileImageUrl'].isEmpty
-                ? Container(
-                    // height: 60,
-                    // width: 60,
-                    decoration: BoxDecoration(
-                        color: primaryColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        getFirstandLastNameInitals(
-                            user['name'] ?? ''.toUpperCase()),
-                        style: TextStyle(color: whiteColor, fontSize: 20),
-                      ),
+              child: ListTile(
+                minLeadingWidth: Checkbox.width,
+                leading: Container(
+                  height: 60,
+                  width: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.transparent,
+                      // width: 2,
                     ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
+                  ),
+                  child: user['profileImageUrl'] == null ||
+                          user['profileImageUrl'].isEmpty
+                      ? Container(
+                          // height: 60,
+                          // width: 60,
+                          decoration: BoxDecoration(
+                              color: primaryColor, shape: BoxShape.circle),
+                          child: Center(
+                            child: Text(
+                              getFirstandLastNameInitals(
+                                  user['name'] ?? ''.toUpperCase()),
+                              style: TextStyle(color: whiteColor, fontSize: 20),
+                            ),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageBuilder: (context, imageProvider) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          },
+                          imageUrl: user['profileImageUrl'],
+                          placeholder: (context, url) => Image.asset(
+                            'assets/images/no-image.png',
+                            fit: BoxFit.cover,
+                            height: 60,
+                            width: 60,
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/no-image.png',
+                            height: 60,
+                            width: 60,
                             fit: BoxFit.cover,
                           ),
+                          fit: BoxFit.cover,
                         ),
+                ),
+                title: Text(
+                  user['name'] ?? 'No name',
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+                onTap: () {},
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                dense: true,
+                selected: true,
+                selectedTileColor: Colors.blue.withOpacity(0.5),
+                tileColor: Colors.grey[200],
+                trailing: SizedBox(
+                  width: Get.width * 0.25,
+                  child: BlocConsumer<FriendRequestBloc, FriendRequestState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
+                      if (state is FriendRequestProcessing) {
+                        return CupertinoActivityIndicator();
+                      }
+                      if (state is FriendRequestAccepted) {
+                        return IconButton(
+                            onPressed: () {}, icon: Text("Friends"));
+                      }
+                      if (state is FriendRequestRejected) {
+                        return IconButton(
+                            onPressed: () {}, icon: Text("Rejected"));
+                      }
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                BlocProvider.of<FriendRequestBloc>(context).add(
+                                    AcceptFriendRequest(
+                                        currentUserId, user['uid']));
+                              },
+                              icon: Icon(Icons.check)),
+                          IconButton(
+                              onPressed: () {
+                                BlocProvider.of<FriendRequestBloc>(context).add(
+                                    RejectFriendRequest(
+                                        currentUserId, user['uid']));
+                              },
+                              icon: Icon(Icons.close)),
+                        ],
                       );
                     },
-                    imageUrl: user['profileImageUrl'],
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/no-image.png',
-                      fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/no-image.png',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.cover,
                   ),
-          ),
-          title: Text(
-            user['name'] ?? 'No name',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          onTap: () {},
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          dense: true,
-          selected: true,
-          selectedTileColor: Colors.blue.withOpacity(0.5),
-          tileColor: Colors.grey[200],
-          trailing: SizedBox(
-            width: Get.width * 0.25,
-            child: BlocConsumer<FriendRequestBloc, FriendRequestState>(
-              listener: (context, state) {
-                if (state is FriendRequestAccepted) {
-                  Fluttertoast.showToast(
-                      msg: "Request Accepted Successfully.",
-                      backgroundColor: successColor);
-                }
-                if (state is FriendRequestRejected) {
-                  Fluttertoast.showToast(
-                      msg: "Request Rejected.", backgroundColor: successColor);
-                }
-              },
-              builder: (context, state) {
-                if (state is FriendRequestProcessing) {
-                  return CupertinoActivityIndicator();
-                }
-                if (state is FriendRequestAccepted) {
-                  return IconButton(onPressed: () {}, icon: Text("Friends"));
-                }
-                if (state is FriendRequestRejected) {
-                  return IconButton(onPressed: () {}, icon: Text("Rejected"));
-                }
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          BlocProvider.of<FriendRequestBloc>(context).add(
-                              AcceptFriendRequest(currentUserId, user['uid']));
-                        },
-                        icon: Icon(Icons.check)),
-                    IconButton(
-                        onPressed: () {
-                          BlocProvider.of<FriendRequestBloc>(context).add(
-                              RejectFriendRequest(currentUserId, user['uid']));
-                        },
-                        icon: Icon(Icons.close)),
-                  ],
-                );
-              },
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ),
-  );
+        )
+      : Container();
 }
