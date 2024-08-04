@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:developer';
 
@@ -14,6 +14,8 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/screen/friend_request_screen.dart';
 import 'package:chat_app/pages/screen/profile_page.dart';
+import 'package:chat_app/services/chat_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -32,69 +34,119 @@ class Users extends StatefulWidget {
 class _UsersState extends State<Users> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
     BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
+    BlocProvider.of<FriendRequestBloc>(context).add(LoadRequestedUsers());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: appBackgroundColor,
-        elevation: 0.2,
-        title: Text("Users"),
-        actions: [
-          GestureDetector(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<UserBloc>(
+          create: (context) => UserBloc(ChatService())..add(LoadAllUsers()),
+        ),
+        BlocProvider<FriendRequestBloc>(
+          create: (context) => FriendRequestBloc(FirebaseFirestore.instance)
+            ..add(LoadRequestedUsers()),
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: appBackgroundColor,
+          elevation: 0.2,
+          title: Text("Users"),
+          actions: [
+            GestureDetector(
               onTap: () {
                 Get.to(() => FriendRequestScreen());
               },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 14.0),
-                child: Icon(
-                  Icons.notifications_active_outlined,
-                  size: 30,
-                ),
-              )),
-        ],
-      ),
-      backgroundColor: appBackgroundColor,
-      body: BlocConsumer<UserBloc, UserState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
-        builder: (context, state) {
-          if (state is UsersInitial) {
-            BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
-          }
-          if (state is UsersLoading) {
-            return Center(child: CupertinoActivityIndicator());
-          } else if (state is AllUsersLoaded) {
-            final users = state.users;
-            log(users.toString());
-            if (users.isEmpty) {
-              return Center(child: Text('No users found'));
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 14.0),
+                    child: Icon(
+                      Icons.notifications_active_outlined,
+                      size: 30,
+                    ),
+                  ),
+                  BlocBuilder<FriendRequestBloc, FriendRequestState>(
+                    builder: (context, state) {
+                      if (state is RequestedUsersLoaded) {
+                        final rUsers = state.requestedUsers;
+                        log(rUsers.toString());
+
+                        if (rUsers.isNotEmpty) {
+                          return Positioned(
+                            top: 0,
+                            right: 10,
+                            child: Container(
+                              width: 15,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.red,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  state.reqlength.toString(),
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      return Positioned(
+                        top: 0,
+                        right: 10,
+                        child: Container(),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: appBackgroundColor,
+        body: BlocConsumer<UserBloc, UserState>(
+          listener: (context, state) {
+            // TODO: implement listener
+          },
+          builder: (context, state) {
+            if (state is UsersInitial) {
+              BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
             }
-            return Padding(
+            if (state is UsersLoading) {
+              return Center(child: CupertinoActivityIndicator());
+            } else if (state is AllUsersLoaded) {
+              final users = state.users;
+              log(users.toString());
+              if (users.isEmpty) {
+                return Center(child: Text('No users found'));
+              }
+              return Padding(
                 padding: const EdgeInsets.only(left: 2, right: 2),
                 child: RefreshIndicator.adaptive(
                   onRefresh: () async {
                     BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
                   },
                   child: ListView.builder(
-                      itemCount: users.length,
-                      itemBuilder: (context, index) {
-                        return _buildUserListItem(context, users[index]);
-                      }),
-                ));
-          } else if (state is UsersError) {
-            return Center(child: Text('Failed to load users'));
-          } else {
-            log("Container dekhhiracha");
-            return Container();
-          }
-        },
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      return _buildUserListItem(context, users[index]);
+                    },
+                  ),
+                ),
+              );
+            } else if (state is UsersError) {
+              return Center(child: Text('Failed to load users'));
+            } else {
+              log("Container dekhhiracha");
+              return Container();
+            }
+          },
+        ),
       ),
     );
   }
@@ -110,10 +162,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
       child: Container(
         decoration: BoxDecoration(
           color: appSecondary,
-
-          // border: Border.all(color: Colors.black), // Border color
           borderRadius: BorderRadius.circular(5.0),
-          // Border radius
         ),
         child: ListTile(
           minLeadingWidth: Checkbox.width,
@@ -124,14 +173,11 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
               shape: BoxShape.circle,
               border: Border.all(
                 color: Colors.transparent,
-                // width: 2,
               ),
             ),
             child: user['profileImageUrl'] == null ||
                     user['profileImageUrl'].isEmpty
                 ? Container(
-                    // height: 60,
-                    // width: 60,
                     decoration: BoxDecoration(
                         color: primaryColor, shape: BoxShape.circle),
                     child: Center(

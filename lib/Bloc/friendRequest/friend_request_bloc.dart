@@ -269,14 +269,21 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
           .collection("users")
           .doc(currentUserId)
           .collection("friendRequests")
+          .where(
+            'status',
+            isEqualTo: 'pending',
+          )
+          .where('fromUserId', isNotEqualTo: currentUserId)
           .get();
       log("Requested Users: ${requestedUsers.docs.length}");
-
-      emit(RequestedUsersLoaded(
-          users,
-          requestedUsers.docs
-              .map((doc) => doc.data() as Map<String, dynamic>)
-              .toList()));
+    
+      emit(
+          RequestedUsersLoaded(
+              users,
+              requestedUsers.docs
+                  .map((doc) => doc.data() as Map<String, dynamic>)
+                  .toList(), requestedUsers.docs.length),
+         );
     } catch (e) {
       log("Error In loading requested users:" + e.toString());
       // emit(UsersError());

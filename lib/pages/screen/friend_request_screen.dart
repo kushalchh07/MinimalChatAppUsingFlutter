@@ -102,7 +102,6 @@ class FriendRequestScreen extends StatefulWidget {
 class _FriendRequestScreenState extends State<FriendRequestScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<FriendRequestBloc>(context).add(LoadRequestedUsers());
   }
@@ -144,6 +143,10 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
                 child: ListView.builder(
                   itemCount: state.requestedUsers.length,
                   itemBuilder: (context, index) {
+                    if (index >= state.requestedUsers.length ||
+                        index >= state.rUsers.length) {
+                      return SizedBox(); // Return an empty widget if index is out of bounds
+                    }
                     final user = state.requestedUsers[index];
                     final requesteduser = state.rUsers[index];
                     log(requesteduser.toString());
@@ -153,8 +156,8 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
               ),
             );
           }
-          return Column(
-            children: [],
+          return Center(
+            child: Text('No friend requests found'),
           );
         },
       ),
@@ -162,7 +165,7 @@ class _FriendRequestScreenState extends State<FriendRequestScreen> {
   }
 }
 
-_buildUserListItem(BuildContext context, Map<String, dynamic> user,
+Widget _buildUserListItem(BuildContext context, Map<String, dynamic> user,
     Map<String, dynamic> rUsers) {
   String currentUserId = FirebaseAuth.instance.currentUser!.uid;
   return rUsers['fromUserId'] != FirebaseAuth.instance.currentUser!.uid
@@ -173,10 +176,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user,
             child: Container(
               decoration: BoxDecoration(
                 color: appSecondary,
-
-                // border: Border.all(color: Colors.black), // Border color
                 borderRadius: BorderRadius.circular(5.0),
-                // Border radius
               ),
               child: ListTile(
                 minLeadingWidth: Checkbox.width,
@@ -187,20 +187,17 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.transparent,
-                      // width: 2,
                     ),
                   ),
                   child: user['profileImageUrl'] == null ||
                           user['profileImageUrl'].isEmpty
                       ? Container(
-                          // height: 60,
-                          // width: 60,
                           decoration: BoxDecoration(
                               color: primaryColor, shape: BoxShape.circle),
                           child: Center(
                             child: Text(
                               getFirstandLastNameInitals(
-                                  user['name'] ?? ''.toUpperCase()),
+                                  user['name']?.toUpperCase() ?? ''),
                               style: TextStyle(color: whiteColor, fontSize: 20),
                             ),
                           ),
