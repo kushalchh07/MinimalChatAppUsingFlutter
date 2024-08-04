@@ -1,4 +1,4 @@
-// ignore_for_file: empty_catches
+// ignore_for_file: empty_catches, prefer_interpolation_to_compose_strings
 
 import 'dart:async';
 import 'dart:developer';
@@ -32,6 +32,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UpdateProfile>(_updateProfile);
     on<DeleteMyProfileWithEmail>(_deleteMyProfile);
     on<DeleteMyProfileWithGoogle>(_deleteMyProfileGoogle);
+    // on<LoadRequestedUsers>(_loadRequestedUsers);
     // on<SearchUsers>(_onSearchUsers);
   }
   final AuthService _authService = AuthService();
@@ -225,4 +226,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 //     emit(UsersError());
 //   }
 // }
+
+  // FutureOr<void> _loadRequestedUsers(
+  //     LoadRequestedUsers event, Emitter<UserState> emit) async {
+  //   try {
+  //     final usersStream =
+  //         _chatService.getUsersStreamExcludingBlockedAndPending();
+  //     final users = await usersStream.first;
+  //     emit(RequestedUsersLoaded(users));
+  //   } catch (e) {
+  //     log("Error In loading requested users:" + e.toString());
+  //     emit(UsersError());
+  //   }
+  // }
 }
