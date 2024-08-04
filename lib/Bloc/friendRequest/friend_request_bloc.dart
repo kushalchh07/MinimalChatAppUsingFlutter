@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_event.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_state.dart';
+import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
@@ -16,6 +17,7 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
     on<CancelFriendRequest>(_onCancelFriendRequest);
     on<CheckFriendRequestStatus>(_onCheckFriendRequestStatus);
     on<StartListeningForFriendRequests>(_onStartListeningForFriendRequests);
+    on<LoadRequestedUsers>(_loadRequestedUsers);
   }
 
   void _onSendFriendRequest(
@@ -56,46 +58,90 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
 
   void _onAcceptFriendRequest(
       AcceptFriendRequest event, Emitter<FriendRequestState> emit) async {
+    emit(FriendRequestProcessing());
     try {
-      DocumentSnapshot userDoc =
-          await firestore.collection('users').doc(event.userId).get();
-      if (userDoc.exists) {
-        String fromUserId = event.fromUserId;
+      // Update the status to accepted for both users' friendRequests subcollections
+      await firestore
+          .collection('users')
+          .doc(event.userId)
+          .collection('friendRequests')
+          .doc(event.fromUserId)
+          .update({
+        'status': 'accepted',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
 
-        await firestore.runTransaction((transaction) async {
-          // Add each user to the other's friends collection
-          transaction.update(firestore.collection('users').doc(event.userId), {
-            'friends.$fromUserId': {
+      await firestore
+          .collection('users')
+          .doc(event.fromUserId)
+          .collection('friendRequests')
+          .doc(event.userId)
+          .update({
+        'status': 'accepted',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Add each user to the other's friends collection
+      await firestore.runTransaction((transaction) async {
+        transaction.set(
+            firestore
+                .collection('users')
+                .doc(event.userId)
+                .collection('friends')
+                .doc(event.fromUserId),
+            {
               'timestamp': FieldValue.serverTimestamp(),
-            },
-            'friendRequests.$fromUserId': FieldValue.delete(),
-          });
+            });
 
-          transaction.update(firestore.collection('users').doc(fromUserId), {
-            'friends.${event.userId}': {
+        transaction.set(
+            firestore
+                .collection('users')
+                .doc(event.fromUserId)
+                .collection('friends')
+                .doc(event.userId),
+            {
               'timestamp': FieldValue.serverTimestamp(),
-            },
-          });
-        });
+            });
+      });
 
-        emit(FriendRequestAccepted());
-      } else {
-        emit(FriendRequestError('User not found'));
-      }
+      emit(FriendRequestAccepted());
+      // emit(FriendRequestStatusLoaded(true));
     } catch (e) {
       emit(FriendRequestError(e.toString()));
+      // emit(FriendRequestStatusLoaded(false));
     }
   }
 
   void _onRejectFriendRequest(
       RejectFriendRequest event, Emitter<FriendRequestState> emit) async {
+    emit(FriendRequestProcessing());
     try {
-      await firestore.collection('users').doc(event.userId).update({
-        'friendRequests.${event.fromUserId}': FieldValue.delete(),
+      // Update the status to rejected for both users' friendRequests subcollections
+      await firestore
+          .collection('users')
+          .doc(event.userId)
+          .collection('friendRequests')
+          .doc(event.fromUserId)
+          .update({
+        'status': 'rejected',
+        'timestamp': FieldValue.serverTimestamp(),
       });
+
+      await firestore
+          .collection('users')
+          .doc(event.fromUserId)
+          .collection('friendRequests')
+          .doc(event.userId)
+          .update({
+        'status': 'rejected',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
       emit(FriendRequestRejected());
+      emit(FriendRequestStatusLoaded(false));
     } catch (e) {
       emit(FriendRequestError(e.toString()));
+      emit(FriendRequestStatusLoaded(false));
     }
   }
 
@@ -162,6 +208,9 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
         if (status.trim() == 'pending') {
           log("Status is 'pending'");
           emit(FriendRequestStatusLoaded(true));
+        } else if (status.trim() == 'accepted') {
+          log("Status is accepted");
+          emit(AlreadyFriends());
         } else {
           log("Status is not 'pending'");
           emit(FriendRequestStatusLoaded(false));
@@ -202,8 +251,23 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
         }
       }
       // Emit the state with the updated list of friend requests
+      if (emit.isDone) return;
       emit(FriendRequestNotification(true, friendRequests));
     });
+  }
+
+  FutureOr<void> _loadRequestedUsers(
+      LoadRequestedUsers event, Emitter<FriendRequestState> emit) async {
+    try {
+      ChatService _chatService = ChatService();
+      final usersStream =
+          _chatService.getUsersStreamExcludingBlockedAndPending();
+      final users = await usersStream.first;
+      emit(RequestedUsersLoaded(users));
+    } catch (e) {
+      log("Error In loading requested users:" + e.toString());
+      // emit(UsersError());
+    }
   }
 
   @override

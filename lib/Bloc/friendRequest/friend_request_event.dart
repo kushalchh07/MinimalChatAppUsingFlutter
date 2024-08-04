@@ -40,9 +40,11 @@ class CheckFriendRequestStatus extends FriendRequestEvent {
   @override
   List<Object> get props => [userId, friendId];
 }
-class StartListeningForFriendRequests extends FriendRequestEvent{
 
+class StartListeningForFriendRequests extends FriendRequestEvent {
   final String userId;
 
   StartListeningForFriendRequests(this.userId);
 }
+
+class LoadRequestedUsers extends FriendRequestEvent {}
