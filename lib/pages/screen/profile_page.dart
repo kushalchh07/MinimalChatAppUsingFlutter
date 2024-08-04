@@ -165,6 +165,25 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 );
+              } else if (state is AlreadyFriends) {
+                return Container(
+                  width: 200,
+                  decoration: BoxDecoration(
+                    color: greenColor,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      context.read<FriendRequestBloc>().add(
+                            CancelFriendRequest(userId, widget.uid),
+                          );
+                    },
+                    child: Text(
+                      "Remove Friend",
+                      style: TextStyle(color: whiteColor),
+                    ),
+                  ),
+                );
               } else {
                 return CupertinoActivityIndicator();
               }

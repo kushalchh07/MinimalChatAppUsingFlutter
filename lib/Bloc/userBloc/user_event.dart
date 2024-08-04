@@ -56,3 +56,6 @@ class SearchUsers extends UserEvent {
 
   SearchUsers(this.query);
 }
+// class LoadRequestedUsers extends UserEvent{
+
+// }

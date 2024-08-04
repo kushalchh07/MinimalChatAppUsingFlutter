@@ -80,7 +80,7 @@ class _UsersState extends State<Users> {
                 padding: const EdgeInsets.only(left: 2, right: 2),
                 child: RefreshIndicator.adaptive(
                   onRefresh: () async {
-                    BlocProvider.of<UserBloc>(context).add(LoadUsers());
+                    BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
                   },
                   child: ListView.builder(
                       itemCount: users.length,
@@ -185,35 +185,6 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
           selected: true,
           selectedTileColor: Colors.blue.withOpacity(0.5),
           tileColor: Colors.grey[200],
-          // trailing: BlocConsumer<FriendRequestBloc, FriendRequestState>(
-          //   listener: (context, state) {
-          //     if (state is FriendRequestSent) {
-          //       Fluttertoast.showToast(
-          //           msg: "Friend request sent",
-          //           backgroundColor: successColor,
-          //           gravity: ToastGravity.CENTER);
-          //     }
-          //   },
-          //   builder: (context, state) {
-          //     if (state is FriendRequestSending) {
-          //       return CupertinoActivityIndicator();
-          //     }
-          //     if (state is FriendRequestSent) {
-          //       return IconButton(
-          //           onPressed: () {
-          //             // BlocProvider.of<FriendRequestBloc>(context)
-          //             //     .add(CancelFriendRequest(userId, user['uid']));
-          //           },
-          //           icon: Icon(Icons.check_circle_outline));
-          //     }
-          //     return IconButton(
-          //         onPressed: () {
-          //           BlocProvider.of<FriendRequestBloc>(context)
-          //               .add(SendFriendRequest(userId, user['uid']));
-          //         },
-          //         icon: Icon(Icons.person_add_outlined));
-          //   },
-          // ),
         ),
       ),
     ),

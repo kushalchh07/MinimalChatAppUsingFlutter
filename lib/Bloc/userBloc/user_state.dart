@@ -38,6 +38,15 @@ class BlockedUsersLoaded extends UserState {
   List<Object> get props => [blockedusers];
 }
 
+// class RequestedUsersLoaded extends UserState {
+//   final List<Map<String, dynamic>> requestedUsers;
+
+//   RequestedUsersLoaded(this.requestedUsers);
+
+//   @override
+//   List<Object> get props => [requestedUsers];
+// }
+
 class MyProfileLoaded extends UserState {
   final Map<String, dynamic> myprofile;
 
@@ -59,8 +68,8 @@ class DeleteProfileSuccess extends UserState {}
 class DeleteProfileFailed extends UserState {}
 
 class UserUnblockedState extends UserState {}
-class UsersSearchLoaded extends UserState {
 
+class UsersSearchLoaded extends UserState {
   final List<UserModel> users;
 
   UsersSearchLoaded(this.users);

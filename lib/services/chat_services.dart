@@ -88,8 +88,45 @@ class ChatService extends ChangeNotifier {
       //return as stream list, excluding current user and blocked users
       return userSnapshot.docs
           .where((doc) =>
+                  doc.data()['email'] != currentUser.email &&
+                  !blockedUsersIds.contains(doc.id)
+              //  &&
+              // !acceptedFriendsIds.contains(doc.id)
+              )
+          .map((doc) => doc.data())
+          .toList();
+    });
+  }
+
+//Get all the users which are not blocked and status is pending
+  Stream<List<Map<String, dynamic>>>
+      getUsersStreamExcludingBlockedAndPending() {
+    final currentUser = _firebaseAuth.currentUser;
+    return _firestore
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .snapshots()
+        .asyncMap((blockedSnapshot) async {
+      // Get blocked users IDs
+      final blockedUsersIds =
+          blockedSnapshot.docs.map((doc) => doc.id).toList();
+      // Get all users
+      final userSnapshot = await _firestore.collection('users').get();
+      final friendsSnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('friendRequests')
+          .where('status', isEqualTo: 'pending')
+          .get();
+      final pendingFriendsIds =
+          friendsSnapshot.docs.map((doc) => doc.id).toList();
+      // Return as stream list, excluding current user and blocked users
+      return userSnapshot.docs
+          .where((doc) =>
               doc.data()['email'] != currentUser.email &&
-              !blockedUsersIds.contains(doc.id))
+              !blockedUsersIds.contains(doc.id) &&
+              pendingFriendsIds.contains(doc.id))
           .map((doc) => doc.data())
           .toList();
     });
