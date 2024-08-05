@@ -19,7 +19,7 @@ class UsersLoaded extends UserState {
   @override
   List<Object> get props => [users];
 }
-
+class UserLoadFailure extends UserState {}
 class AllUsersLoaded extends UserState {
   final List<Map<String, dynamic>> users;
 

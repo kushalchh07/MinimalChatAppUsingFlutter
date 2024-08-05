@@ -5,6 +5,7 @@ import 'package:chat_app/Bloc/StoriesBloc/stories_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/fetchStoryBloc/fetch_story_bloc.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
+import 'package:chat_app/Bloc/gourpmessageBloc/group_message_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/Bloc/passwordbloc/password_bloc.dart';
@@ -103,6 +104,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => FriendRequestBloc(FirebaseFirestore.instance),
+        ),
+        BlocProvider(
+          create: (context) => GroupMessageBloc(),
         ),
       ],
       child: GetMaterialApp(

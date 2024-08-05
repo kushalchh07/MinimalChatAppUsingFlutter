@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:chat_app/model/groupchat_model.dart';
 import 'package:chat_app/model/message.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/services/auth_services.dart';
@@ -318,6 +319,10 @@ class ChatService extends ChangeNotifier {
   //   }
   //   // final now = currentDate();
   //   final selectedMembers;
-  //   final chatRoom = ChatRoom();
+  //   final chatRoom = ChatRoom(
+  //     id: chatRoomId,
+  //     chatRoomTitle: chatRoomTitle
+
+  //   );
   // }
 }

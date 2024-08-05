@@ -122,15 +122,17 @@ class ChatBubble extends StatelessWidget {
               color: color,
             ),
             child: isImage
-                ? GestureDetector(
-                    onTap: () {
-                      Get.to(() => BigImageScreen(imageUrl: message));
-                    },
-                    child: Image.network(
-                      message,
-                      fit: BoxFit.cover,
-                    ),
-                  )
+                ? (message.isNotEmpty)
+                    ? GestureDetector(
+                        onTap: () {
+                          Get.to(() => BigImageScreen(imageUrl: message));
+                        },
+                        child: Image.network(
+                          message,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Image.asset("assets/images/imageLoader.png")
                 : Text(
                     message,
                     style: TextStyle(fontSize: 16, color: Colors.white),
