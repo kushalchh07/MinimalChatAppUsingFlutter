@@ -6,13 +6,38 @@ sealed class GroupchatEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
-class GroupChatAddedEvent extends GroupchatEvent{
+
+class CreateGroupChatEvent extends GroupchatEvent {
+  final String chatRoomName;
+  final List<String> memberIds;
+
+  const CreateGroupChatEvent(this.chatRoomName, this.memberIds);
+
+  @override
+  List<Object> get props => [chatRoomName, memberIds];
+}
+
+class GroupChatAddedEvent extends GroupchatEvent {
 // final List<String> members;
 //   GroupChatAddedEvent({required this.members});
 }
-class GroupChatLoadEvent extends GroupchatEvent{
-  
+
+class ChatRoomSelect extends GroupchatEvent {
+  final String chatRoomId;
+
+  const ChatRoomSelect(this.chatRoomId);
+
+  @override
+  List<Object> get props => [chatRoomId];
 }
-class GroupChatDeleteEvent extends GroupchatEvent{
-  
+
+class GroupChatLoadEvent extends GroupchatEvent {}
+
+class GroupChatDeleteEvent extends GroupchatEvent {
+  final String chatRoomId;
+
+  const GroupChatDeleteEvent(this.chatRoomId);
+
+  @override
+  List<Object> get props => [chatRoomId];
 }
