@@ -16,6 +16,7 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
     on<AcceptFriendRequest>(_onAcceptFriendRequest);
     on<RejectFriendRequest>(_onRejectFriendRequest);
     on<CancelFriendRequest>(_onCancelFriendRequest);
+    on<RemoveFriend>(_removeFriend);
     on<CheckFriendRequestStatus>(_onCheckFriendRequestStatus);
     on<StartListeningForFriendRequests>(_onStartListeningForFriendRequests);
     on<LoadRequestedUsers>(_loadRequestedUsers);
@@ -276,14 +277,15 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
           .where('fromUserId', isNotEqualTo: currentUserId)
           .get();
       log("Requested Users: ${requestedUsers.docs.length}");
-    
+
       emit(
-          RequestedUsersLoaded(
-              users,
-              requestedUsers.docs
-                  .map((doc) => doc.data() as Map<String, dynamic>)
-                  .toList(), requestedUsers.docs.length),
-         );
+        RequestedUsersLoaded(
+            users,
+            requestedUsers.docs
+                .map((doc) => doc.data() as Map<String, dynamic>)
+                .toList(),
+            requestedUsers.docs.length),
+      );
     } catch (e) {
       log("Error In loading requested users:" + e.toString());
       // emit(UsersError());
@@ -294,5 +296,56 @@ class FriendRequestBloc extends Bloc<FriendRequestEvent, FriendRequestState> {
   Future<void> close() {
     _friendRequestListener?.cancel();
     return super.close();
+  }
+
+  FutureOr<void> _removeFriend(
+      RemoveFriend event, Emitter<FriendRequestState> emit) async {
+    try {
+      await firestore
+          .collection('users')
+          .doc(event.toUserId)
+          .collection('friendRequests')
+          .doc(event.fromUserId)
+          .update({
+        'status': 'removed',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      await firestore
+          .collection('users')
+          .doc(event.fromUserId)
+          .collection('friendRequests')
+          .doc(event.toUserId)
+          .update({
+        'status': 'removed',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      await firestore.runTransaction((transaction) async {
+        // Delete the friend document for the user
+        transaction.delete(
+          firestore
+              .collection('users')
+              .doc(event.toUserId)
+              .collection('friends')
+              .doc(event.fromUserId),
+        );
+
+        // Delete the friend document for the fromUser
+        transaction.delete(
+          firestore
+              .collection('users')
+              .doc(event.fromUserId)
+              .collection('friends')
+              .doc(event.toUserId),
+        );
+      });
+    } catch (e) {
+      log("Error removing friend: ${e.toString()}");
+      emit(FriendRequestError(e.toString()));
+    }
+
+    log("Friend Request cancelled");
+    emit(FriendRequestCancelled());
+    emit(FriendRequestStatusLoaded(false));
   }
 }

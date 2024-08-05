@@ -175,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: TextButton(
                     onPressed: () {
                       context.read<FriendRequestBloc>().add(
-                            CancelFriendRequest(userId, widget.uid),
+                            RemoveFriend(userId, widget.uid),
                           );
                     },
                     child: Text(

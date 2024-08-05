@@ -1,4 +1,4 @@
-// ignore_for_file: sized_box_for_whitespace
+// ignore_for_file: sized_box_for_whitespace, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:developer';
 import 'dart:io';
@@ -6,9 +6,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_event.dart';
+import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
+import 'package:chat_app/Bloc/friendRequest/friend_request_event.dart';
 import 'package:chat_app/constants/Sharedpreferences/sharedpreferences.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
+import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -162,7 +165,60 @@ class _ChatPageState extends State<ChatPage> {
               icon: Icon(Icons.arrow_back_ios)),
         ),
         backgroundColor: appBackgroundColor,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert),
+            onSelected: (String result) {
+              if (result == 'Remove Friend') {
+                // Handle create group chat action
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Are You Sure You want to remove?'),
+                      content: Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              // _buildTextFormField(
+                              //     _gropNameController, 'Group Name'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Close'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Save'),
+                          onPressed: () {
+                            BlocProvider.of<FriendRequestBloc>(context).add(
+                                RemoveFriend(
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                    widget.receiverUserId));
+                            Get.offAll(() => Base());
+                            // Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'Remove Friend',
+                child: Text('Remove Friend'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Container(
         decoration: BoxDecoration(color: appBackgroundColor),

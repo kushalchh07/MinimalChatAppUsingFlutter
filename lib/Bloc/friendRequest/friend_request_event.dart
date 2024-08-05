@@ -30,6 +30,15 @@ class CancelFriendRequest extends FriendRequestEvent {
   @override
   List<Object> get props => [fromUserId, toUserId];
 }
+class RemoveFriend extends FriendRequestEvent {
+  final String fromUserId;
+  final String toUserId;
+
+  RemoveFriend(this.fromUserId, this.toUserId);
+
+  @override
+  List<Object> get props => [fromUserId, toUserId];
+}
 
 class CheckFriendRequestStatus extends FriendRequestEvent {
   final String userId;
