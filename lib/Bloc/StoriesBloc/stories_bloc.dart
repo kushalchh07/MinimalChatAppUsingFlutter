@@ -63,7 +63,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
       // Create the story data
       Map<String, dynamic> storyData = {
         'url': downloadUrl,
-        'timeStamp': TimeOfDay.now(),
+        'timeStamp': DateTime.now(),
       };
 
       // Reference to the user's document in the 'stories' collection

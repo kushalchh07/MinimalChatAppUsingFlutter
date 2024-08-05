@@ -29,7 +29,7 @@ class BigImageScreen extends StatelessWidget {
         width: Get.width,
         child: Image.network(
           imageUrl,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
         ),
       ),
     );
