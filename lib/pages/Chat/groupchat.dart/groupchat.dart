@@ -270,8 +270,7 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
                         color: primaryColor, shape: BoxShape.circle),
                     child: Center(
                       child: Text(
-                        getFirstandLastNameInitals(
-                            state.chatRooms[index].name ?? ''.toUpperCase()),
+                        getFirstandLastNameInitals(state.chatRooms[index].name),
                         style: TextStyle(color: whiteColor, fontSize: 20),
                       ),
                     ),
@@ -317,6 +316,7 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
             Get.to(() => GroupchatPage(
                   groupImage: '',
                   groupName: state.chatRooms[index].name ?? '',
+                  groupId: state.chatRooms[index].id ?? '',
                 ));
           },
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

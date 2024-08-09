@@ -65,3 +65,16 @@ final class GroupChatSelectError extends GroupchatState {
   @override
   List<Object> get props => [error];
 }
+final class MembersAdding extends GroupchatState {}
+
+final class AddMembersSuccess extends GroupchatState {}
+final class AddMembersFailure extends GroupchatState {
+  final String error;
+
+  const AddMembersFailure(this.error);
+  @override
+  List<Object> get props => [error];
+  
+}
+final class MembersRemoving extends GroupchatState {}
+final class RemoveMembersSuccess extends GroupchatState {}

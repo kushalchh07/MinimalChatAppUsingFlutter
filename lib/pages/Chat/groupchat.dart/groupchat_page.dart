@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
+import 'package:chat_app/pages/Chat/groupchat.dart/add_new_members.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
@@ -10,7 +11,8 @@ import 'package:modal_side_sheet/modal_side_sheet.dart';
 class GroupchatPage extends StatefulWidget {
   final String groupName;
   String groupImage;
-  GroupchatPage({required this.groupName, required this.groupImage});
+  String groupId;
+  GroupchatPage({required this.groupName, required this.groupImage, required this.groupId});
   @override
   State<GroupchatPage> createState() => _GroupchatPageState();
 }
@@ -31,7 +33,7 @@ class _GroupchatPageState extends State<GroupchatPage> {
                 context: context,
                 barrierDismissible: true,
                 body: _buildRightDrawerContent(
-                    widget.groupName, widget.groupImage),
+                    widget.groupName, widget.groupImage,widget.groupId),
               );
             },
             child: Padding(
@@ -54,7 +56,7 @@ class _GroupchatPageState extends State<GroupchatPage> {
     );
   }
 
-  Widget _buildRightDrawerContent(String groupName, String groupImageUrl) {
+  Widget _buildRightDrawerContent(String groupName, String groupImageUrl,String groupId) {
     return Container(
       height: Get.height,
       width: 600.0, // Adjust the width as needed
@@ -121,12 +123,16 @@ class _GroupchatPageState extends State<GroupchatPage> {
               title: Text('Add Members'),
               onTap: () {
                 // Handle Option 1
-                Navigator.pop(context);
+                Get.to(() => AddNewMembers(
+                  // groupName: groupName,
+                  groupId: groupId,
+
+                ));
               },
             ),
             ListTile(
               leading: Icon(Icons.notifications),
-              title: Text('Option 2'),
+              title: Text('See Members'),
               onTap: () {
                 // Handle Option 2
                 Navigator.pop(context);
@@ -134,7 +140,7 @@ class _GroupchatPageState extends State<GroupchatPage> {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app),
-              title: Text('Option 3'),
+              title: Text('Leave Group'),
               onTap: () {
                 // Handle Option 3
                 Navigator.pop(context);

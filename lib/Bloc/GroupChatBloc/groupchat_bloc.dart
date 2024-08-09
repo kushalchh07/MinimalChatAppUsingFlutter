@@ -5,6 +5,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat_app/model/groupchat_model.dart';
+import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,9 +20,12 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
     on<GroupChatLoadEvent>(_groupchatLoad);
     on<GroupChatDeleteEvent>(_groupchatDelete);
     on<ChatRoomSelect>(_chatRoomSelect);
+    on<AddMembersToChatRoomEvent>(_addMembersToChatRoom);
+    on<RemoveMembersFromChatRoomEvent>(_removeMembersFromChatRoom);
   }
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  ChatService _chatService = ChatService();
   FutureOr<void> _groupchatCreate(
       CreateGroupChatEvent event, Emitter<GroupchatState> emit) async {
     log('Creating chat room with name: ${event.chatRoomName}');
@@ -133,4 +137,49 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       emit(GroupChatSelectError('Error selecting chat room'));
     }
   }
-}
+
+  FutureOr<void> _addMembersToChatRoom(
+      AddMembersToChatRoomEvent event, Emitter<GroupchatState> emit) async {
+    // Logging start of the function
+    log('Add Members to Chat Room function started');
+
+    // Logging the chat room id and member ids
+    log('Chat Room ID: ${event.chatRoomId}');
+    log('Member IDs: ${event.memberIds}');
+
+    // Emit the MembersAdding state
+    emit(MembersAdding());
+
+    try {
+      // Logging the start of the addMembersToChatRoom function
+      log('Called addMembersToChatRoom function');
+
+      // Call the addMembersToChatRoom function
+      await _chatService.addMembersToChatRoom(
+        chatRoomId: event.chatRoomId,
+        memberIds: event.memberIds,
+      );
+
+      // Logging the successful addition of members
+      log('Members added successfully');
+
+      // Emit the AddMembersSuccess state
+
+      emit(AddMembersSuccess());
+    } catch (error) {
+      // Logging the error occurred while adding members
+      log('Error occurred while adding members: $error');
+
+      // Emit the AddMembersFailure state with the error message
+      emit(AddMembersFailure(error.toString()));
+    }
+
+    // Logging the end of the function
+    log('Add Members to Chat Room function ended');
+  }
+      }
+
+  FutureOr<void> _removeMembersFromChatRoom(
+      RemoveMembersFromChatRoomEvent event,
+      Emitter<GroupchatState> emit) async {}
+

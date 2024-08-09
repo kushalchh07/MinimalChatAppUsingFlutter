@@ -311,18 +311,26 @@ class ChatService extends ChangeNotifier {
     });
   }
 
-  // Future<void> createGroupChat(String chatRoomTitle) async {
-  //   final currentUser = _firebaseAuth.currentUser;
-  //   final chatRoomId = currentUser!.uid + chatRoomTitle;
-  //   if (currentUser == null) {
-  //     throw Exception("something went wrong creating group chat");
-  //   }
-  //   // final now = currentDate();
-  //   final selectedMembers;
-  //   final chatRoom = ChatRoom(
-  //     id: chatRoomId,
-  //     chatRoomTitle: chatRoomTitle
+  Future<void> addMembersToChatRoom({
+    required String chatRoomId,
+    required List<String> memberIds,
+  }) async {
+    final chatRoomRef = _firestore.collection('chatRooms').doc(chatRoomId);
 
-  //   );
-  // }
+    await _firestore.runTransaction((transaction) async {
+      final chatRoomSnapshot = await transaction.get(chatRoomRef);
+      if (!chatRoomSnapshot.exists) {
+        throw Exception("Chat room does not exist");
+      }
+
+      List<String> currentMembers =
+          List<String>.from(chatRoomSnapshot['members']);
+
+      // Add new members to the existing ones
+      currentMembers.addAll(memberIds);
+      currentMembers = currentMembers.toSet().toList(); // Ensure uniqueness
+
+      transaction.update(chatRoomRef, {'members': currentMembers});
+    });
+  }
 }

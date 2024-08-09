@@ -41,3 +41,25 @@ class GroupChatDeleteEvent extends GroupchatEvent {
   @override
   List<Object> get props => [chatRoomId];
 }
+
+class AddMembersToChatRoomEvent extends GroupchatEvent {
+  final String chatRoomId;
+  final List<String> memberIds;
+
+  const AddMembersToChatRoomEvent(
+      {required this.chatRoomId, required this.memberIds});
+
+  @override
+  List<Object> get props => [chatRoomId, memberIds];
+}
+
+class RemoveMembersFromChatRoomEvent extends GroupchatEvent {
+  final String chatRoomId;
+  final List<String> memberIds;
+
+  const RemoveMembersFromChatRoomEvent(
+      {required this.chatRoomId, required this.memberIds});
+
+  @override
+  List<Object> get props => [chatRoomId, memberIds];
+}
