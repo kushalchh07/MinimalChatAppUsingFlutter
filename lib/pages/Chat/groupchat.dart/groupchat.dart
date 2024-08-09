@@ -10,11 +10,13 @@ import 'package:chat_app/Bloc/userBloc/user_event.dart';
 import 'package:chat_app/Bloc/userBloc/user_state.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
+import 'package:chat_app/pages/Chat/groupchat.dart/groupchat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class GroupChatScreen extends StatefulWidget {
   const GroupChatScreen({super.key});
@@ -311,18 +313,11 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
             style: TextStyle(fontFamily: 'poppins', fontSize: 16),
           ),
           onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ChatPage(
-            //       receiverUserEmail: user['name'],
-            //       receiverUserId: user['uid'],
-            //       receiverimageUrl: user['profileImageUrl'],
-            //       senderImageUrl: imageUrl ?? '',
-            //       isImage: isImage,
-            //     ),
-            //   ),
-            // );
+            log("Tapped On this tile");
+            Get.to(() => GroupchatPage(
+                  groupImage: '',
+                  groupName: state.chatRooms[index].name ?? '',
+                ));
           },
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           dense: true,

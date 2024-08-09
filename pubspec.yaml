@@ -56,6 +56,8 @@ dependencies:
   firebase_messaging: ^14.9.4
   flutter_emoji_gif_picker: ^0.1.6
   flexify: ^2.1.1
+  flutter_slidable: ^3.1.1
+  modal_side_sheet: ^0.0.1
   
 dev_dependencies:
   flutter_test:

@@ -59,35 +59,32 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
   FutureOr<void> _groupchatLoad(
       GroupChatLoadEvent event, Emitter<GroupchatState> emit) async {
     try {
-      // Log the start of the load process
-      log('Start loading chat rooms from Firestore');
-
-      // Emit loading state
       emit(ChatRoomLoading());
+      log('Loading chat rooms from Firestore...');
 
-      // Perform the Firestore query
+      // Get the current user's ID
+      String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+      log('Current user ID: $currentUserId');
+
+      // Query Firestore for chat rooms
+      log('Querying Firestore for chat rooms...');
       final querySnapshot = await _firestore.collection('chatRooms').get();
+      log('Successfully loaded chat rooms from Firestore');
 
-      // Log successful data retrieval
-      log('Successfully retrieved chat rooms from Firestore');
-
-      // Map the documents to ChatRoom objects
-      final chatRooms = querySnapshot.docs.map((doc) {
-        log('Processing document: ${doc.id}');
-        return ChatRoom.fromMap(doc.data());
+      // Filter chat rooms where the current user is a member
+      log('Filtering chat rooms where the current user is a member...');
+      final chatRooms = querySnapshot.docs
+          .map((doc) => ChatRoom.fromMap(doc.data()))
+          .where((chatRoom) {
+        final isMember = chatRoom.memberIds.contains(currentUserId);
+        log('Is ${chatRoom.id} a member of the chat room? $isMember');
+        return isMember;
       }).toList();
 
-      // Log the number of chat rooms loaded and their details
-      log('Number of chat rooms loaded: ${chatRooms.length}');
-      log('Chat rooms loaded: ${chatRooms.map((room) => room.toString()).join(', ')}');
-
-      // Emit the loaded chat rooms
+      log('Chat rooms loaded: $chatRooms');
       emit(ChatRoomsLoaded(chatRooms));
-    } catch (e, stackTrace) {
-      // Log the error with stack trace
-      log('Error loading chat rooms from Firestore: $e',
-          error: e, stackTrace: stackTrace);
-      print('Error loading chat rooms: $e');
+    } catch (e) {
+      log('Error loading chat rooms from Firestore: $e');
       emit(ChatRoomLoadFailure(e.toString()));
     }
   }
