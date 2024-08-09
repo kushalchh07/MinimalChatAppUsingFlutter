@@ -10,7 +10,10 @@ class LoadUsers extends UserEvent {}
 class LoadAllUsers extends UserEvent {}
 
 class LoadBlockedUsers extends UserEvent {}
-
+class LoadMembers extends UserEvent {
+  String chatRoomId;
+  LoadMembers(this.chatRoomId);
+}
 class LoadAddMembersUser extends UserEvent {
   String chatRoomId;
   LoadAddMembersUser(this.chatRoomId);  

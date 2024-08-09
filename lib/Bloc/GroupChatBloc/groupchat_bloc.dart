@@ -53,6 +53,7 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
         name: event.chatRoomName,
         createdAt: Timestamp.now(),
         groupImageUrl: '',
+        adminId: currentUserId,
       )));
     } catch (e) {
       log('Error creating chat room: $e');
@@ -64,16 +65,16 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       GroupChatLoadEvent event, Emitter<GroupchatState> emit) async {
     try {
       emit(ChatRoomLoading());
-      log('Loading chat rooms from Firestore...');
+      // log('Loading chat rooms from Firestore...');
 
       // Get the current user's ID
       String currentUserId = FirebaseAuth.instance.currentUser!.uid;
-      log('Current user ID: $currentUserId');
+      // log('Current user ID: $currentUserId');
 
       // Query Firestore for chat rooms
-      log('Querying Firestore for chat rooms...');
+      // log('Querying Firestore for chat rooms...');
       final querySnapshot = await _firestore.collection('chatRooms').get();
-      log('Successfully loaded chat rooms from Firestore');
+      // log('Successfully loaded chat rooms from Firestore');
 
       // Filter chat rooms where the current user is a member
       log('Filtering chat rooms where the current user is a member...');
@@ -81,11 +82,11 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
           .map((doc) => ChatRoom.fromMap(doc.data()))
           .where((chatRoom) {
         final isMember = chatRoom.memberIds.contains(currentUserId);
-        log('Is ${chatRoom.id} a member of the chat room? $isMember');
+        // log('Is ${chatRoom.id} a member of the chat room? $isMember');
         return isMember;
       }).toList();
 
-      log('Chat rooms loaded: $chatRooms');
+      // log('Chat rooms loaded: $chatRooms');
       emit(ChatRoomsLoaded(chatRooms));
     } catch (e) {
       log('Error loading chat rooms from Firestore: $e');
@@ -122,7 +123,8 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
               memberIds: [],
               isGroup: false,
               createdAt: null,
-              deleted: false); // Return null to satisfy the return type
+              deleted: false,
+              adminId: ''); // Return null to satisfy the return type
         });
         if (chatRoom != null) {
           log('Chat room selected: $chatRoom');
@@ -142,13 +144,10 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       AddMembersToChatRoomEvent event, Emitter<GroupchatState> emit) async {
     // Logging start of the function
     log('Add Members to Chat Room function started');
-
+    emit(MembersAdding());
     // Logging the chat room id and member ids
     log('Chat Room ID: ${event.chatRoomId}');
     log('Member IDs: ${event.memberIds}');
-
-    // Emit the MembersAdding state
-    emit(MembersAdding());
 
     try {
       // Logging the start of the addMembersToChatRoom function
@@ -166,6 +165,9 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       // Emit the AddMembersSuccess state
 
       emit(AddMembersSuccess());
+      if (state is AddMembersSuccess) {
+        add(GroupChatLoadEvent());
+      }
     } catch (error) {
       // Logging the error occurred while adding members
       log('Error occurred while adding members: $error');
@@ -177,9 +179,7 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
     // Logging the end of the function
     log('Add Members to Chat Room function ended');
   }
-      }
+}
 
-  FutureOr<void> _removeMembersFromChatRoom(
-      RemoveMembersFromChatRoomEvent event,
-      Emitter<GroupchatState> emit) async {}
-
+FutureOr<void> _removeMembersFromChatRoom(
+    RemoveMembersFromChatRoomEvent event, Emitter<GroupchatState> emit) async {}

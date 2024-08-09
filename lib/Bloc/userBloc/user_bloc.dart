@@ -27,6 +27,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoadAllUsers>(_onLoadAllUsers);
     on<LoadBlockedUsers>(_onBlockedUsersLoad);
     on<LoadAddMembersUser>(_onAddMembersUsersLoad);
+    on<LoadMembers>(_onLoadMembers);
     on<UnBlockUserEvent>(_onUnBlockedUserEvent);
     on<BlockUserEvent>(_onBlockUserEvent);
     on<LoadMyProfile>(_loadMyProfile);
@@ -246,7 +247,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       // Logging the start of the function
       log('_onAddMembersUsersLoad function started');
-emit(AddMembersUsersLoading());
+      emit(AddMembersUsersLoading());
       // Logging the chat room id
       log('Chat Room ID: ${event.chatRoomId}');
 
@@ -268,6 +269,35 @@ emit(AddMembersUsersLoading());
     } finally {
       // Logging the end of the function
       log('_onAddMembersUsersLoad function ended');
+    }
+  }
+
+  FutureOr<void> _onLoadMembers(
+      LoadMembers event, Emitter<UserState> emit) async {
+    try {
+      // Logging the start of the function
+      log('_onLoadMembers function started');
+      emit(LoadMembersLoading());
+
+      // Logging the chat room id
+      log('Chat Room ID: ${event.chatRoomId}');
+
+      final usersStream = _chatService.getUsersInChatRoom(event.chatRoomId);
+      final users = await usersStream.first;
+
+      // Logging the successful retrieval of users
+      log('Users retrieved successfully');
+
+      emit(LoadMembersSuccess(users));
+    } catch (e) {
+      // Logging the error occurred while retrieving users
+      log('Error occurred while retrieving users: $e');
+
+      print(e);
+      emit(LoadMembersError(e.toString()));
+    } finally {
+      // Logging the end of the function
+      log('_onLoadMembers function ended');
     }
   }
 }

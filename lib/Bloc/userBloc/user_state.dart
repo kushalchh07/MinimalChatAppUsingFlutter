@@ -51,7 +51,17 @@ class AddMembersUsersLoading extends UserState {}
 //   @override
 //   List<Object> get props => [requestedUsers];
 // }
+class LoadMembersLoading extends UserState {}
+class LoadMembersSuccess extends UserState {
+  final List<Map<String, dynamic>> members;
 
+  LoadMembersSuccess(this.members);
+}
+class LoadMembersError extends UserState {
+  final String message;
+
+  LoadMembersError(this.message);
+}
 class MyProfileLoaded extends UserState {
   final Map<String, dynamic> myprofile;
 
