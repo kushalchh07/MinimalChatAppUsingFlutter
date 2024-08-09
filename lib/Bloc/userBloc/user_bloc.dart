@@ -1,4 +1,4 @@
-// ignore_for_file: empty_catches, prefer_interpolation_to_compose_strings
+// ignore_for_file: empty_catches, prefer_interpolation_to_compose_strings, avoid_print
 
 import 'dart:async';
 import 'dart:developer';
@@ -26,6 +26,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoadUsers>(_onLoadUsers);
     on<LoadAllUsers>(_onLoadAllUsers);
     on<LoadBlockedUsers>(_onBlockedUsersLoad);
+    on<LoadAddMembersUser>(_onAddMembersUsersLoad);
     on<UnBlockUserEvent>(_onUnBlockedUserEvent);
     on<BlockUserEvent>(_onBlockUserEvent);
     on<LoadMyProfile>(_loadMyProfile);
@@ -239,4 +240,34 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   //     emit(UsersError());
   //   }
   // }
+
+  FutureOr<void> _onAddMembersUsersLoad(
+      LoadAddMembersUser event, Emitter<UserState> emit) async {
+    try {
+      // Logging the start of the function
+      log('_onAddMembersUsersLoad function started');
+emit(AddMembersUsersLoading());
+      // Logging the chat room id
+      log('Chat Room ID: ${event.chatRoomId}');
+
+      final usersStream =
+          _chatService.getUsersStreamExcludingBlockedAcceptedAndChatRoomMembers(
+              event.chatRoomId);
+      final users = await usersStream.first;
+
+      // Logging the successful retrieval of users
+      log('Users retrieved successfully');
+
+      emit(AddMembersUsersLoaded(users));
+    } catch (e) {
+      // Logging the error occurred while retrieving users
+      log('Error occurred while retrieving users: $e');
+
+      print(e);
+      emit(UsersError());
+    } finally {
+      // Logging the end of the function
+      log('_onAddMembersUsersLoad function ended');
+    }
+  }
 }

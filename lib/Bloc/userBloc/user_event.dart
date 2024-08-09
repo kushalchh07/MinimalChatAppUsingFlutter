@@ -6,8 +6,15 @@ abstract class UserEvent extends Equatable {
 }
 
 class LoadUsers extends UserEvent {}
-class LoadAllUsers extends UserEvent{}
+
+class LoadAllUsers extends UserEvent {}
+
 class LoadBlockedUsers extends UserEvent {}
+
+class LoadAddMembersUser extends UserEvent {
+  String chatRoomId;
+  LoadAddMembersUser(this.chatRoomId);  
+}
 
 class UnBlockUserEvent extends UserEvent {
   String blockedUserId;
@@ -48,8 +55,8 @@ class DeleteMyProfileWithEmail extends UserEvent {
 
   DeleteMyProfileWithEmail(this.password);
 }
-class DeleteMyProfileWithGoogle extends UserEvent {}
 
+class DeleteMyProfileWithGoogle extends UserEvent {}
 
 class SearchUsers extends UserEvent {
   final String query;

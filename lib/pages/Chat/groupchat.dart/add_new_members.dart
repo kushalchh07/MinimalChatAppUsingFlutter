@@ -26,6 +26,12 @@ class AddNewMembers extends StatefulWidget {
 
 class _AddNewMembersState extends State<AddNewMembers> {
   final Set<String> _selectedMemberIds = {}; // To hold selected user IDs
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<UserBloc>(context).add(LoadAddMembersUser(widget.groupId));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,20 +69,27 @@ class _AddNewMembersState extends State<AddNewMembers> {
         },
         builder: (context, state) {
           if (state is UsersInitial) {
-            BlocProvider.of<UserBloc>(context).add(LoadUsers());
+            BlocProvider.of<UserBloc>(context)
+                .add(LoadAddMembersUser(widget.groupId));
           }
-          if (state is UsersLoading) {
+          if (state is AddMembersUsersLoading) {
             return Center(child: CupertinoActivityIndicator());
-          } else if (state is UsersLoaded) {
-            final users = state.users;
-
+          } else if (state is AddMembersUsersLoaded) {
+            final users = state.addMembersUsers;
+            // log(users.toString());
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView.builder(
-                itemCount: users.length,
-                itemBuilder: (context, index) {
-                  return _buildUserListItem(context, users[index]);
+              child: RefreshIndicator.adaptive(
+                onRefresh: () async {
+                  BlocProvider.of<UserBloc>(context)
+                      .add(LoadAddMembersUser(widget.groupId));
                 },
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    return _buildUserListItem(context, users[index]);
+                  },
+                ),
               ),
             );
           }

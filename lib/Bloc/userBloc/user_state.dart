@@ -37,7 +37,12 @@ class BlockedUsersLoaded extends UserState {
   @override
   List<Object> get props => [blockedusers];
 }
+class AddMembersUsersLoaded extends UserState {
+  final List<Map<String, dynamic>> addMembersUsers;
 
+  AddMembersUsersLoaded(this.addMembersUsers);  
+}
+class AddMembersUsersLoading extends UserState {}
 // class RequestedUsersLoaded extends UserState {
 //   final List<Map<String, dynamic>> requestedUsers;
 

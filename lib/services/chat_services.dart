@@ -172,6 +172,63 @@ class ChatService extends ChangeNotifier {
     });
   }
 
+//Get all the users That are not blocked , are friends and are not the member of the chatRoom.
+Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlockedAcceptedAndChatRoomMembers(String chatRoomId) {
+  final currentUser = _firebaseAuth.currentUser;
+
+  return _firestore
+      .collection('users')
+      .doc(currentUser!.uid)
+      .collection('BlockedUsers')
+      .snapshots()
+      .asyncMap((blockedSnapshot) async {
+    // Get blocked users IDs
+    final blockedUsersIds = blockedSnapshot.docs.map((doc) => doc.id).toList();
+
+    // Get accepted friends IDs
+    final friendsSnapshot = await _firestore
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('friendRequests')
+        .where('status', isEqualTo: 'accepted')
+        .get();
+    final acceptedFriendsIds = friendsSnapshot.docs.map((doc) => doc.id).toList();
+
+    // Get the chat room's member IDs
+    final chatRoomSnapshot = await _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .get();
+    final List<String> chatRoomMembersIds = List<String>.from(chatRoomSnapshot.data()?['memberIds'] ?? []);
+
+    // Get all users and apply the filtering conditions
+    final userSnapshot = await _firestore.collection('users').get();
+
+    return userSnapshot.docs
+        .where((doc) {
+          final userId = doc.id;
+          final userEmail = doc.data()['email'];
+
+          // Exclude the current user
+          if (userEmail == currentUser.email) return false;
+
+          // Exclude blocked users
+          if (blockedUsersIds.contains(userId)) return false;
+
+          // Exclude users who are not accepted friends
+          if (!acceptedFriendsIds.contains(userId)) return false;
+
+          // Exclude users who are already members of the chat room
+          if (chatRoomMembersIds.contains(userId)) return false;
+
+          // If all conditions are met, include the user
+          return true;
+        })
+        .map((doc) => doc.data())
+        .toList();
+  });
+}
+
 // Get all the users
   Stream<List<Map<String, dynamic>>> getUsersStream() {
     final currentUser = _firebaseAuth.currentUser;
