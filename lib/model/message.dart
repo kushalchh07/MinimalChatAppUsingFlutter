@@ -7,7 +7,8 @@ class Message {
   final String message;
   final Timestamp timestamp;
   final bool isImage;
-  // final String messageId;
+  
+  // Constructor
   Message({
     required this.senderId,
     required this.senderEmail,
@@ -15,11 +16,9 @@ class Message {
     required this.message,
     required this.timestamp,
     required this.isImage,
-    // required this.messageId
   });
 
-  // convert to a map
-
+  // Convert Message to a map
   Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
@@ -28,7 +27,18 @@ class Message {
       'message': message,
       'timestamp': timestamp,
       'isImage': isImage,
-      // 'messageId': messageId,
     };
+  }
+
+  // Convert a map to Message
+  factory Message.fromMap(Map<String, dynamic> map) {
+    return Message(
+      senderId: map['senderId'] as String,
+      senderEmail: map['senderEmail'] as String,
+      receiverId: map['receiverId'] as String,
+      message: map['message'] as String,
+      timestamp: map['timestamp'] as Timestamp,
+      isImage: map['isImage'] as bool,
+    );
   }
 }

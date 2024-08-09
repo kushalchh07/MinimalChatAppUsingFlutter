@@ -49,6 +49,51 @@ class ChatService extends ChangeNotifier {
         .add(newMessage.toMap());
   }
 
+  Future<void> sendGroupMessage(
+      String groupId, String message, bool isImage) async {
+//get current user info
+
+    final String currentUser = _firebaseAuth.currentUser!.uid;
+    final String currentUserEmail = _firebaseAuth.currentUser!.email.toString();
+    final Timestamp timestamp = Timestamp.now();
+    // create a message
+
+    Message newMessage = Message(
+        senderId: currentUser,
+        senderEmail: currentUserEmail,
+        receiverId: groupId,
+        message: message,
+        isImage: isImage,
+        // messageId:messageId,
+        timestamp: timestamp);
+    await _firestore
+        .collection('chatRooms')
+        .doc(groupId)
+        .collection('messages')
+        .add(newMessage.toMap());
+  }
+
+  Stream<QuerySnapshot> getGroupMessages(String groupId) {
+    //construct chat rooms id from user ids (sorted to ensure it matches the id used when sending messages)
+    // List<String> ids = [userId, otherUserId];
+    // ids.sort();
+    // String chatRoomId = ids.join("_");
+
+    return _firestore
+        .collection('chatRooms')
+        .doc(groupId)
+        .collection('messages')
+        .orderBy('timestamp', descending: false)
+        .snapshots();
+    log(_firestore
+        .collection('chatRooms')
+        .doc(groupId)
+        .collection('messages')
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .toString());
+  }
+
 //get messages
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId) {
     //construct chat rooms id from user ids (sorted to ensure it matches the id used when sending messages)

@@ -319,6 +319,7 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
                   groupId: state.chatRooms[index].id ?? '',
                   // groupMembers: state.chatRooms[index].members ?? [],
                   adminId: state.chatRooms[index].adminId ?? '',
+                  isImage: false,
                 ));
           },
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
