@@ -173,61 +173,88 @@ class ChatService extends ChangeNotifier {
   }
 
 //Get all the users That are not blocked , are friends and are not the member of the chatRoom.
-Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlockedAcceptedAndChatRoomMembers(String chatRoomId) {
-  final currentUser = _firebaseAuth.currentUser;
+  Stream<List<Map<String, dynamic>>>
+      getUsersStreamExcludingBlockedAcceptedAndChatRoomMembers(
+          String chatRoomId) {
+    final currentUser = _firebaseAuth.currentUser;
 
-  return _firestore
-      .collection('users')
-      .doc(currentUser!.uid)
-      .collection('BlockedUsers')
-      .snapshots()
-      .asyncMap((blockedSnapshot) async {
-    // Get blocked users IDs
-    final blockedUsersIds = blockedSnapshot.docs.map((doc) => doc.id).toList();
-
-    // Get accepted friends IDs
-    final friendsSnapshot = await _firestore
+    return _firestore
         .collection('users')
-        .doc(currentUser.uid)
-        .collection('friendRequests')
-        .where('status', isEqualTo: 'accepted')
-        .get();
-    final acceptedFriendsIds = friendsSnapshot.docs.map((doc) => doc.id).toList();
+        .doc(currentUser!.uid)
+        .collection('BlockedUsers')
+        .snapshots()
+        .asyncMap((blockedSnapshot) async {
+      // Get blocked users IDs
+      final blockedUsersIds =
+          blockedSnapshot.docs.map((doc) => doc.id).toList();
 
-    // Get the chat room's member IDs
-    final chatRoomSnapshot = await _firestore
+      // Get accepted friends IDs
+      final friendsSnapshot = await _firestore
+          .collection('users')
+          .doc(currentUser.uid)
+          .collection('friendRequests')
+          .where('status', isEqualTo: 'accepted')
+          .get();
+      final acceptedFriendsIds =
+          friendsSnapshot.docs.map((doc) => doc.id).toList();
+
+      // Get the chat room's member IDs
+      final chatRoomSnapshot =
+          await _firestore.collection('chatRooms').doc(chatRoomId).get();
+      final List<String> chatRoomMembersIds =
+          List<String>.from(chatRoomSnapshot.data()?['memberIds'] ?? []);
+
+      // Get all users and apply the filtering conditions
+      final userSnapshot = await _firestore.collection('users').get();
+
+      return userSnapshot.docs
+          .where((doc) {
+            final userId = doc.id;
+            final userEmail = doc.data()['email'];
+
+            // Exclude the current user
+            if (userEmail == currentUser.email) return false;
+
+            // Exclude blocked users
+            if (blockedUsersIds.contains(userId)) return false;
+
+            // Exclude users who are not accepted friends
+            if (!acceptedFriendsIds.contains(userId)) return false;
+
+            // Exclude users who are already members of the chat room
+            if (chatRoomMembersIds.contains(userId)) return false;
+
+            // If all conditions are met, include the user
+            return true;
+          })
+          .map((doc) => doc.data())
+          .toList();
+    });
+  }
+
+//Get all the Users In chatRoom
+  Stream<List<Map<String, dynamic>>> getUsersInChatRoom(String chatRoomId) {
+    final currentUser = _firebaseAuth.currentUser;
+
+    return _firestore
         .collection('chatRooms')
         .doc(chatRoomId)
-        .get();
-    final List<String> chatRoomMembersIds = List<String>.from(chatRoomSnapshot.data()?['memberIds'] ?? []);
+        .snapshots()
+        .asyncMap((chatRoomSnapshot) async {
+      // Get the list of member IDs in the chat room
+      final List<String> chatRoomMembersIds =
+          List<String>.from(chatRoomSnapshot.data()?['memberIds'] ?? []);
 
-    // Get all users and apply the filtering conditions
-    final userSnapshot = await _firestore.collection('users').get();
+      // Fetch the user data for each member ID
+      final usersSnapshot = await _firestore
+          .collection('users')
+          .where(FieldPath.documentId, whereIn: chatRoomMembersIds)
+          .get();
 
-    return userSnapshot.docs
-        .where((doc) {
-          final userId = doc.id;
-          final userEmail = doc.data()['email'];
-
-          // Exclude the current user
-          if (userEmail == currentUser.email) return false;
-
-          // Exclude blocked users
-          if (blockedUsersIds.contains(userId)) return false;
-
-          // Exclude users who are not accepted friends
-          if (!acceptedFriendsIds.contains(userId)) return false;
-
-          // Exclude users who are already members of the chat room
-          if (chatRoomMembersIds.contains(userId)) return false;
-
-          // If all conditions are met, include the user
-          return true;
-        })
-        .map((doc) => doc.data())
-        .toList();
-  });
-}
+      // Return the user data as a list of maps
+      return usersSnapshot.docs.map((doc) => doc.data()).toList();
+    });
+  }
 
 // Get all the users
   Stream<List<Map<String, dynamic>>> getUsersStream() {
@@ -381,13 +408,13 @@ Stream<List<Map<String, dynamic>>> getUsersStreamExcludingBlockedAcceptedAndChat
       }
 
       List<String> currentMembers =
-          List<String>.from(chatRoomSnapshot['members']);
+          List<String>.from(chatRoomSnapshot['memberIds']);
 
       // Add new members to the existing ones
       currentMembers.addAll(memberIds);
       currentMembers = currentMembers.toSet().toList(); // Ensure uniqueness
 
-      transaction.update(chatRoomRef, {'members': currentMembers});
+      transaction.update(chatRoomRef, {'memberIds': currentMembers});
     });
   }
 }

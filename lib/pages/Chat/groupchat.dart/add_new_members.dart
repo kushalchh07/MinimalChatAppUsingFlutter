@@ -12,6 +12,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 import '../../../Bloc/GroupChatBloc/groupchat_bloc.dart';
 
@@ -52,7 +54,6 @@ class _AddNewMembersState extends State<AddNewMembers> {
                     memberIds: _selectedMemberIds.toList(),
                   ),
                 );
-                Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('No members selected')),
@@ -65,7 +66,11 @@ class _AddNewMembersState extends State<AddNewMembers> {
       backgroundColor: appBackgroundColor,
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
-          // Handle any state changes
+          if (state is AddMembersSuccess) {
+            Fluttertoast.showToast(
+                msg: "Added Successfully", backgroundColor: successColor);
+            Get.back();
+          }
         },
         builder: (context, state) {
           if (state is UsersInitial) {
