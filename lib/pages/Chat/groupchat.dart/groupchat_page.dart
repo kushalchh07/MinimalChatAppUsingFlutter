@@ -275,6 +275,15 @@ Widget _buildMessageList(String groupId) {
   );
 }
 
+String getFirstName(String fullName) {
+  List<String> nameParts = fullName.split(' ');
+  if (nameParts.isNotEmpty) {
+    return nameParts.first;
+  } else {
+    return ''; // Return an empty string if the name is empty or invalid
+  }
+}
+
 Widget _buildMessageItem(DocumentSnapshot document) {
   Map<String, dynamic> data = document.data() as Map<String, dynamic>;
   var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
@@ -284,7 +293,13 @@ Widget _buildMessageItem(DocumentSnapshot document) {
       ? greenColor
       : yellowColor;
   var isMe = (data['senderId'] == _firebaseAuth.currentUser!.uid);
-
+  var name = (data['senderName'] != null)
+      ? data['senderName']
+      : getFirstName(data['senderEmail']);
+  var imageUrl =
+      (data['senderProfilePic'] != null) ? data['senderProfilePic'] : "";
+  var message = (data['message'] != null) ? data['message'] : "";
+  var userId = (data['senderId'] != null) ? data['senderId'] : "";
   return Container(
     alignment: alignment,
     child: Padding(
@@ -300,29 +315,114 @@ Widget _buildMessageItem(DocumentSnapshot document) {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text(data['senderEmail']),
-                    // _buildImageWidget(imageUrl, data['senderEmail']),
+                    // Text(data['senderEmail']),
+                    // Text(getFirstName(name)),
+
+                    ChatBubble(
+                      message: message,
+                      color: color,
+                      isMe: isMe,
+                      isImage: data['isImage'] ?? false,
+                      messageId: document.id,
+                      userId: userId,
+                      otherUserId: data['receiverId'],
+                    ),
+                    _buildImageWidget(imageUrl, name),
                   ],
                 )
-              : Row(
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // _buildImageWidget(imageUrl, data['senderEmail']),
-                    Text(data['senderEmail']),
+                    Text(getFirstName(name)),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // Text(data['senderEmail']),
+                        _buildImageWidget(imageUrl, name),
+                        ChatBubble(
+                          message: data['message'],
+                          color: color,
+                          isMe: isMe,
+                          isImage: data['isImage'] ?? false,
+                          messageId: document.id,
+                          userId: data['senderId'],
+                          otherUserId: data['receiverId'],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-          ChatBubble(
-            message: data['message'],
-            color: color,
-            isMe: isMe,
-            isImage: data['isImage'] ?? false,
-            messageId: document.id,
-            userId: data['senderId'],
-            otherUserId: data['receiverId'],
-          ),
+          // Row(
+          //   children: [
+          //     ChatBubble(
+          //       message: data['message'],
+          //       color: color,
+          //       isMe: isMe,
+          //       isImage: data['isImage'] ?? false,
+          //       messageId: document.id,
+          //       userId: data['senderId'],
+          //       otherUserId: data['receiverId'],
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     ),
+  );
+}
+
+Widget _buildImageWidget(String imageUrl, String receiverUserEmail) {
+  return Container(
+    height: 20,
+    width: 20,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: Colors.transparent,
+        // width: 2,
+      ),
+    ),
+    child: imageUrl.isEmpty
+        ? Container(
+            // height: 60,
+            // width: 60,
+            decoration:
+                BoxDecoration(color: primaryColor, shape: BoxShape.circle),
+            child: Center(
+              child: Text(
+                getFirstandLastNameInitals(receiverUserEmail.toUpperCase()),
+                style: TextStyle(color: whiteColor, fontSize: 10),
+              ),
+            ),
+          )
+        : CachedNetworkImage(
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+            imageUrl: imageUrl,
+            placeholder: (context, url) => Image.asset(
+              'assets/images/no-image.png',
+              fit: BoxFit.cover,
+              height: 60,
+              width: 60,
+            ),
+            errorWidget: (context, url, error) => Image.asset(
+              'assets/images/no-image.png',
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+            ),
+            fit: BoxFit.cover,
+          ),
   );
 }

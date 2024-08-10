@@ -16,7 +16,7 @@ class ChatBubble extends StatelessWidget {
   final bool isMe;
   final String messageId;
   final String userId;
-  final String otherUserId;
+  final String? otherUserId;
   final bool isImage;
   ChatBubble(
       {super.key,
@@ -26,11 +26,11 @@ class ChatBubble extends StatelessWidget {
       required this.messageId,
       required this.userId,
       required this.isImage,
-      required this.otherUserId});
+       this.otherUserId});
 
 //show options
   void _showoptions(BuildContext context, String messageId, String userId,
-      String otherUserId, bool isMe) {
+      String? otherUserId, bool isMe) {
     showBottomSheet(
         context: context,
         builder: (context) {
@@ -143,7 +143,7 @@ class ChatBubble extends StatelessWidget {
   }
 
   void _removeMessage(BuildContext context, String messageId, String userId,
-      String otherUserId) {
+      String? otherUserId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

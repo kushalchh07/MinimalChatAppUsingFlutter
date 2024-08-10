@@ -387,12 +387,9 @@ class ChatService extends ChangeNotifier {
   }
 
   Future<bool> deleteMessage(
-      String userId, String otherUserId, String messageId) async {
-    log(userId);
-    log(otherUserId);
-    log(messageId);
+      String userId, String? otherUserId, String messageId) async {
     try {
-      List<String> ids = [userId, otherUserId];
+      List<String?> ids = [userId, otherUserId];
       ids.sort();
       String chatRoomId = ids.join("_");
       // Reference to the specific message document
