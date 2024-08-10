@@ -51,26 +51,60 @@ class ChatService extends ChangeNotifier {
 
   Future<void> sendGroupMessage(
       String groupId, String message, bool isImage) async {
-//get current user info
+    try {
+      // Get current user info
+      final String currentUserId = _firebaseAuth.currentUser!.uid;
 
-    final String currentUser = _firebaseAuth.currentUser!.uid;
-    final String currentUserEmail = _firebaseAuth.currentUser!.email.toString();
-    final Timestamp timestamp = Timestamp.now();
-    // create a message
+      // Fetch user details from the 'users' collection using the currentUserId
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(currentUserId).get();
 
-    Message newMessage = Message(
-        senderId: currentUser,
+      if (!userDoc.exists) {
+        throw Exception("User not found in the 'users' collection.");
+      }
+
+      // Extract user details
+      Map<String, dynamic> userDetails = userDoc.data() as Map<String, dynamic>;
+      final String currentUserEmail = userDetails['email'] ?? '';
+      final String currentUserName = userDetails['name'] ??
+          ''; // Assuming you have a 'name' field in the 'users' collection
+      final String currentUserProfilePic = userDetails['profileImageUrl'] ??
+          ''; // Assuming you have a 'profilePic' field
+
+      // Create a timestamp for the message
+      final Timestamp timestamp = Timestamp.now();
+
+      // Create the message
+      Message newMessage = Message(
+        senderId: currentUserId,
         senderEmail: currentUserEmail,
         receiverId: groupId,
         message: message,
         isImage: isImage,
-        // messageId:messageId,
-        timestamp: timestamp);
-    await _firestore
-        .collection('chatRooms')
-        .doc(groupId)
-        .collection('messages')
-        .add(newMessage.toMap());
+        timestamp: timestamp,
+      );
+
+      // Convert the message to a map and add additional user details
+      Map<String, dynamic> messageData = newMessage.toMap();
+      messageData.addAll({
+        'senderName':
+            currentUserName, // Add the sender's name to the message data
+        'senderProfilePic':
+            currentUserProfilePic, // Add the sender's profile picture to the message data
+      });
+
+      // Save the message to Firestore
+      await _firestore
+          .collection('chatRooms')
+          .doc(groupId)
+          .collection('messages')
+          .add(messageData);
+
+      log('Message sent successfully');
+    } catch (e) {
+      log('Error sending message: $e');
+      throw e;
+    }
   }
 
   Stream<QuerySnapshot> getGroupMessages(String groupId) {
