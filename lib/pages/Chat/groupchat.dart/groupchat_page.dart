@@ -70,7 +70,74 @@ class _GroupchatPageState extends State<GroupchatPage> {
                 adminId: widget.adminId,
               ));
             },
-            child: Text(widget.groupName)),
+            child: Row(
+              children: [
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.transparent,
+                      // width: 2,
+                    ),
+                  ),
+                  child: widget.groupImage.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Container(
+                            // height: 60,
+                            // width: 60,
+                            decoration: BoxDecoration(
+                                color: primaryColor, shape: BoxShape.circle),
+                            child: Center(
+                              child: Text(
+                                getFirstandLastNameInitals(
+                                    widget.groupName.toUpperCase()),
+                                style:
+                                    TextStyle(color: whiteColor, fontSize: 20),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CachedNetworkImage(
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
+                            imageUrl: widget.groupImage,
+                            placeholder: (context, url) => Image.asset(
+                              'assets/images/no-image.png',
+                              fit: BoxFit.cover,
+                              height: 40,
+                              width: 40,
+                            ),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/no-image.png',
+                              height: 40,
+                              width: 40,
+                              fit: BoxFit.cover,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Text(widget.groupName),
+              ],
+            )),
+        titleSpacing: 0,
         backgroundColor: appBackgroundColor,
         centerTitle: true,
         elevation: 2.0,

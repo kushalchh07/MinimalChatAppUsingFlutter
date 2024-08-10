@@ -70,8 +70,9 @@ class _GroupNameEditor extends StatelessWidget {
             colorText: Colors.white,
             duration: Duration(seconds: 3),
           );
-          Navigator.pop(context);
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          // Navigator.pop(context);
+          // Get.to()
         }
       },
       builder: (context, state) {

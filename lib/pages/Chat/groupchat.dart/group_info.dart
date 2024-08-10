@@ -118,7 +118,7 @@ class _GroupInfoState extends State<GroupInfo> {
                     ),
                     Positioned(
                       bottom: 0,
-                      right: 10,
+                      right: 0,
                       child: Container(
                         height: 40,
                         width: 40,
