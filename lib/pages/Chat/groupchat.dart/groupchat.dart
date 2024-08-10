@@ -314,7 +314,7 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
           onTap: () {
             log("Tapped On this tile");
             Get.to(() => GroupchatPage(
-                  groupImage: '',
+                  groupImage: state.chatRooms[index].groupImageUrl ?? '',
                   groupName: state.chatRooms[index].name ?? '',
                   groupId: state.chatRooms[index].id ?? '',
                   // groupMembers: state.chatRooms[index].members ?? [],
