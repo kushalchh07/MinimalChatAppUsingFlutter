@@ -11,6 +11,7 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/model/message.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/add_new_members.dart';
+import 'package:chat_app/pages/Chat/groupchat.dart/group_info.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/see_members.dart';
 import 'package:chat_app/pages/Login&signUp/sign_uppage.dart';
 import 'package:chat_app/utils/customWidgets/chat_bubble.dart';
@@ -60,26 +61,35 @@ class _GroupchatPageState extends State<GroupchatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.groupName),
+        title: GestureDetector(
+            onTap: () {
+              Get.to(GroupInfo(
+                groupName: widget.groupName,
+                groupImageUrl: widget.groupImage,
+                groupId: widget.groupId,
+                adminId: widget.adminId,
+              ));
+            },
+            child: Text(widget.groupName)),
         backgroundColor: appBackgroundColor,
         centerTitle: true,
         elevation: 2.0,
-        actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              showModalSideSheet(
-                context: context,
-                barrierDismissible: true,
-                body: _buildRightDrawerContent(widget.groupName,
-                    widget.groupImage, widget.groupId, widget.adminId),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15.0),
-              child: Icon(Icons.more_vert),
-            ),
-          ),
-        ],
+        // actions: <Widget>[
+        //   GestureDetector(
+        //     onTap: () {
+        //       showModalSideSheet(
+        //         context: context,
+        //         barrierDismissible: true,
+        //         body: _buildRightDrawerContent(widget.groupName,
+        //             widget.groupImage, widget.groupId, widget.adminId),
+        //       );
+        //     },
+        //     child: Padding(
+        //       padding: const EdgeInsets.only(right: 15.0),
+        //       child: Icon(Icons.more_vert),
+        //     ),
+        //   ),
+        // ],
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -165,6 +175,28 @@ class _GroupchatPageState extends State<GroupchatPage> {
                       ),
                       fit: BoxFit.cover,
                     ),
+            ),
+            ListTile(
+              leading: Icon(CupertinoIcons.person_add),
+              title: Text('Add Members'),
+              onTap: () {
+                // Handle Option 1
+                //getting current user from firebase
+                String userId = FirebaseAuth.instance.currentUser!.uid;
+                if (adminId != userId) {
+                  Get.snackbar("Error", "You are not an admin",
+                      colorText: Colors.white, backgroundColor: Colors.red);
+                } else {
+                  log("Tapped On Add New Memebers");
+                  Get.to(() => GroupInfo(
+                        // groupName: groupName,
+                        groupId: groupId,
+                        adminId: adminId,
+                        groupImageUrl: groupImageUrl,
+                        groupName: groupName,
+                      ));
+                }
+              },
             ),
             ListTile(
               leading: Icon(CupertinoIcons.person_add),
