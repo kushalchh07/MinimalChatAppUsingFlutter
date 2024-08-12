@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/GroupInfoBloc/group_info_bloc.dart';
 import 'package:chat_app/Bloc/GroupInfoBloc/group_info_event.dart';
 import 'package:chat_app/Bloc/GroupInfoBloc/group_info_state.dart';
+import 'package:chat_app/pages/Chat/groupchat.dart/groupchat_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -68,11 +70,12 @@ class _GroupNameEditor extends StatelessWidget {
             snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.green,
             colorText: Colors.white,
-            duration: Duration(seconds: 3),
+            duration: Duration(seconds: 1),
           );
           // Navigator.pop(context);
-          // Navigator.pop(context);
-          // Get.to()
+          BlocProvider.of<GroupchatBloc>(context).add(GroupChatLoadEvent());
+
+          Navigator.pop(context, true);
         }
       },
       builder: (context, state) {

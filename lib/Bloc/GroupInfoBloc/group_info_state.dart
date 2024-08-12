@@ -29,7 +29,11 @@ class ImagePickedState extends GroupInfoState {
 class ImageUpdatingState extends GroupInfoState {}
 class ImageUpdatedState extends GroupInfoState {}
 
-class GroupNameUpdatedState extends GroupInfoState {}
+class GroupNameUpdatedState extends GroupInfoState {
+  final String groupName;
+
+  GroupNameUpdatedState({required this.groupName});
+}
 class GroupInfoLoadingState extends GroupInfoState {}
 class GroupInfoErrorState extends GroupInfoState {
   final String message;

@@ -64,8 +64,12 @@ class GroupInfoBloc extends Bloc<GroupInfoEvent, GroupInfoState> {
         await firestore.collection('chatRooms').doc(event.groupId).update({
           'name': event.groupName,
         });
-
-        emit(GroupNameUpdatedState());
+        DocumentSnapshot snapshot =
+            await firestore.collection('chatRooms').doc(event.groupId).get();
+        String groupName = (snapshot.data() as Map<String, dynamic>)['name'];
+        emit(GroupNameUpdatedState(
+          groupName: groupName,
+        ));
       } catch (e) {
         emit(GroupInfoErrorState(message: e.toString()));
       }

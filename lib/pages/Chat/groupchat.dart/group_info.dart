@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,11 +28,20 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
+  late String groupName;
+  late String groupImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    groupName = widget.groupName;
+    groupImageUrl = widget.groupImageUrl;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text("Group Info"),
         backgroundColor: appBackgroundColor,
         centerTitle: true,
         elevation: 2.0,
@@ -44,8 +51,8 @@ class _GroupInfoState extends State<GroupInfo> {
             },
             icon: Icon(Icons.arrow_back_ios)),
       ),
-      body: _buildRightDrawerContent(widget.groupName, widget.groupImageUrl,
-          widget.groupId, widget.adminId),
+      body: _buildRightDrawerContent(
+          groupName, groupImageUrl, widget.groupId, widget.adminId),
     );
   }
 
@@ -53,7 +60,6 @@ class _GroupInfoState extends State<GroupInfo> {
       String groupName, String groupImageUrl, String groupId, String adminId) {
     return Container(
       height: Get.height,
-      // width: 600.0, // Adjust the width as needed
       color: appBackgroundColor,
       child: Center(
         child: ListView(
@@ -70,19 +76,16 @@ class _GroupInfoState extends State<GroupInfo> {
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: Colors.transparent,
-                          // width: 2,
                         ),
                       ),
                       child: groupImageUrl.isEmpty ?? true
                           ? Container(
-                              // height: 60,
-                              // width: 60,
                               decoration: BoxDecoration(
                                   color: primaryColor, shape: BoxShape.circle),
                               child: Center(
                                 child: Text(
                                   getFirstandLastNameInitals(
-                                      groupName ?? ''.toUpperCase()),
+                                      groupName.toUpperCase()),
                                   style: TextStyle(
                                       color: whiteColor, fontSize: 20),
                                 ),
@@ -129,11 +132,18 @@ class _GroupInfoState extends State<GroupInfo> {
                         ),
                         child: Center(
                           child: IconButton(
-                            onPressed: () {
-                              Get.to(() => GroupImagePick(
+                            onPressed: () async {
+                              final result = await Get.to(() => GroupImagePick(
                                     groupName: groupName,
                                     groupId: groupId,
                                   ));
+                              if (result == true) {
+                                // Refresh the group details
+                                setState(() {
+                                  groupName = widget.groupName;
+                                  groupImageUrl = widget.groupImageUrl;
+                                });
+                              }
                             },
                             icon: Icon(
                               Icons.mode_edit_rounded,
@@ -162,15 +172,12 @@ class _GroupInfoState extends State<GroupInfo> {
               leading: Icon(CupertinoIcons.person_add),
               title: Text('Add Members'),
               onTap: () {
-                // Handle Option 1
-                //getting current user from firebase
                 String userId = FirebaseAuth.instance.currentUser!.uid;
                 if (adminId != userId) {
                   Get.snackbar("Error", "You are not an admin");
                 } else {
                   log("Tapped On Add New Memebers");
                   Get.to(() => AddNewMembers(
-                        // groupName: groupName,
                         groupId: groupId,
                       ));
                 }
@@ -180,7 +187,6 @@ class _GroupInfoState extends State<GroupInfo> {
               leading: Icon(CupertinoIcons.person_3),
               title: Text('See Members'),
               onTap: () {
-                // Handle Option 2
                 log("Tapped On see members");
                 Get.to(() => SeeMembers(
                       groupId: groupId,
@@ -191,7 +197,6 @@ class _GroupInfoState extends State<GroupInfo> {
               leading: Icon(Icons.exit_to_app),
               title: Text('Leave Group'),
               onTap: () {
-                // Handle Option 3
                 Navigator.pop(context);
               },
             ),
