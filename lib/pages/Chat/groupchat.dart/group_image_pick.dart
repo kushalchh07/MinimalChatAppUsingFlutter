@@ -11,6 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../constants/colors/colors.dart';
+import '../../Login&signUp/sign_uppage.dart';
 
 class GroupImagePick extends StatefulWidget {
   final String groupName;
@@ -34,6 +38,7 @@ class _GroupImagePickState extends State<GroupImagePick> {
         length: 2, // Number of tabs
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: appBackgroundColor,
             title: Text('Edit Group Info'),
             bottom: TabBar(
               tabs: [
@@ -42,6 +47,7 @@ class _GroupImagePickState extends State<GroupImagePick> {
               ],
             ),
           ),
+          backgroundColor: appBackgroundColor,
           body: TabBarView(
             children: [
               _GroupNameEditor(groupId: widget.groupId),
@@ -92,20 +98,64 @@ class _GroupNameEditor extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                TextField(
+                TextFormField(
+                  cursorColor: greenColor,
                   controller: _controller,
-                  decoration: InputDecoration(labelText: 'Group Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter Name';
+                    }
+                    return null;
+                  },
+                  textInputAction: TextInputAction.go,
+                  decoration: InputDecoration(
+                    floatingLabelStyle:
+                        TextStyle(color: primaryColor, fontSize: 13),
+                    focusedBorder: customFocusBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                    prefixIcon: Icon(
+                      CupertinoIcons.person_3_fill,
+                      color: greyColor,
+                    ),
+                    labelStyle:
+                        GoogleFonts.inter(color: greyColor, fontSize: 13),
+                    hintText: 'Password',
+                  ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<GroupInfoBloc>().add(UpdateGroupNameEvent(
-                          groupId: groupId,
-                          groupName: _controller.text,
-                        ));
-                  },
-                  child: Text('Update Name'),
-                ),
+                SizedBox(
+                  height: 45,
+                  width: 250,
+                  child: MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
+                    color: greenColor,
+                    onPressed: () {
+                      context.read<GroupInfoBloc>().add(UpdateGroupNameEvent(
+                            groupId: groupId,
+                            groupName: _controller.text,
+                          ));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Update',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              color: whiteColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           );
@@ -149,15 +199,36 @@ class _GroupImageEditor extends StatelessWidget {
             children: [
               Image.file(state.imageFile, height: 200, width: 200),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<GroupInfoBloc>().add(UpdateImageEvent(
-                        imageFile: state.imageFile,
-                        groupId: groupId,
-                      ));
-                },
-                child: Text('Update Image'),
-              ),
+              SizedBox(
+                height: 45,
+                width: 250,
+                child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25)),
+                  color: greenColor,
+                  onPressed: () {
+                    context.read<GroupInfoBloc>().add(UpdateImageEvent(
+                          imageFile: state.imageFile,
+                          groupId: groupId,
+                        ));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Upload Image',
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            color: whiteColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           );
         } else if (state is ImageUpdatingState) {
@@ -167,13 +238,33 @@ class _GroupImageEditor extends StatelessWidget {
         }
 
         return Center(
-          child: ElevatedButton(
+            child: SizedBox(
+          height: 45,
+          width: 250,
+          child: MaterialButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            color: greenColor,
             onPressed: () {
               context.read<GroupInfoBloc>().add(PickImageEvent());
             },
-            child: Text('Pick Image'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Pick Image',
+                  style: GoogleFonts.inter(
+                    textStyle: TextStyle(
+                      color: whiteColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        );
+        ));
       },
     );
   }
