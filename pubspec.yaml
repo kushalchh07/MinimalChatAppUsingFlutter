@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  esewa_flutter_sdk:
+    path: ./esewa_flutter_sdk
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -58,6 +60,7 @@ dependencies:
   flexify: ^2.1.1
   flutter_slidable: ^3.1.1
   modal_side_sheet: ^0.0.1
+  http: ^1.2.2
   
 dev_dependencies:
   flutter_test:
