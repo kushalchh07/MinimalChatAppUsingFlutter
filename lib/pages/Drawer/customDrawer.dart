@@ -28,6 +28,7 @@ import '../../constants/colors/colors.dart';
 import '../../constants/constants.dart';
 import '../../services/auth_services.dart';
 import '../../utils/customWidgets/alert_dialog_box.dart';
+import 'face_authentication.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -180,7 +181,8 @@ class _CustomDrawerState extends State<CustomDrawer>
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => const Settings()),
+                                  builder: (context) =>
+                                      const FaceAuthentication()),
                             );
                           },
                           title: const Text('Face Authentication'),
