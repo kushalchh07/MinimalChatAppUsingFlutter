@@ -4,10 +4,12 @@ import 'dart:developer';
 
 import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/repository/payment_repo.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:esewa_flutter_sdk/esewa_config.dart';
 import 'package:esewa_flutter_sdk/esewa_flutter_sdk.dart';
 import 'package:esewa_flutter_sdk/esewa_payment.dart';
 import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -270,6 +272,9 @@ void verifyTransactionStatus(
 
   if (response.statusCode.toString() == "200") {
     // await esewaRepository.fetchTransaction(data['refId']);
+
+    await AuthService.updatePremiumStatus(
+        FirebaseAuth.instance.currentUser!.uid);
     paymentSuccessAlert(context);
   } else {
     showDialog(

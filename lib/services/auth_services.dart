@@ -31,7 +31,7 @@ class AuthService {
           'email': email,
           'name': name,
           'profileImageUrl': '',
-          "pushToken":'',
+          "pushToken": '',
         },
       );
 
@@ -132,7 +132,7 @@ class AuthService {
             'email': userCredential.user!.email,
             'name': userCredential.user!.displayName,
             'profileImageUrl': '',
-            'pushToken':'',
+            'pushToken': '',
           },
         );
       }
@@ -218,6 +218,17 @@ class AuthService {
       // print("User name updated successfully.");
     } catch (e) {
       rethrow;
+    }
+  }
+
+  static Future<void> updatePremiumStatus(String userId) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'premium_status': 'purchased',
+      });
+      log("User premium status updated successfully.");
+    } catch (e) {
+      log("Failed to update user premium status: $e");
     }
   }
 }
