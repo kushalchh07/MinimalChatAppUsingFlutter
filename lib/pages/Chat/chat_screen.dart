@@ -33,7 +33,9 @@ dynamic imageUrl;
 bool isImage = false;
 String? username;
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen>  with AutomaticKeepAliveClientMixin{
+   @override
+  bool get wantKeepAlive => true;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   void signOut() {

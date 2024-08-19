@@ -36,7 +36,10 @@ class CustomDrawer extends StatefulWidget {
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> {
+class _CustomDrawerState extends State<CustomDrawer>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   Future<Map<String, String?>> getProfileInfo() async {
     final fullName = await getName();
     final email = await getEmail();
@@ -161,6 +164,28 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           title: const Text('Blocked Users'),
                           leading: Icon(
                             Icons.block_flipped,
+                            color: greenColor,
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: greenColor,
+                          ),
+                        ),
+                        Divider(
+                          height: 0,
+                          color: greenColor,
+                          // color: Colors.black,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const Settings()),
+                            );
+                          },
+                          title: const Text('Face Authentication'),
+                          leading: Icon(
+                            CupertinoIcons.person,
                             color: greenColor,
                           ),
                           trailing: Icon(

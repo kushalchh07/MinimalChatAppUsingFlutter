@@ -50,7 +50,7 @@ class BaseState extends State<Base> {
       Stories(),
       CustomDrawer()
     ];
-    setState(() {});
+    // setState(() {});
     return Scaffold(
       backgroundColor: appBackgroundColor,
       bottomNavigationBar: BottomNavigationBar(

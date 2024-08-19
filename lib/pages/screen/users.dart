@@ -31,7 +31,9 @@ class Users extends StatefulWidget {
   State<Users> createState() => _UsersState();
 }
 
-class _UsersState extends State<Users> {
+class _UsersState extends State<Users>  with AutomaticKeepAliveClientMixin{
+   @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();

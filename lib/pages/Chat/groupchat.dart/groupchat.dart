@@ -28,7 +28,9 @@ class GroupChatScreen extends StatefulWidget {
 TextEditingController _gropNameController = TextEditingController();
 final List<String> _selectedMemberIds = [];
 
-class _GroupChatScreenState extends State<GroupChatScreen> {
+class _GroupChatScreenState extends State<GroupChatScreen>  with AutomaticKeepAliveClientMixin{
+   @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     // TODO: implement initState

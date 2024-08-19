@@ -250,7 +250,9 @@ class Stories extends StatefulWidget {
   State<Stories> createState() => _StoriesState();
 }
 
-class _StoriesState extends State<Stories> {
+class _StoriesState extends State<Stories>  with AutomaticKeepAliveClientMixin{
+   @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
