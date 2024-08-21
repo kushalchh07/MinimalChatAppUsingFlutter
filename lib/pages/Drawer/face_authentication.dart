@@ -13,37 +13,26 @@ import 'registration_screen.dart';
 import 'subscription_page.dart';
 
 class FaceAuthentication extends StatefulWidget {
-  const FaceAuthentication({super.key});
-
+ FaceAuthentication({super.key, required this.isPerimum});
+  bool isPerimum;
   @override
   State<FaceAuthentication> createState() => _FaceAuthenticationState();
 }
 
 class _FaceAuthenticationState extends State<FaceAuthentication> {
-  bool isPerimum = false;
   @override
   void initState() {
     super.initState();
-    _loadPremiumStatus();
+   
   }
 
-  Future<bool> checkPremiumStatus(String userId) async {
-    DocumentSnapshot snapshot =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return snapshot.exists && snapshot['premium_status'] == 'purchased';
-  }
-
-  Future<void> _loadPremiumStatus() async {
-    isPerimum =
-        await checkPremiumStatus(FirebaseAuth.instance.currentUser!.uid);
-    setState(() {});
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    return isPerimum
+    return widget.isPerimum
         ? Scaffold(
             appBar: AppBar(
               backgroundColor: appBackgroundColor,

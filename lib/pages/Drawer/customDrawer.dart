@@ -12,6 +12,7 @@ import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/pages/screen/settings.dart';
 import 'package:chat_app/services/chat_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,10 +57,24 @@ class _CustomDrawerState extends State<CustomDrawer>
     Get.offAll(() => SignIn());
   }
 
+  bool isPerimum = false;
   @override
   void initState() {
     super.initState();
     getProfileInfo();
+    _loadPremiumStatus();
+  }
+
+  Future<bool> checkPremiumStatus(String userId) async {
+    DocumentSnapshot snapshot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return snapshot.exists && snapshot['premium_status'] == 'purchased';
+  }
+
+  Future<void> _loadPremiumStatus() async {
+    isPerimum =
+        await checkPremiumStatus(FirebaseAuth.instance.currentUser!.uid);
+    setState(() {});
   }
 
   @override
@@ -133,7 +148,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => const Settings()),
+                                  builder: (context) => const Setting()),
                             );
                           },
                           title: const Text('Settings'),
@@ -182,7 +197,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const FaceAuthentication()),
+                                       FaceAuthentication(isPerimum: isPerimum,)),
                             );
                           },
                           title: const Text('Face Authentication'),

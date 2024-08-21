@@ -17,11 +17,11 @@ import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../services/auth_services.dart';
 import '../../utils/customWidgets/alert_dialog_box.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class Setting extends StatefulWidget {
+  const Setting({super.key});
 
   @override
-  State<Settings> createState() => SettingsState();
+  State<Setting> createState() => SettingState();
 }
 
 void signOut() {
@@ -30,7 +30,7 @@ void signOut() {
   Get.offAll(() => SignIn());
 }
 
-class SettingsState extends State<Settings> {
+class SettingState extends State<Setting> {
   TextEditingController _passwordController = TextEditingController();
   void onTapPassword() {
     User? user = FirebaseAuth.instance.currentUser;
