@@ -223,7 +223,7 @@ class AuthService {
 
   static Future<void> updatePremiumStatus(String userId) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
         'premium_status': 'purchased',
       });
       log("User premium status updated successfully.");

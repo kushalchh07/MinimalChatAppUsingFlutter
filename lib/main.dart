@@ -27,6 +27,8 @@ import 'package:flutter_emoji_gif_picker/flutter_emoji_gif_picker.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'Bloc/ImagePicker/image_picker_bloc.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -114,6 +116,9 @@ class MyApp extends StatelessWidget {
             firestore: FirebaseFirestore.instance,
             firebaseStorage: FirebaseStorage.instance,
           ),
+        ),
+        BlocProvider(
+          create: (context) => ImagePickerBloc(),
         )
       ],
       child: GetMaterialApp(
