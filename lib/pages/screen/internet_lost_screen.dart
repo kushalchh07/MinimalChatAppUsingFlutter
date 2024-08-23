@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import 'package:flutter/material.dart';
 
 import '../../constants/colors/colors.dart';
@@ -19,10 +18,7 @@ class _InternetLostScreenState extends State<InternetLostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: whiteColor,
-        elevation: 0,
-      ),
+      backgroundColor: whiteColor,
       body: Center(
         child: SizedBox(
           // color: Colors.amber,
@@ -87,7 +83,6 @@ class _InternetLostScreenState extends State<InternetLostScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-             
             ],
           ),
         ),
