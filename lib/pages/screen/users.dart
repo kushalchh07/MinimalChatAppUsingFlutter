@@ -31,8 +31,8 @@ class Users extends StatefulWidget {
   State<Users> createState() => _UsersState();
 }
 
-class _UsersState extends State<Users>  with AutomaticKeepAliveClientMixin{
-   @override
+class _UsersState extends State<Users> with AutomaticKeepAliveClientMixin {
+  @override
   bool get wantKeepAlive => true;
   @override
   void initState() {
@@ -161,78 +161,82 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
       onLongPress: () {
         // _showOptions(context, user['uid']);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: appSecondary,
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-          minLeadingWidth: Checkbox.width,
-          leading: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.transparent,
+      child: Card(
+        elevation: 0.2,
+        child: Container(
+          decoration: BoxDecoration(
+            color: appSecondary,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: ListTile(
+            minLeadingWidth: Checkbox.width,
+            leading: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.transparent,
+                ),
               ),
-            ),
-            child: user['profileImageUrl'] == null ||
-                    user['profileImageUrl'].isEmpty
-                ? Container(
-                    decoration: BoxDecoration(
-                        color: primaryColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        getFirstandLastNameInitals(
-                            user['name'] ?? ''.toUpperCase()),
-                        style: TextStyle(color: whiteColor, fontSize: 20),
-                      ),
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
+              child: user['profileImageUrl'] == null ||
+                      user['profileImageUrl'].isEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                          color: primaryColor, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          getFirstandLastNameInitals(
+                              user['name'] ?? ''.toUpperCase()),
+                          style: TextStyle(color: whiteColor, fontSize: 20),
                         ),
-                      );
-                    },
-                    imageUrl: user['profileImageUrl'],
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/no-image.png',
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      imageUrl: user['profileImageUrl'],
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/no-image.png',
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/no-image.png',
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
                       fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
                     ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/no-image.png',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+            ),
+            title: Text(
+              user['name'] ?? 'No name',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            onTap: () {
+              Get.to(() => ProfilePage(
+                  imageUrl: user['profileImageUrl'],
+                  uid: user['uid'],
+                  fullname: user['name']));
+            },
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            dense: true,
+            selected: true,
+            // selectedTileColor: Colors.blue.withOpacity(0.5),
+            // tileColor: Colors.grey[200],
           ),
-          title: Text(
-            user['name'] ?? 'No name',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          onTap: () {
-            Get.to(() => ProfilePage(
-                imageUrl: user['profileImageUrl'],
-                uid: user['uid'],
-                fullname: user['name']));
-          },
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          dense: true,
-          selected: true,
-          selectedTileColor: Colors.blue.withOpacity(0.5),
-          tileColor: Colors.grey[200],
         ),
       ),
     ),

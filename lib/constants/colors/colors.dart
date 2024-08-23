@@ -12,8 +12,10 @@ Color kgreyColor = const Color(0xFFD9D9D9);
 Color kborderColorReview = convert.hexColor(color: '#EAEAEA');
 Color questionContainerColor = whiteColor;
 
-Color appBackgroundColor = const Color.fromARGB(255, 197, 196, 184);
-Color appSecondary = Color.fromARGB(255, 198, 198, 198);
+// Color appBackgroundColor = const Color.fromARGB(255, 197, 196, 184);
+Color appBackgroundColor = const Color.fromARGB(255, 245, 245, 245);
+// Color appSecondary = Color.fromARGB(255, 198, 198, 198);
+Color appSecondary = Colors.white;
 
 Color greyColor = Colors.grey;
 Color lightGrey = Colors.grey[200]!;

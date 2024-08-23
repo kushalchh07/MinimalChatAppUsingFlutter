@@ -33,8 +33,9 @@ dynamic imageUrl;
 bool isImage = false;
 String? username;
 
-class _ChatScreenState extends State<ChatScreen>  with AutomaticKeepAliveClientMixin{
-   @override
+class _ChatScreenState extends State<ChatScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
   bool get wantKeepAlive => true;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
@@ -410,96 +411,100 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
       onLongPress: () {
         _showOptions(context, user['uid']);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: appSecondary,
+      child: Card(
+        elevation: 0.2,
+        child: Container(
+          decoration: BoxDecoration(
+            color: appSecondary,
 
-          // border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0),
-          // Border radius
-        ),
-        child: ListTile(
-          minLeadingWidth: Checkbox.width,
-          leading: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.transparent,
-                // width: 2,
-              ),
-            ),
-            child: user['profileImageUrl'] == null ||
-                    user['profileImageUrl'].isEmpty
-                ? Container(
-                    // height: 60,
-                    // width: 60,
-                    decoration: BoxDecoration(
-                        color: primaryColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        getFirstandLastNameInitals(
-                            user['name'] ?? ''.toUpperCase()),
-                        style: TextStyle(color: whiteColor, fontSize: 20),
-                      ),
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
-                    imageUrl: user['profileImageUrl'],
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/no-image.png',
-                      fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/no-image.png',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+            // border: Border.all(color: Colors.black), // Border color
+            borderRadius: BorderRadius.circular(5.0),
+            // Border radius
           ),
-          title: Text(
-            user['name'] ?? 'No name',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          subtitle: Text(
-            "Hello I am  New Here.",
-            style: TextStyle(fontFamily: 'poppins', fontSize: 16),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  receiverUserEmail: user['name'],
-                  receiverUserId: user['uid'],
-                  receiverimageUrl: user['profileImageUrl'],
-                  senderImageUrl: imageUrl ?? '',
-                  isImage: isImage,
+          child: ListTile(
+            minLeadingWidth: Checkbox.width,
+            leading: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.transparent,
+                  // width: 2,
                 ),
               ),
-            );
-          },
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          dense: true,
-          selected: true,
-          selectedTileColor: Colors.blue.withOpacity(0.5),
-          tileColor: Colors.grey[200],
+              child: user['profileImageUrl'] == null ||
+                      user['profileImageUrl'].isEmpty
+                  ? Container(
+                      // height: 60,
+                      // width: 60,
+                      decoration: BoxDecoration(
+                          color: primaryColor, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          getFirstandLastNameInitals(
+                              user['name'] ?? ''.toUpperCase()),
+                          style: TextStyle(color: whiteColor, fontSize: 20),
+                        ),
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      imageUrl: user['profileImageUrl'],
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/no-image.png',
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/no-image.png',
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            title: Text(
+              user['name'] ?? 'No name',
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            subtitle: Text(
+              "Hello I am  New Here.",
+              style: TextStyle(fontFamily: 'poppins', fontSize: 16),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    receiverUserEmail: user['name'],
+                    receiverUserId: user['uid'],
+                    receiverimageUrl: user['profileImageUrl'],
+                    senderImageUrl: imageUrl ?? '',
+                    isImage: isImage,
+                  ),
+                ),
+              );
+            },
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            dense: true,
+            selected: true,
+            selectedTileColor: Colors.blue.withOpacity(0.5),
+            tileColor: Colors.grey[200],
+          ),
         ),
       ),
     ),

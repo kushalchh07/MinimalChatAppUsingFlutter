@@ -28,8 +28,9 @@ class GroupChatScreen extends StatefulWidget {
 TextEditingController _gropNameController = TextEditingController();
 final List<String> _selectedMemberIds = [];
 
-class _GroupChatScreenState extends State<GroupChatScreen>  with AutomaticKeepAliveClientMixin{
-   @override
+class _GroupChatScreenState extends State<GroupChatScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
   bool get wantKeepAlive => true;
   @override
   void initState() {
@@ -244,91 +245,92 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
       onLongPress: () {
         // _showOptions(context, user['uid']);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: appSecondary,
+      child: Card(
+        elevation: 0.2,
+        child: Container(
+          decoration: BoxDecoration(
+            color: appSecondary,
 
-          // border: Border.all(color: Colors.black), // Border color
-          borderRadius: BorderRadius.circular(5.0),
-          // Border radius
-        ),
-        child: ListTile(
-          minLeadingWidth: Checkbox.width,
-          leading: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.transparent,
-                // width: 2,
+            // border: Border.all(color: Colors.black), // Border color
+            borderRadius: BorderRadius.circular(20.0),
+            // Border radius
+          ),
+          child: ListTile(
+            minLeadingWidth: Checkbox.width,
+            leading: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
               ),
-            ),
-            child: state.chatRooms[index].groupImageUrl.isEmpty ?? true
-                ? Container(
-                    // height: 60,
-                    // width: 60,
-                    decoration: BoxDecoration(
-                        color: primaryColor, shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        getFirstandLastNameInitals(state.chatRooms[index].name),
-                        style: TextStyle(color: whiteColor, fontSize: 20),
-                      ),
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
+              child: state.chatRooms[index].groupImageUrl.isEmpty ?? true
+                  ? Container(
+                      // height: 60,
+                      // width: 60,
+                      decoration: BoxDecoration(
+                          color: primaryColor, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          getFirstandLastNameInitals(
+                              state.chatRooms[index].name),
+                          style: TextStyle(color: whiteColor, fontSize: 20),
                         ),
-                      );
-                    },
-                    imageUrl: state.chatRooms[index].groupImageUrl,
-                    placeholder: (context, url) => Image.asset(
-                      'assets/images/no-image.png',
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                      imageUrl: state.chatRooms[index].groupImageUrl,
+                      placeholder: (context, url) => Image.asset(
+                        'assets/images/no-image.png',
+                        fit: BoxFit.cover,
+                        height: 60,
+                        width: 60,
+                      ),
+                      errorWidget: (context, url, error) => Image.asset(
+                        'assets/images/no-image.png',
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                      ),
                       fit: BoxFit.cover,
-                      height: 60,
-                      width: 60,
                     ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/no-image.png',
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+            ),
+            title: Text(
+              state.chatRooms[index].name,
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+            subtitle: Text(
+              "Enjoy Chatting with friends",
+              style: TextStyle(fontFamily: 'poppins', fontSize: 16),
+            ),
+            onTap: () {
+              log("Tapped On this tile");
+              Get.to(() => GroupchatPage(
+                    groupImage: state.chatRooms[index].groupImageUrl ?? '',
+                    groupName: state.chatRooms[index].name ?? '',
+                    groupId: state.chatRooms[index].id ?? '',
+                    // groupMembers: state.chatRooms[index].members ?? [],
+                    adminId: state.chatRooms[index].adminId ?? '',
+                    isImage: false,
+                  ));
+            },
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            dense: true,
+            selected: true,
+            // selectedTileColor: Colors.blue.withOpacity(0.5),
+            // tileColor: Colors.grey[200],
           ),
-          title: Text(
-            state.chatRooms[index].name,
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          subtitle: Text(
-            "Enjoy Chatting with friends",
-            style: TextStyle(fontFamily: 'poppins', fontSize: 16),
-          ),
-          onTap: () {
-            log("Tapped On this tile");
-            Get.to(() => GroupchatPage(
-                  groupImage: state.chatRooms[index].groupImageUrl ?? '',
-                  groupName: state.chatRooms[index].name ?? '',
-                  groupId: state.chatRooms[index].id ?? '',
-                  // groupMembers: state.chatRooms[index].members ?? [],
-                  adminId: state.chatRooms[index].adminId ?? '',
-                  isImage: false,
-                ));
-          },
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          dense: true,
-          selected: true,
-          selectedTileColor: Colors.blue.withOpacity(0.5),
-          tileColor: Colors.grey[200],
         ),
       ),
     ),
