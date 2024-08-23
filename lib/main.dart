@@ -7,6 +7,7 @@ import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/fetchStoryBloc/fetch_story_bloc.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
 import 'package:chat_app/Bloc/gourpmessageBloc/group_message_bloc.dart';
+import 'package:chat_app/Bloc/internetBloc/internet_bloc.dart';
 
 import 'package:chat_app/Bloc/loginbloc/login_bloc.dart';
 import 'package:chat_app/Bloc/passwordbloc/password_bloc.dart';
@@ -17,6 +18,7 @@ import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/SplashScreen&onBoard/splashScreen.dart';
 import 'package:chat_app/services/chat_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -119,6 +121,10 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ImagePickerBloc(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              InternetBloc(Connectivity())..add(CheckInternet()),
         )
       ],
       child: GetMaterialApp(
