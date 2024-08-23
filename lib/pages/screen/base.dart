@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:chat_app/Api/firebase_api.dart';
+import 'package:chat_app/Bloc/internetBloc/internet_bloc.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
 import 'package:chat_app/pages/Drawer/customDrawer.dart';
 import 'package:chat_app/pages/screen/settings.dart';
@@ -10,11 +11,13 @@ import 'package:chat_app/pages/screen/stories.dart';
 import 'package:chat_app/pages/screen/users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 import '../../constants/colors/colors.dart';
 import '../Chat/groupchat.dart/groupchat.dart';
+import 'internet_lost_screen.dart';
 
 class Base extends StatefulWidget {
   Base({super.key, this.indexNum});
@@ -51,42 +54,58 @@ class BaseState extends State<Base> {
       CustomDrawer()
     ];
     // setState(() {});
-    return Scaffold(
-      backgroundColor: appBackgroundColor,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex!,
-        selectedItemColor: greenColor,
-        selectedFontSize: Get.height * 0.015,
-        unselectedItemColor: Colors.black,
+    return BlocListener<InternetBloc, InternetState>(
+      listener: (context, state) {
+        if (state is InternetDisconnected) {
+          // Navigate to no internet screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InternetLostScreen()),
+          );
+        } else if (state is InternetConnected) {
+          // Pop the NoInternetScreen if the internet is restored
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          }
+        }
+      },
+      child: Scaffold(
         backgroundColor: appBackgroundColor,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.chat_bubble_2),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.group),
-            label: 'Groups',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.globe),
-            label: 'People',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              CupertinoIcons.photo_on_rectangle,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex!,
+          selectedItemColor: greenColor,
+          selectedFontSize: Get.height * 0.015,
+          unselectedItemColor: Colors.black,
+          backgroundColor: appBackgroundColor,
+          onTap: _onItemTapped,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.chat_bubble_2),
+              label: 'Chat',
             ),
-            label: 'Stories',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.settings),
-            label: 'Settings',
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.group),
+              label: 'Groups',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.globe),
+              label: 'People',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                CupertinoIcons.photo_on_rectangle,
+              ),
+              label: 'Stories',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
+        body: screens[_selectedIndex],
       ),
-      body: screens[_selectedIndex],
     );
   }
 }
