@@ -204,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen>
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
-                      color: appSecondary,
+                      color: blackColor,
                     ),
                     hintText: 'Search ',
                     hintStyle: TextStyle(

@@ -16,6 +16,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 import '../../constants/colors/colors.dart';
+import '../../utils/tab/MotionBadgeWidget.dart';
 import '../../utils/tab/MotionTabBar.dart';
 import '../../utils/tab/MotionTabBarController.dart';
 import '../Chat/groupchat.dart/groupchat.dart';
@@ -38,8 +39,9 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
     super.initState();
     Api.saveUserToken();
     _selectedIndex = widget.indexNum ?? 0;
+    
     _motionTabBarController = MotionTabBarController(
-      initialIndex: 1,
+      initialIndex: _selectedIndex,
       length: 4,
       vsync: this,
     );

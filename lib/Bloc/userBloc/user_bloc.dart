@@ -44,7 +44,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final usersStream =
           _chatService.getUsersStreamExcludingBlockedAndAcceptedFriends();
       final users = await usersStream.first;
-      log(users.toString());
+      // log(users.toString());
       emit(UsersLoaded(users));
     } catch (_) {
       emit(UsersError());
@@ -58,7 +58,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final blockedUsersStream =
           _chatService.getBlockedUsers(FirebaseAuth.instance.currentUser!.uid);
       final blockedUsers = await blockedUsersStream.first;
-      log(blockedUsers.toString());
+      // log(blockedUsers.toString());
       emit(BlockedUsersLoaded(blockedUsers));
     } catch (_) {
       emit(UsersError());
@@ -194,7 +194,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await user.delete();
       emit(DeleteProfileSuccess());
     } catch (e) {
-      log(e.toString());
+      // log(e.toString());
       emit(DeleteProfileFailed());
     }
   }
@@ -246,10 +246,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       LoadAddMembersUser event, Emitter<UserState> emit) async {
     try {
       // Logging the start of the function
-      log('_onAddMembersUsersLoad function started');
+      // log('_onAddMembersUsersLoad function started');
       emit(AddMembersUsersLoading());
       // Logging the chat room id
-      log('Chat Room ID: ${event.chatRoomId}');
+      // log('Chat Room ID: ${event.chatRoomId}');
 
       final usersStream =
           _chatService.getUsersStreamExcludingBlockedAcceptedAndChatRoomMembers(
@@ -257,18 +257,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final users = await usersStream.first;
 
       // Logging the successful retrieval of users
-      log('Users retrieved successfully');
+      // log('Users retrieved successfully');
 
       emit(AddMembersUsersLoaded(users));
     } catch (e) {
       // Logging the error occurred while retrieving users
-      log('Error occurred while retrieving users: $e');
+      // log('Error occurred while retrieving users: $e');
 
       print(e);
       emit(UsersError());
     } finally {
       // Logging the end of the function
-      log('_onAddMembersUsersLoad function ended');
+      // log('_onAddMembersUsersLoad function ended');
     }
   }
 
@@ -276,28 +276,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       LoadMembers event, Emitter<UserState> emit) async {
     try {
       // Logging the start of the function
-      log('_onLoadMembers function started');
+      // log('_onLoadMembers function started');
       emit(LoadMembersLoading());
 
       // Logging the chat room id
-      log('Chat Room ID: ${event.chatRoomId}');
+      // log('Chat Room ID: ${event.chatRoomId}');
 
       final usersStream = _chatService.getUsersInChatRoom(event.chatRoomId);
       final users = await usersStream.first;
 
       // Logging the successful retrieval of users
-      log('Users retrieved successfully');
+      // log('Users retrieved successfully');
 
       emit(LoadMembersSuccess(users));
     } catch (e) {
       // Logging the error occurred while retrieving users
-      log('Error occurred while retrieving users: $e');
+      // log('Error occurred while retrieving users: $e');
 
       print(e);
       emit(LoadMembersError(e.toString()));
     } finally {
       // Logging the end of the function
-      log('_onLoadMembers function ended');
+      // log('_onLoadMembers function ended');
     }
   }
 }
