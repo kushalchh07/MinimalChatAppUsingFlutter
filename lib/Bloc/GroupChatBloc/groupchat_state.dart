@@ -51,6 +51,7 @@ class CreateChatRoomFailure extends GroupchatState {
   @override
   List<Object> get props => [error];
 }
+final class GroupchatDeleteSuccess extends GroupchatState {}
 final class GroupchatDeleteFailure extends GroupchatState {
   final String error;
   const GroupchatDeleteFailure(this.error);

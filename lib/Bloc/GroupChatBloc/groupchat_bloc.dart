@@ -10,6 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/route_manager.dart';
+
+import '../../pages/screen/base.dart';
 
 part 'groupchat_event.dart';
 part 'groupchat_state.dart';
@@ -34,6 +37,7 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
     try {
       final chatRoomRef = _firestore.collection('chatRooms').doc();
       log('Chat room reference created: ${chatRoomRef.id}');
+      log('adminId:' + currentUserId);
       await chatRoomRef.set({
         'id': chatRoomRef.id,
         'name': event.chatRoomName,
@@ -100,6 +104,8 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       log('Deleting chat room with id: ${event.chatRoomId}');
       await _firestore.collection('chatRooms').doc(event.chatRoomId).delete();
       log('Chat room deleted from Firestore');
+      emit(GroupchatDeleteSuccess());
+      Get.off(()=>Base(indexNum: 1,));
     } catch (e) {
       log('Error deleting chat room: $e');
       print(e);

@@ -1,14 +1,19 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/Bloc/GroupInfoBloc/group_info_bloc.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/add_new_members.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/group_image_pick.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/see_members.dart';
+import 'package:chat_app/utils/customWidgets/alert_dialog_box.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
 
+import '../../../Bloc/GroupChatBloc/groupchat_bloc.dart';
+import '../../../Bloc/chatBloc/chat_bloc.dart';
 import '../../../constants/colors/colors.dart';
 import '../../../constants/constants.dart';
 
@@ -38,6 +43,7 @@ class _GroupInfoState extends State<GroupInfo> {
     groupImageUrl = widget.groupImageUrl;
   }
 
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,11 +199,38 @@ class _GroupInfoState extends State<GroupInfo> {
                     ));
               },
             ),
+            currentUserId == adminId
+                ? ListTile(
+                    leading: Icon(Icons.delete_forever),
+                    title: Text('Delete Group'),
+                    onTap: () {
+                      // Navigator.pop(context);
+                      customAlertBox(
+                          context,
+                          "Are you sure?",
+                          "No",
+                          () {
+                            Navigator.pop(context);
+                          },
+                          "Yes",
+                          () {
+                            BlocProvider.of<GroupchatBloc>(context)
+                                .add(GroupChatDeleteEvent(
+                              groupId,
+                            ));
+                          });
+                    },
+                  )
+                : SizedBox.shrink(),
             ListTile(
               leading: Icon(Icons.exit_to_app),
               title: Text('Leave Group'),
               onTap: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                // BlocProvider.of<GroupchatBloc>(context)
+                //     .add(GroupChatDeleteEvent(
+                //   groupId,
+                // ));
               },
             ),
           ],

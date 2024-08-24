@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_event.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_state.dart';
@@ -20,6 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:modal_side_sheet/modal_side_sheet.dart';
 
@@ -180,133 +182,133 @@ class _GroupchatPageState extends State<GroupchatPage> {
     );
   }
 
-  Widget _buildRightDrawerContent(
-      String groupName, String groupImageUrl, String groupId, String adminId) {
-    return Container(
-      height: Get.height,
-      width: 600.0, // Adjust the width as needed
-      color: appBackgroundColor,
-      child: Center(
-        child: ListView(
-          padding: EdgeInsets.all(16.0),
-          children: [
-            SizedBox(height: 50.0),
-            Container(
-              height: 90,
-              width: 90,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.transparent,
-                  // width: 2,
-                ),
-              ),
-              child: groupImageUrl.isEmpty ?? true
-                  ? Container(
-                      // height: 60,
-                      // width: 60,
-                      decoration: BoxDecoration(
-                          color: primaryColor, shape: BoxShape.circle),
-                      child: Center(
-                        child: Text(
-                          getFirstandLastNameInitals(
-                              groupName ?? ''.toUpperCase()),
-                          style: TextStyle(color: whiteColor, fontSize: 20),
-                        ),
-                      ),
-                    )
-                  : CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        );
-                      },
-                      imageUrl: groupImageUrl,
-                      placeholder: (context, url) => Image.asset(
-                        'assets/images/no-image.png',
-                        fit: BoxFit.cover,
-                        height: 60,
-                        width: 60,
-                      ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        'assets/images/no-image.png',
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.person_add),
-              title: Text('Add Members'),
-              onTap: () {
-                // Handle Option 1
-                //getting current user from firebase
-                String userId = FirebaseAuth.instance.currentUser!.uid;
-                if (adminId != userId) {
-                  Get.snackbar("Error", "You are not an admin",
-                      colorText: Colors.white, backgroundColor: Colors.red);
-                } else {
-                  log("Tapped On Add New Memebers");
-                  Get.to(() => GroupInfo(
-                        // groupName: groupName,
-                        groupId: groupId,
-                        adminId: adminId,
-                        groupImageUrl: groupImageUrl,
-                        groupName: groupName,
-                      ));
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.person_add),
-              title: Text('Add Members'),
-              onTap: () {
-                // Handle Option 1
-                //getting current user from firebase
-                String userId = FirebaseAuth.instance.currentUser!.uid;
-                if (adminId != userId) {
-                  Get.snackbar("Error", "You are not an admin");
-                } else {
-                  log("Tapped On Add New Memebers");
-                  Get.to(() => AddNewMembers(
-                        // groupName: groupName,
-                        groupId: groupId,
-                      ));
-                }
-              },
-            ),
-            ListTile(
-              leading: Icon(CupertinoIcons.person_3),
-              title: Text('See Members'),
-              onTap: () {
-                // Handle Option 2
-                log("Tapped On see members");
-                Get.to(() => SeeMembers(
-                      groupId: groupId,
-                    ));
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Leave Group'),
-              onTap: () {
-                // Handle Option 3
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildRightDrawerContent(
+  //     String groupName, String groupImageUrl, String groupId, String adminId) {
+  //   return Container(
+  //     height: Get.height,
+  //     width: 600.0, // Adjust the width as needed
+  //     color: appBackgroundColor,
+  //     child: Center(
+  //       child: ListView(
+  //         padding: EdgeInsets.all(16.0),
+  //         children: [
+  //           SizedBox(height: 50.0),
+  //           Container(
+  //             height: 90,
+  //             width: 90,
+  //             decoration: BoxDecoration(
+  //               shape: BoxShape.circle,
+  //               border: Border.all(
+  //                 color: Colors.transparent,
+  //                 // width: 2,
+  //               ),
+  //             ),
+  //             child: groupImageUrl.isEmpty ?? true
+  //                 ? Container(
+  //                     // height: 60,
+  //                     // width: 60,
+  //                     decoration: BoxDecoration(
+  //                         color: primaryColor, shape: BoxShape.circle),
+  //                     child: Center(
+  //                       child: Text(
+  //                         getFirstandLastNameInitals(
+  //                             groupName ?? ''.toUpperCase()),
+  //                         style: TextStyle(color: whiteColor, fontSize: 20),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : CachedNetworkImage(
+  //                     imageBuilder: (context, imageProvider) {
+  //                       return Container(
+  //                         decoration: BoxDecoration(
+  //                           shape: BoxShape.circle,
+  //                           image: DecorationImage(
+  //                             image: imageProvider,
+  //                             fit: BoxFit.cover,
+  //                           ),
+  //                         ),
+  //                       );
+  //                     },
+  //                     imageUrl: groupImageUrl,
+  //                     placeholder: (context, url) => Image.asset(
+  //                       'assets/images/no-image.png',
+  //                       fit: BoxFit.cover,
+  //                       height: 60,
+  //                       width: 60,
+  //                     ),
+  //                     errorWidget: (context, url, error) => Image.asset(
+  //                       'assets/images/no-image.png',
+  //                       height: 60,
+  //                       width: 60,
+  //                       fit: BoxFit.cover,
+  //                     ),
+  //                     fit: BoxFit.cover,
+  //                   ),
+  //           ),
+  //           ListTile(
+  //             leading: Icon(CupertinoIcons.person_add),
+  //             title: Text('Add Members'),
+  //             onTap: () {
+  //               // Handle Option 1
+  //               //getting current user from firebase
+  //               String userId = FirebaseAuth.instance.currentUser!.uid;
+  //               if (adminId != userId) {
+  //                 Get.snackbar("Error", "You are not an admin",
+  //                     colorText: Colors.white, backgroundColor: Colors.red);
+  //               } else {
+  //                 log("Tapped On Add New Memebers");
+  //                 Get.to(() => GroupInfo(
+  //                       // groupName: groupName,
+  //                       groupId: groupId,
+  //                       adminId: adminId,
+  //                       groupImageUrl: groupImageUrl,
+  //                       groupName: groupName,
+  //                     ));
+  //               }
+  //             },
+  //           ),
+  //           ListTile(
+  //             leading: Icon(CupertinoIcons.person_add),
+  //             title: Text('Add Members'),
+  //             onTap: () {
+  //               // Handle Option 1
+  //               //getting current user from firebase
+  //               String userId = FirebaseAuth.instance.currentUser!.uid;
+  //               if (adminId != userId) {
+  //                 Get.snackbar("Error", "You are not an admin");
+  //               } else {
+  //                 log("Tapped On Add New Memebers");
+  //                 Get.to(() => AddNewMembers(
+  //                       // groupName: groupName,
+  //                       groupId: groupId,
+  //                     ));
+  //               }
+  //             },
+  //           ),
+  //           ListTile(
+  //             leading: Icon(CupertinoIcons.person_3),
+  //             title: Text('See Members'),
+  //             onTap: () {
+  //               // Handle Option 2
+  //               log("Tapped On see members");
+  //               Get.to(() => SeeMembers(
+  //                     groupId: groupId,
+  //                   ));
+  //             },
+  //           ),
+  //           ListTile(
+  //             leading: Icon(Icons.exit_to_app),
+  //             title: Text('Leave Group'),
+  //             onTap: () {
+  //               // Handle Option 3
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildMessageInput() {
     return Container(
