@@ -39,7 +39,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
     super.initState();
     Api.saveUserToken();
     _selectedIndex = widget.indexNum ?? 0;
-    
+
     _motionTabBarController = MotionTabBarController(
       initialIndex: _selectedIndex,
       length: 4,
@@ -49,7 +49,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
 
   void _onItemTapped(int index) {
     setState(() {
-      widget.indexNum = index;
+      _motionTabBarController!.index = index;
     });
   }
 
@@ -143,9 +143,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
           tabIconSelectedColor: Colors.white,
           tabBarColor: Colors.white,
           onTabItemSelected: (int value) {
-            setState(() {
-              _motionTabBarController!.index = value;
-            });
+            _onItemTapped(value);
           },
         ),
         //  BottomNavigationBar(
@@ -189,7 +187,6 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
             ChatScreen(),
             GroupChatScreen(),
             Users(),
-            // Stories(),
             CustomDrawer(),
           ],
         ),

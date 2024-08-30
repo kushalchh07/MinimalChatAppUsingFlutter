@@ -1,7 +1,8 @@
 // ignore_for_file: unused_local_variable
 
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:http/http.dart' as http;
 import 'package:chat_app/model/groupchat_model.dart';
 import 'package:chat_app/model/message.dart';
 import 'package:chat_app/pages/Chat/chat_screen.dart';
@@ -40,13 +41,38 @@ class ChatService extends ChangeNotifier {
     ids.sort(); //sort the ids(this ensures the chat room id is always the same for any pair of users)
     String chatRoomId = ids.join(
         "_"); //combine the ids into a single string to use as a chat roomid
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .get();
+    String deviceToken;
+    if (documentSnapshot.exists) {
+      Map<String, dynamic>? userData =
+          documentSnapshot.data() as Map<String, dynamic>?;
 
+      if (userData != null && userData.containsKey('pushToken')) {
+        deviceToken = userData['pushToken'];
+        sendPushNotification(
+            body: message,
+            title: 'New Message',
+            deviceToken: deviceToken,
+            serverKey:
+                'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC2HncOH/2eC4Y5\nO73ERYQuXmHX95VmyFsCdoadi1qtxE8ISiCxsevuazwZfjuKko50cZO+UOxb4uaE\ngMfrBChYFuA8J+lmZFBY3ivKiCv3uo2kZH7tEKBI3hXqqvwhTbevkRc3i4+e1MdX\neiRE51P0BUJ07Gz0ug66SwAIaZFZL0pfCcYucYIKuTwYFbQU3kVk0XeNR/yBl/rh\nRLx7plOyAx0VI0fYZlNYyqrCOwPpSMWOy+/A3oP6Nhg9MTGM1lXKjl2oEDlqbo06\nx+PJmKpGj6Ld6HA7yc0Bz5CfGmEtiQyFLobSemSVnQ4M62VdjztvQVn7ViqxKSIg\nyOCcGFpXAgMBAAECggEAJTCNcVX5DXge/bsEYnsrpehiJJ8LZETPyO35SVy2tLtc\nxD2W9ZJ2smY1jKMpd3+8FW1IFVojGhR4rGA78vMTZgGt4rrnv6AGhE9CNAagq+Lt\nn79h5/k4MgkgAp7OA+MB+pkvW4llV7LtziBEHcn7a95TFttc2JDSBxrfs9gS9VoJ\nrsxjuBx51w5NITqGoJgHU/Y21RevAJltCqnDQ714sauYPwauPyWTW7CgLXL7vudj\nmEcl5jK6aAGeO2iq7FI6ErpQNrDTKGLiMErDw2TWMGU2N8PC5hX504m7H8lsjMtp\nT2WuR3XZC+XYAmUfP6kZqNnLcbSJU+ey+7dnA0tNeQKBgQDZNi1Ys5PewgI4FeLk\nfz8E0pt6D13CGdeCT6NRr1+2hQHqd7PBHOmsp7kysF39h37oz9xJrsrxL5zDEWy7\nkTQp+LmrD09qOKa2PmzDuSercSyEdv1EpxJNommEZA+Uo3T86pS+4NxjHIbBlnsQ\nYDS0tooeHboaEMOlzdJSmu4I9QKBgQDWpAeXYaZ9lxoPjV3fWCE25GWRPIXlZEgG\nLWFp7XM7p51KNT4mWI5zSaOxEm8lS9N+XvjdiY/NlED0DcaFOpBuaF3e+a2C56zR\nqiQ5hYRXs4WJ7NbhjjwK1Jvh7VSq8fK8lryjyayIrgmeO8S3OE0+qhyhMz/YOf/u\n6pvBd3h2mwKBgE7FlgZgAZU8OH/MeB8zglAmbJoEbpUQuBYa+XiLKCPR8pLsXDUB\nXkDuBny6dyuVctHNZ+8Uw6ZaBPi9HfibvRYnjHXbtIoqB1N6KgmE4T0Mav+TA2Bd\nUobzCl8nxnq6GJgMHmtmsqYC11/nSbPzn8mVlVs8npwLTliX3tl0NDTtAoGBAIMX\nvdc0efY8wlr7UXkmn2qiRnJVD8ZR4Dd9ogCLWRT3Q3beW+4Zqi85q7NredzCmhKV\nuNO9v8mkoaMtgrE+WpZEQgj8X4ATNZb8npFPPcw+xfG+aGNsdrl6rxZm2I5rpYCP\nY/l5JFp6ST+Oa5An3+3FAiVmYrkSe4EVYznfWQC/AoGBAK+/ggB8zJfCCJVpUIPo\nDinFpSWdmmxCnzYZ7DmFcnD72n1MtIV79EpPrgqZBEvmRY5lArllZ4IffvrNXbw4\nizJpoa+KfKaH4sloFlYV8fh4MxkJFAlIPmPLeol4LNMW5+6aT+0DWwRCn2vHfJat\nyiB0A5Aar8bpbbUU53ruM7oW');
+        print("Device Token: $deviceToken");
+      } else {
+        print("Device token not found");
+      }
+    } else {
+      print("User not found");
+    }
     // add new message to database
     await _firestore
         .collection('chat_rooms')
         .doc(chatRoomId)
         .collection('messages')
         .add(newMessage.toMap());
+
+    // send push notification
   }
 
   Future<void> sendGroupMessage(
@@ -492,5 +518,45 @@ class ChatService extends ChangeNotifier {
 
       transaction.update(chatRoomRef, {'memberIds': currentMembers});
     });
+  }
+
+  Future<void> sendPushNotification({
+    required String deviceToken,
+    required String title,
+    required String body,
+    required String serverKey,
+  }) async {
+    log("Send NOtifications");
+    try {
+      // Define the payload for the FCM request
+      final Map<String, dynamic> notificationPayload = {
+        'to': deviceToken,
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+      };
+
+      // Make the HTTP POST request to the FCM endpoint
+      final response = await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$serverKey',
+        },
+        body: jsonEncode(notificationPayload),
+      );
+
+      // Check for success
+      if (response.statusCode == 200) {
+        log('Notification sent successfully!');
+      } else {
+        log('Failed to send notification. Status code: ${response.statusCode}');
+        ;
+        log('Response body: ${response.body}');
+      }
+    } catch (e) {
+      log('Error sending notification: $e');
+    }
   }
 }

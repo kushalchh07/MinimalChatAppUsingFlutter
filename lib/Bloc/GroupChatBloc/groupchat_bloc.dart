@@ -105,7 +105,9 @@ class GroupchatBloc extends Bloc<GroupchatEvent, GroupchatState> {
       await _firestore.collection('chatRooms').doc(event.chatRoomId).delete();
       log('Chat room deleted from Firestore');
       emit(GroupchatDeleteSuccess());
-      Get.off(()=>Base(indexNum: 1,));
+      Get.offAll(() => Base(
+            indexNum: 1,
+          ));
     } catch (e) {
       log('Error deleting chat room: $e');
       print(e);
