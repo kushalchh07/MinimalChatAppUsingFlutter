@@ -42,16 +42,16 @@ void main() async {
   );
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-   // Handle foreground messages
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Message received: ${message.notification?.title}');
-    });
+  // Handle foreground messages
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Message received: ${message.notification?.title}');
+  });
 
-    // Handle background messages
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Message clicked!');
-    });
-  
+  // Handle background messages
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('Message clicked!');
+  });
+
   await Api.init();
   EmojiGifPickerPanel.setup(
       sizes: MenuSizes(width: 2000, height: 500),
