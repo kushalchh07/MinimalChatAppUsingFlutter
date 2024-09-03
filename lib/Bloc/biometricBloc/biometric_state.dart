@@ -1,10 +1,30 @@
-part of 'biometric_bloc.dart';
+import 'package:local_auth/local_auth.dart';
 
-sealed class BiometricState extends Equatable {
-  const BiometricState();
-  
-  @override
-  List<Object> get props => [];
+abstract class BiometricState {}
+// enum BiometricType {
+//   fingerprint,
+//   face,
+//   iris, // Note that this is rare
+// }
+
+class BiometricInitial extends BiometricState {}
+
+class BiometricCapabilityChecked extends BiometricState {
+  final bool isCapable;
+
+  BiometricCapabilityChecked(this.isCapable);
 }
 
-final class BiometricInitial extends BiometricState {}
+class AvailableBiometricsLoaded extends BiometricState {
+  final List<BiometricType> biometrics;
+
+  AvailableBiometricsLoaded(this.biometrics);
+}
+
+class BiometricAuthenticationSuccess extends BiometricState {}
+
+class BiometricAuthenticationFailure extends BiometricState {
+  final String message;
+
+  BiometricAuthenticationFailure(this.message);
+}

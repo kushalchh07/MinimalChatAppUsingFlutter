@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_event.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
+import 'package:chat_app/pages/Drawer/biometric.dart';
 import 'package:chat_app/pages/Drawer/blocked_users.dart';
 import 'package:chat_app/pages/Drawer/profile.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
@@ -192,15 +193,33 @@ class _CustomDrawerState extends State<CustomDrawer>
                           color: greenColor,
                           // color: Colors.black,
                         ),
+                        // ListTile(
+                        //   onTap: () {
+                        //     Navigator.of(context).push(
+                        //       MaterialPageRoute(
+                        //           builder: (context) => FaceAuthentication(
+                        //                 isPerimum: isPerimum,
+                        //               )),
+                        //     );
+                        //   },
+                        //   title: const Text('Face Authentication'),
+                        //   leading: Icon(
+                        //     CupertinoIcons.person,
+                        //     color: greenColor,
+                        //   ),
+                        //   trailing: Icon(
+                        //     Icons.arrow_forward_ios,
+                        //     color: greenColor,
+                        //   ),
+                        // ),
                         ListTile(
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                       FaceAuthentication(isPerimum: isPerimum,)),
+                                  builder: (context) => BiometricAuthScreen()),
                             );
                           },
-                          title: const Text('Face Authentication'),
+                          title: const Text('Biometrics'),
                           leading: Icon(
                             CupertinoIcons.person,
                             color: greenColor,

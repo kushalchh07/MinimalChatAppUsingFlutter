@@ -1,8 +1,7 @@
-part of 'biometric_bloc.dart';
+abstract class BiometricEvent {}
 
-sealed class BiometricEvent extends Equatable {
-  const BiometricEvent();
+class CheckBiometricCapability extends BiometricEvent {}
 
-  @override
-  List<Object> get props => [];
-}
+class GetAvailableBiometrics extends BiometricEvent {}
+
+class AuthenticateWithBiometrics extends BiometricEvent {}
