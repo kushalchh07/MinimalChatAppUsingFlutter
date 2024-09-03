@@ -16,9 +16,14 @@ Color questionContainerColor = whiteColor;
 Color appBackgroundColor = const Color.fromARGB(255, 245, 245, 245);
 // Color appSecondary = Color.fromARGB(255, 198, 198, 198);
 Color appSecondary = Colors.white;
+Color lightTextColor = const Color(0xFF403930);
+Color darkBackgroundColor = const Color(0xFF2B2B2B);
+Color darkTextColor = const Color(0xFFF3F2FF);
+
 
 Color greyColor = Colors.grey;
 Color lightGrey = Colors.grey[200]!;
+Color lightBackgroundColor = const Color(0xFFFFFFFF);
 
 Color greyColorDarker = Colors.grey[700]!;
 Color whiteColor = Colors.white;
