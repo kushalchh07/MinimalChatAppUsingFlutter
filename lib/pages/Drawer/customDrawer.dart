@@ -31,6 +31,7 @@ import '../../constants/constants.dart';
 import '../../services/auth_services.dart';
 import '../../utils/customWidgets/alert_dialog_box.dart';
 import 'face_authentication.dart';
+import 'theme_screen.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -193,25 +194,28 @@ class _CustomDrawerState extends State<CustomDrawer>
                           color: greenColor,
                           // color: Colors.black,
                         ),
-                        // ListTile(
-                        //   onTap: () {
-                        //     Navigator.of(context).push(
-                        //       MaterialPageRoute(
-                        //           builder: (context) => FaceAuthentication(
-                        //                 isPerimum: isPerimum,
-                        //               )),
-                        //     );
-                        //   },
-                        //   title: const Text('Face Authentication'),
-                        //   leading: Icon(
-                        //     CupertinoIcons.person,
-                        //     color: greenColor,
-                        //   ),
-                        //   trailing: Icon(
-                        //     Icons.arrow_forward_ios,
-                        //     color: greenColor,
-                        //   ),
-                        // ),
+                        ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => ThemeToggleScreen()),
+                            );
+                          },
+                          title: const Text('Face Authentication'),
+                          leading: Icon(
+                            CupertinoIcons.person,
+                            color: greenColor,
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: greenColor,
+                          ),
+                        ),
+                        Divider(
+                          height: 0,
+                          color: greenColor,
+                          // color: Colors.black,
+                        ),
                         ListTile(
                           onTap: () {
                             Navigator.of(context).push(
