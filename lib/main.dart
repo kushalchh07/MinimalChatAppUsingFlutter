@@ -31,6 +31,8 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'Bloc/ImagePicker/image_picker_bloc.dart';
+import 'theme/ThemeCubit/theme_cubit.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -138,16 +140,22 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               InternetBloc(Connectivity())..add(CheckInternet()),
-        )
-      ],
-      child: GetMaterialApp(
-        title: 'Guff Gaff',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: appSecondary),
-          useMaterial3: true,
         ),
-        home: SplashScreen(),
-        debugShowCheckedModeBanner: false,
+        BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          return GetMaterialApp(
+            title: 'Guff Gaff',
+            theme: AppTheme.themeData(state.isDarkThemeOn, context),
+            //  ThemeData(
+            //   colorScheme: ColorScheme.fromSeed(seedColor: appSecondary),
+            //   useMaterial3: true,
+            // ),
+            home: SplashScreen(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }

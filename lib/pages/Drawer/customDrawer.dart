@@ -181,7 +181,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           },
                           title: const Text('Blocked Users'),
                           leading: Icon(
-                            Icons.block_flipped,
+                            CupertinoIcons.slash_circle_fill,
                             color: greenColor,
                           ),
                           trailing: Icon(
@@ -201,9 +201,9 @@ class _CustomDrawerState extends State<CustomDrawer>
                                   builder: (context) => ThemeToggleScreen()),
                             );
                           },
-                          title: const Text('Face Authentication'),
+                          title: const Text('Dark Mode'),
                           leading: Icon(
-                            CupertinoIcons.person,
+                            CupertinoIcons.moon_circle_fill,
                             color: greenColor,
                           ),
                           trailing: Icon(
