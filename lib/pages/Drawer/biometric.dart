@@ -19,10 +19,11 @@ class BiometricAuthScreen extends StatelessWidget {
         ),
         body: BlocConsumer<BiometricBloc, BiometricState>(
           listener: (context, state) {
-            if (state is BiometricAuthenticationSuccess) {
-              // Navigate to the next screen
-              Navigator.pushReplacementNamed(context, '/home');
-            } else if (state is BiometricAuthenticationFailure) {
+            // if (state is BiometricAuthenticationSuccess) {
+            //   // Navigate to the next screen
+            //   Navigator.pushReplacementNamed(context, '/home');
+            // } else 
+            if (state is BiometricAuthenticationFailure) {
               // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
@@ -61,7 +62,7 @@ class BiometricAuthScreen extends StatelessWidget {
                           .map((biometric) =>
                               ListTile(title: Text(biometric.toString())))
                           .toList(),
-                    );
+                    ); 
             } else if (state is BiometricAuthenticationFailure) {
               return Center(child: Text('Error: ${state.message}'));
             }

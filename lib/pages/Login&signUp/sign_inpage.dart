@@ -14,7 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../constants/size/size.dart';
 import '../screen/internet_lost_screen.dart';
 
@@ -30,7 +32,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   bool _isRememberMe = false;
   bool loginError = true;
   bool agreeTerms = false;
-
+  bool _isBiometricEnabled = false;
   void toggleRememberMe() {
     setState(() {
       _isRememberMe = !_isRememberMe;
@@ -71,6 +73,11 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     BlocProvider.of<LoginBloc>(context).add(GoogleLoginTappedEvent());
   }
 
+  Future<void> _checkBiometricStatus() async {
+    _isBiometricEnabled = await getBiomertic();
+    setState(() {}); // Update the UI based on the retrieved biometric status
+  }
+
   facebook() {}
   @override
   void initState() {
@@ -81,6 +88,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     )..forward();
     _animation = Tween<double>(begin: 0, end: _text1.length.toDouble())
         .animate(_controller);
+
+    _checkBiometricStatus();
   }
 
   @override
@@ -100,19 +109,19 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
 
     return BlocListener<InternetBloc, InternetState>(
       listener: (context, state) {
-          if (state is InternetDisconnected) {
-            // Navigate to no internet screen
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => InternetLostScreen()),
-            );
-          } else if (state is InternetConnected) {
-            // Pop the NoInternetScreen if the internet is restored
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
-            }
+        if (state is InternetDisconnected) {
+          // Navigate to no internet screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => InternetLostScreen()),
+          );
+        } else if (state is InternetConnected) {
+          // Pop the NoInternetScreen if the internet is restored
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
           }
-        },
+        }
+      },
       child: Scaffold(
         backgroundColor: appBackgroundColor,
         body: BlocListener<LoginBloc, LoginState>(
@@ -355,6 +364,15 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                             },
                           ),
                         ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        _isBiometricEnabled
+                            ? SizedBox(
+                                child: Text(
+                                    "Tap Here for Biometric Authentication."),
+                              )
+                            : Container(),
                         const SizedBox(
                           height: 15,
                         ),

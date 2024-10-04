@@ -12,6 +12,20 @@ Future<void> saveName(String name) async {
   log("Name Saved to device");
 }
 
+Future<void> saveBiomertic(bool face) async {
+  var prefs = await SharedPreferences.getInstance();
+  prefs.setBool('faceBiometric', face);
+}
+
+Future<bool> getBiomertic() async {
+  var prefs = await SharedPreferences.getInstance();
+  bool face = prefs.getBool('faceBiometric') ?? false;
+  print(face);
+  print("faceBiometric fetched from device.");
+  // getImage();
+  return face;
+}
+
 Future<void> saveImage(String imageUrl) async {
   var prefs = await SharedPreferences.getInstance();
   prefs.setString('imageUrl', imageUrl);
@@ -88,4 +102,3 @@ Future<void> saveStatus(bool status) async {
   var prefs = await SharedPreferences.getInstance();
   prefs.setBool(SplashScreen.KEYLOGIN, status);
 }
-
