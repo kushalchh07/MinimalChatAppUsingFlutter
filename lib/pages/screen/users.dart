@@ -15,6 +15,7 @@ import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/screen/friend_request_screen.dart';
 import 'package:chat_app/pages/screen/profile_page.dart';
 import 'package:chat_app/services/chat_services.dart';
+import 'package:chat_app/theme/ThemeCubit/theme_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,102 +54,108 @@ class _UsersState extends State<Users> with AutomaticKeepAliveClientMixin {
             ..add(LoadRequestedUsers()),
         ),
       ],
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: appBackgroundColor,
-          elevation: 0.2,
-          title: Text("Users"),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                Get.to(() => FriendRequestScreen());
-              },
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14.0),
-                    child: Icon(
-                      Icons.notifications_active_outlined,
-                      size: 30,
-                    ),
-                  ),
-                  BlocBuilder<FriendRequestBloc, FriendRequestState>(
-                    builder: (context, state) {
-                      if (state is RequestedUsersLoaded) {
-                        final rUsers = state.requestedUsers;
-                        log(rUsers.toString());
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              // backgroundColor:
+              //     state.isDarkThemeOn ? Colors.black : appBackgroundColor,
+              elevation: 0.2,
+              title: Text("Users"),
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => FriendRequestScreen());
+                  },
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 14.0),
+                        child: Icon(
+                          Icons.notifications_active_outlined,
+                          size: 30,
+                        ),
+                      ),
+                      BlocBuilder<FriendRequestBloc, FriendRequestState>(
+                        builder: (context, state) {
+                          if (state is RequestedUsersLoaded) {
+                            final rUsers = state.requestedUsers;
+                            log(rUsers.toString());
 
-                        if (rUsers.isNotEmpty) {
+                            if (rUsers.isNotEmpty) {
+                              return Positioned(
+                                top: 0,
+                                right: 10,
+                                child: Container(
+                                  width: 15,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      state.reqlength.toString(),
+                                      // style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
                           return Positioned(
                             top: 0,
                             right: 10,
-                            child: Container(
-                              width: 15,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.red,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  state.reqlength.toString(),
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
+                            child: Container(),
                           );
-                        }
-                      }
-                      return Positioned(
-                        top: 0,
-                        right: 10,
-                        child: Container(),
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: appBackgroundColor,
-        body: BlocConsumer<UserBloc, UserState>(
-          listener: (context, state) {
-            // TODO: implement listener
-          },
-          builder: (context, state) {
-            if (state is UsersInitial) {
-              BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
-            }
-            if (state is UsersLoading) {
-              return Center(child: CupertinoActivityIndicator());
-            } else if (state is AllUsersLoaded) {
-              final users = state.users;
-              log(users.toString());
-              if (users.isEmpty) {
-                return Center(child: Text('No users found'));
-              }
-              return Padding(
-                padding: const EdgeInsets.only(left: 2, right: 2),
-                child: RefreshIndicator.adaptive(
-                  onRefresh: () async {
-                    BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
-                  },
-                  child: ListView.builder(
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      return _buildUserListItem(context, users[index]);
-                    },
+                        },
+                      )
+                    ],
                   ),
                 ),
-              );
-            } else if (state is UsersError) {
-              return Center(child: Text('Failed to load users'));
-            } else {
-              log("Container dekhhiracha");
-              return Container();
-            }
-          },
-        ),
+              ],
+            ),
+            // backgroundColor:
+            //     state.isDarkThemeOn ? Colors.black : appBackgroundColor,
+            body: BlocConsumer<UserBloc, UserState>(
+              listener: (context, state) {
+                // TODO: implement listener
+              },
+              builder: (context, state) {
+                if (state is UsersInitial) {
+                  BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
+                }
+                if (state is UsersLoading) {
+                  return Center(child: CupertinoActivityIndicator());
+                } else if (state is AllUsersLoaded) {
+                  final users = state.users;
+                  log(users.toString());
+                  if (users.isEmpty) {
+                    return Center(child: Text('No users found'));
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 2, right: 2),
+                    child: RefreshIndicator.adaptive(
+                      onRefresh: () async {
+                        BlocProvider.of<UserBloc>(context).add(LoadAllUsers());
+                      },
+                      child: ListView.builder(
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          return _buildUserListItem(context, users[index]);
+                        },
+                      ),
+                    ),
+                  );
+                } else if (state is UsersError) {
+                  return Center(child: Text('Failed to load users'));
+                } else {
+                  log("Container dekhhiracha");
+                  return Container();
+                }
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -165,7 +172,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
         elevation: 0.2,
         child: Container(
           decoration: BoxDecoration(
-            color: appSecondary,
+            // color: appSecondary,
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: ListTile(
@@ -176,8 +183,8 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.transparent,
-                ),
+                    // color: Colors.transparent,
+                    ),
               ),
               child: user['profileImageUrl'] == null ||
                       user['profileImageUrl'].isEmpty
@@ -222,7 +229,10 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
             ),
             title: Text(
               user['name'] ?? 'No name',
-              style: TextStyle(fontSize: 20, color: Colors.black),
+              style: TextStyle(
+                fontSize: 20,
+                // color: Colors.black
+              ),
             ),
             onTap: () {
               Get.to(() => ProfilePage(

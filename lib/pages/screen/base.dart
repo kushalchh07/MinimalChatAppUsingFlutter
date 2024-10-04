@@ -16,6 +16,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 import '../../constants/colors/colors.dart';
+import '../../theme/ThemeCubit/theme_cubit.dart';
 import '../../utils/tab/MotionBadgeWidget.dart';
 import '../../utils/tab/MotionTabBar.dart';
 import '../../utils/tab/MotionTabBarController.dart';
@@ -85,112 +86,117 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
           }
         }
       },
-      child: Scaffold(
-        backgroundColor: appBackgroundColor,
-        bottomNavigationBar: MotionTabBar(
-          controller:
-              _motionTabBarController, // Add this controller if you need to change your tab programmatically
-          initialSelectedTab: "Chat",
-          useSafeArea: true, // default: true, apply safe area wrapper
-          labels: const ["Chat", "Groups", "Peoples", "Settings"],
-          icons: const [
-            CupertinoIcons.chat_bubble_2,
-            CupertinoIcons.group,
-            CupertinoIcons.globe,
-            CupertinoIcons.settings
-          ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          final stateTheme = state;
+          return Scaffold(
+           
+            bottomNavigationBar: MotionTabBar(
+              controller:
+                  _motionTabBarController, // Add this controller if you need to change your tab programmatically
+              initialSelectedTab: "Chat",
+              useSafeArea: true, // default: true, apply safe area wrapper
+              labels: const ["Chat", "Groups", "Peoples", "Settings"],
+              icons: const [
+                CupertinoIcons.chat_bubble_2,
+                CupertinoIcons.group,
+                CupertinoIcons.globe,
+                CupertinoIcons.settings
+              ],
 
-          // optional badges, length must be same with labels
-          badges: [
-            // Default Motion Badge Widget
-            // const MotionBadgeWidget(
-            //   text: '10+',
-            //   textColor: Colors.white, // optional, default to Colors.white
-            //   color: Colors.red, // optional, default to Colors.red
-            //   size: 18, // optional, default to 18
-            // ),
-            null,
-            // custom badge Widget
-            // Container(
-            //   color: Colors.black,
-            //   padding: const EdgeInsets.all(2),
-            //   child: const Text(
-            //     '48',
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       color: Colors.white,
+              // optional badges, length must be same with labels
+              badges: [
+                // Default Motion Badge Widget
+                // const MotionBadgeWidget(
+                //   text: '10+',
+                //   textColor: Colors.white, // optional, default to Colors.white
+                //   color: Colors.red, // optional, default to Colors.red
+                //   size: 18, // optional, default to 18
+                // ),
+                null,
+                // custom badge Widget
+                // Container(
+                //   color: Colors.black,
+                //   padding: const EdgeInsets.all(2),
+                //   child: const Text(
+                //     '48',
+                //     style: TextStyle(
+                //       fontSize: 14,
+                //       color: Colors.white,
+                //     ),
+                //   ),
+                // ),
+
+                // allow null
+                null,
+                null,
+                // Default Motion Badge Widget with indicator only
+                null,
+              ],
+              tabSize: 50,
+              tabBarHeight: 55,
+              textStyle: const TextStyle(
+                fontSize: 12,
+                // color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+              tabIconColor: greenColor,
+              tabIconSize: 28.0,
+              tabIconSelectedSize: 26.0,
+              tabSelectedColor: greenColor,
+              tabIconSelectedColor: Colors.white,
+              tabBarColor: Colors.white,
+              onTabItemSelected: (int value) {
+                _onItemTapped(value);
+              },
+            ),
+            //  BottomNavigationBar(
+            //   type: BottomNavigationBarType.fixed,
+            //   currentIndex: _selectedIndex!,
+            //   selectedItemColor: greenColor,
+            //   selectedFontSize: Get.height * 0.015,
+            //   unselectedItemColor: Colors.black,
+            //   backgroundColor: appBackgroundColor,
+            //   onTap: _onItemTapped,
+            //   items: [
+            //     BottomNavigationBarItem(
+            //       icon: Icon(CupertinoIcons.chat_bubble_2),
+            //       label: 'Chat',
             //     ),
-            //   ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(CupertinoIcons.group),
+            //       label: 'Groups',
+            //     ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(CupertinoIcons.globe),
+            //       label: 'People',
+            //     ),
+            //     // BottomNavigationBarItem(
+            //     //   icon: Icon(
+            //     //     CupertinoIcons.photo_on_rectangle,
+            //     //   ),
+            //     //   label: 'Stories',
+            //     // ),
+            //     BottomNavigationBarItem(
+            //       icon: Icon(CupertinoIcons.settings),
+            //       label: 'Settings',
+            //     ),
+            //   ],
             // ),
-
-            // allow null
-            null,
-            null,
-            // Default Motion Badge Widget with indicator only
-            null,
-          ],
-          tabSize: 50,
-          tabBarHeight: 55,
-          textStyle: const TextStyle(
-            fontSize: 12,
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
-          ),
-          tabIconColor: greenColor,
-          tabIconSize: 28.0,
-          tabIconSelectedSize: 26.0,
-          tabSelectedColor: greenColor,
-          tabIconSelectedColor: Colors.white,
-          tabBarColor: Colors.white,
-          onTabItemSelected: (int value) {
-            _onItemTapped(value);
-          },
-        ),
-        //  BottomNavigationBar(
-        //   type: BottomNavigationBarType.fixed,
-        //   currentIndex: _selectedIndex!,
-        //   selectedItemColor: greenColor,
-        //   selectedFontSize: Get.height * 0.015,
-        //   unselectedItemColor: Colors.black,
-        //   backgroundColor: appBackgroundColor,
-        //   onTap: _onItemTapped,
-        //   items: [
-        //     BottomNavigationBarItem(
-        //       icon: Icon(CupertinoIcons.chat_bubble_2),
-        //       label: 'Chat',
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(CupertinoIcons.group),
-        //       label: 'Groups',
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(CupertinoIcons.globe),
-        //       label: 'People',
-        //     ),
-        //     // BottomNavigationBarItem(
-        //     //   icon: Icon(
-        //     //     CupertinoIcons.photo_on_rectangle,
-        //     //   ),
-        //     //   label: 'Stories',
-        //     // ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(CupertinoIcons.settings),
-        //       label: 'Settings',
-        //     ),
-        //   ],
-        // ),
-        body: TabBarView(
-          physics:
-              const NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
-          controller: _motionTabBarController,
-          children: <Widget>[
-            ChatScreen(),
-            GroupChatScreen(),
-            Users(),
-            CustomDrawer(),
-          ],
-        ),
-        // screens[_selectedIndex],
+            body: TabBarView(
+              physics:
+                  const NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
+              controller: _motionTabBarController,
+              children: <Widget>[
+                ChatScreen(),
+                GroupChatScreen(),
+                Users(),
+                CustomDrawer(),
+              ],
+            ),
+            // screens[_selectedIndex],
+          );
+        },
       ),
     );
   }
