@@ -82,9 +82,5 @@ extension ThemeExtras on ThemeData {
 
   Color get secondaryColor => const Color.fromARGB(255, 157, 155, 156);
 
-  // Gradient get serviceCard =>
-  //     brightness == Brightness.light ? grayWhite : grayBack;
-
-  // Gradient get contactCard =>
-  //     brightness == Brightness.light ? grayWhite : contactGradi;
+  
 }

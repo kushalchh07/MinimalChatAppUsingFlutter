@@ -9,6 +9,7 @@ import 'package:chat_app/pages/Drawer/customDrawer.dart';
 import 'package:chat_app/pages/screen/settings.dart';
 import 'package:chat_app/pages/screen/stories.dart';
 import 'package:chat_app/pages/screen/users.dart';
+import 'package:chat_app/theme/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +91,6 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
         builder: (context, state) {
           final stateTheme = state;
           return Scaffold(
-           
             bottomNavigationBar: MotionTabBar(
               controller:
                   _motionTabBarController, // Add this controller if you need to change your tab programmatically
@@ -145,7 +145,7 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
               tabIconSelectedSize: 26.0,
               tabSelectedColor: greenColor,
               tabIconSelectedColor: Colors.white,
-              tabBarColor: Colors.white,
+              tabBarColor: Theme.of(context).navBarColor,
               onTabItemSelected: (int value) {
                 _onItemTapped(value);
               },

@@ -83,13 +83,14 @@ class _CustomDrawerState extends State<CustomDrawer>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appBackgroundColor,
-        surfaceTintColor: whiteColor,
+        // backgroundColor: appBackgroundColor,
+        // surfaceTintColor: whiteColor,
         titleSpacing: 0,
         title: Text("Settings"),
-        centerTitle: true,
+        centerTitle: false,
+        automaticallyImplyLeading: false,
       ),
-      backgroundColor: appBackgroundColor.withOpacity(0.5),
+      // backgroundColor: appBackgroundColor.withOpacity(0.5),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -105,15 +106,15 @@ class _CustomDrawerState extends State<CustomDrawer>
                       top: 50,
                     ),
                     decoration: BoxDecoration(
-                      color: appSecondary,
+                      // color: appSecondary,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
+                            // color: Colors.white.withOpacity(0.5),s
+                            // spreadRadius: 1,
+                            // blurRadius: 5,
+                            // offset: const Offset(0, 3),
+                            ),
                       ],
                     ),
                     child: Column(
@@ -134,16 +135,16 @@ class _CustomDrawerState extends State<CustomDrawer>
                           title: const Text('My Information'),
                           leading: Icon(
                             Icons.person,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         Divider(
                           height: 0,
-                          color: greenColor,
+                          // color: greenColor,
                           // color: Colors.black,
                         ),
                         ListTile(
@@ -156,16 +157,16 @@ class _CustomDrawerState extends State<CustomDrawer>
                           title: const Text('Settings'),
                           leading: Icon(
                             Icons.settings,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         Divider(
                           height: 0,
-                          color: greenColor,
+                          // color: greenColor,
                           // color: Colors.black,
                         ),
                         ListTile(
@@ -182,16 +183,16 @@ class _CustomDrawerState extends State<CustomDrawer>
                           title: const Text('Blocked Users'),
                           leading: Icon(
                             CupertinoIcons.slash_circle_fill,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         Divider(
                           height: 0,
-                          color: greenColor,
+                          // color: greenColor,
                           // color: Colors.black,
                         ),
                         ListTile(
@@ -204,16 +205,16 @@ class _CustomDrawerState extends State<CustomDrawer>
                           title: const Text('Dark Mode'),
                           leading: Icon(
                             CupertinoIcons.moon_circle_fill,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         Divider(
                           height: 0,
-                          color: greenColor,
+                          // color: greenColor,
                           // color: Colors.black,
                         ),
                         ListTile(
@@ -226,16 +227,16 @@ class _CustomDrawerState extends State<CustomDrawer>
                           title: const Text('Biometrics'),
                           leading: Icon(
                             CupertinoIcons.person,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         Divider(
                           height: 0,
-                          color: greenColor,
+                          // color: greenColor,
                           // color: Colors.black,
                         ),
                         ListTile(
@@ -262,11 +263,11 @@ class _CustomDrawerState extends State<CustomDrawer>
                           ),
                           leading: Icon(
                             Icons.power_settings_new_sharp,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios_rounded,
-                            color: greenColor,
+                            // color: greenColor,
                           ),
                         ),
                         const SizedBox(
@@ -304,7 +305,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.transparent,
+                                      // color: Colors.transparent,
                                       width: 2,
                                     ),
                                   ),
@@ -362,14 +363,14 @@ class _CustomDrawerState extends State<CustomDrawer>
                                   style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    // color: Colors.black,
                                   ),
                                 ),
                                 Text(
                                   email,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey[600],
+                                    // color: Colors.grey[600],
                                   ),
                                 ),
                               ],

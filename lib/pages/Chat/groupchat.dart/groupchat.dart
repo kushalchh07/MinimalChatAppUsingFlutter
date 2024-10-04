@@ -44,7 +44,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: appBackgroundColor,
+          // backgroundColor: appBackgroundColor,
           elevation: 0.2,
           title: Text('Group Chat'),
           actions: <Widget>[
@@ -164,7 +164,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
             ),
           ],
         ),
-        backgroundColor: appBackgroundColor,
+        // backgroundColor: appBackgroundColor,
         body: RefreshIndicator.adaptive(
           onRefresh: () async {
             BlocProvider.of<GroupchatBloc>(context).add(GroupChatLoadEvent());

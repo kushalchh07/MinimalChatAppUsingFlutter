@@ -117,9 +117,9 @@ class _ChatScreenState extends State<ChatScreen>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.transparent,
-                      // width: 2,
-                    ),
+                        // color: Colors.transparent,
+                        // width: 2,
+                        ),
                   ),
                   child: imageUrl.isEmpty
                       ? Padding(
@@ -133,8 +133,10 @@ class _ChatScreenState extends State<ChatScreen>
                               child: Text(
                                 getFirstandLastNameInitals(
                                     fullName.toUpperCase()),
-                                style:
-                                    TextStyle(color: whiteColor, fontSize: 20),
+                                style: TextStyle(
+
+                                    // color: whiteColor,
+                                    fontSize: 20),
                               ),
                             ),
                           ),
@@ -179,7 +181,7 @@ class _ChatScreenState extends State<ChatScreen>
             child: Container(
               height: Get.height * 0.06,
               decoration: BoxDecoration(
-                color: appBackgroundColor,
+                // color: appBackgroundColor,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
@@ -237,7 +239,7 @@ class _ChatScreenState extends State<ChatScreen>
                                   },
                                   child: const Icon(
                                     Icons.close,
-                                    color: Colors.black,
+                                    // color: Colors.black,
                                     size: 20,
                                   ),
                                 )
@@ -277,7 +279,7 @@ class _ChatScreenState extends State<ChatScreen>
                       style: GoogleFonts.inter(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
-                        color: myBlack,
+                        // color: myBlack,
                       ),
                     ),
                     // const SizedBox(height: 5),
@@ -289,7 +291,7 @@ class _ChatScreenState extends State<ChatScreen>
                         style: GoogleFonts.inter(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: myBlack,
+                          // color: myBlack,
                         ),
                       ),
                     ),
@@ -299,7 +301,7 @@ class _ChatScreenState extends State<ChatScreen>
             }
           },
         ),
-        backgroundColor: appBackgroundColor,
+        // backgroundColor: appBackgroundColor,
         elevation: 0.2,
         leadingWidth: 70,
         titleSpacing: 0,
@@ -307,7 +309,7 @@ class _ChatScreenState extends State<ChatScreen>
       body: BlocProvider(
         create: (context) => UserBloc(ChatService())..add(LoadUsers()),
         child: Container(
-          color: appBackgroundColor,
+          // color: appBackgroundColor,
           child: UserList(),
         ),
       ),
@@ -415,7 +417,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
         elevation: 0.2,
         child: Container(
           decoration: BoxDecoration(
-            color: appSecondary,
+            // color: appSecondary,
 
             // border: Border.all(color: Colors.black), // Border color
             borderRadius: BorderRadius.circular(5.0),
@@ -429,9 +431,9 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.transparent,
-                  // width: 2,
-                ),
+                    // color: Colors.transparent,
+                    // width: 2,
+                    ),
               ),
               child: user['profileImageUrl'] == null ||
                       user['profileImageUrl'].isEmpty
@@ -478,7 +480,10 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
             ),
             title: Text(
               user['name'] ?? 'No name',
-              style: TextStyle(fontSize: 20, color: Colors.black),
+              style: TextStyle(
+                fontSize: 20,
+                //  color: Colors.black
+              ),
             ),
             subtitle: Text(
               "Hello I am  New Here.",
@@ -502,7 +507,7 @@ _buildUserListItem(BuildContext context, Map<String, dynamic> user) {
                 EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             dense: true,
             selected: true,
-            selectedTileColor: Colors.blue.withOpacity(0.5),
+            // selectedTileColor: Colors.blue.withOpacity(0.5),
             tileColor: Colors.grey[200],
           ),
         ),
