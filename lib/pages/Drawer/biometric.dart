@@ -2,7 +2,6 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_auth/local_auth.dart';
-
 import '../../Bloc/biometricBloc/biometric_bloc.dart';
 import '../../Bloc/biometricBloc/biometric_event.dart';
 import '../../Bloc/biometricBloc/biometric_state.dart';
@@ -19,12 +18,7 @@ class BiometricAuthScreen extends StatelessWidget {
         ),
         body: BlocConsumer<BiometricBloc, BiometricState>(
           listener: (context, state) {
-            // if (state is BiometricAuthenticationSuccess) {
-            //   // Navigate to the next screen
-            //   Navigator.pushReplacementNamed(context, '/home');
-            // } else 
             if (state is BiometricAuthenticationFailure) {
-              // Show error message
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
@@ -44,7 +38,7 @@ class BiometricAuthScreen extends StatelessWidget {
                     context.read<BiometricBloc>().add(GetAvailableBiometrics());
                   },
                   child: Text(
-                    'Authenticate with Biometrics',
+                    'Check Available Biometrics',
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -57,12 +51,25 @@ class BiometricAuthScreen extends StatelessWidget {
               final isempty = state.biometrics.isEmpty;
               return isempty
                   ? Center(child: Text('No biometrics available'))
-                  : ListView(
-                      children: state.biometrics
-                          .map((biometric) =>
-                              ListTile(title: Text(biometric.toString())))
-                          .toList(),
-                    ); 
+                  : ListView.builder(
+                      itemCount: state.biometrics.length,
+                      itemBuilder: (context, index) {
+                        final biometric = state.biometrics[index];
+                        final isEnabled =
+                            state.enabledBiometrics[biometric] ?? false;
+
+                        return SwitchListTile(
+                          title: Text(biometric.toString()),
+                          value: isEnabled,
+                          onChanged: (enabled) {
+                            // Toggle biometric method
+                            context.read<BiometricBloc>().add(
+                                  ToggleBiometric(biometric, enabled),
+                                );
+                          },
+                        );
+                      },
+                    );
             } else if (state is BiometricAuthenticationFailure) {
               return Center(child: Text('Error: ${state.message}'));
             }

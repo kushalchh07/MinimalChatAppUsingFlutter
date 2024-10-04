@@ -81,11 +81,12 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: appBackgroundColor,
         // surfaceTintColor: whiteColor,
-        titleSpacing: 0,
+        // titleSpacing: 0,
         title: Text("Settings"),
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -106,7 +107,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                       top: 50,
                     ),
                     decoration: BoxDecoration(
-                      // color: appSecondary,
+                      color: appSecondary,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(

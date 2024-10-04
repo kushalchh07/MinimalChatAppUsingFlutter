@@ -3,6 +3,7 @@ import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/GroupInfoBloc/group_info_bloc.dart';
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/StoriesBloc/stories_bloc.dart';
+import 'package:chat_app/Bloc/biometricBloc/biometric_bloc.dart';
 import 'package:chat_app/Bloc/chatBloc/chat_bloc.dart';
 import 'package:chat_app/Bloc/fetchStoryBloc/fetch_story_bloc.dart';
 import 'package:chat_app/Bloc/friendRequest/friend_request_bloc.dart';
@@ -29,6 +30,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_emoji_gif_picker/flutter_emoji_gif_picker.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:local_auth/local_auth.dart';
 
 import 'Bloc/ImagePicker/image_picker_bloc.dart';
 import 'theme/ThemeCubit/theme_cubit.dart';
@@ -136,6 +138,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ImagePickerBloc(),
+        ),
+        BlocProvider(
+          create: (context) => BiometricBloc(LocalAuthentication()),
         ),
         BlocProvider(
           create: (context) =>

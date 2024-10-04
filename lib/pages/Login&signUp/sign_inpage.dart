@@ -14,8 +14,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Bloc/biometricBloc/biometric_bloc.dart';
+import '../../Bloc/biometricBloc/biometric_event.dart';
+import '../../Bloc/biometricBloc/biometric_state.dart';
 import '../../constants/Sharedpreferences/sharedpreferences.dart';
 import '../../constants/size/size.dart';
 import '../screen/internet_lost_screen.dart';
@@ -32,7 +36,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   bool _isRememberMe = false;
   bool loginError = true;
   bool agreeTerms = false;
-  bool _isBiometricEnabled = false;
+  bool _isBiometricEnabled = true;
   void toggleRememberMe() {
     setState(() {
       _isRememberMe = !_isRememberMe;
@@ -78,6 +82,56 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     setState(() {}); // Update the UI based on the retrieved biometric status
   }
 
+  final LocalAuthentication auth = LocalAuthentication();
+
+  Future<void> _authenticateWithBiometrics(BuildContext context) async {
+    try {
+      // Check if biometric authentication is enabled
+      final BiometricBloc biometricBloc = context.read<BiometricBloc>();
+      biometricBloc
+          .add(GetEnabledBiometrics()); // This retrieves enabled biometrics
+      final BiometricState state = biometricBloc.state;
+      if (state is AvailableBiometricsLoaded) {
+        print("State: ${state.enabledBiometrics}");
+      }
+      if (state is AvailableBiometricsLoaded &&
+          state.enabledBiometrics.isNotEmpty) {
+        print("State: ${state.enabledBiometrics}");
+        bool authenticated = await auth.authenticate(
+          localizedReason: 'Please authenticate to sign in',
+          // biometricOnly: true,
+          options: AuthenticationOptions(
+            stickyAuth: true, // Keeps the authentication active
+            useErrorDialogs: true,
+          ),
+        );
+
+        if (authenticated) {
+          // If the user authenticates successfully
+          print("Biometric authentication successful");
+          // Navigate to Home Screen or continue with Sign-in
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          // Handle failure case
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Biometric authentication failed')),
+          );
+        }
+      } else {
+        // If no biometrics are enabled, show a message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No biometric methods are enabled')),
+        );
+      }
+    } catch (e) {
+      // Handle errors and exceptions
+      print("Error in biometric authentication: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error in biometric authentication')),
+      );
+    }
+  }
+
   facebook() {}
   @override
   void initState() {
@@ -106,6 +160,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     AppSize size = AppSize(context: context);
+    final BiometricBloc biometricBloc = context.read<BiometricBloc>();
+    biometricBloc.add(GetEnabledBiometrics());
 
     return BlocListener<InternetBloc, InternetState>(
       listener: (context, state) {
@@ -368,9 +424,22 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                           height: 15,
                         ),
                         _isBiometricEnabled
-                            ? SizedBox(
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  _authenticateWithBiometrics(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(200, 50),
+                                  backgroundColor:
+                                      Colors.green, // Your theme color
+                                ),
                                 child: Text(
-                                    "Tap Here for Biometric Authentication."),
+                                  'Sign in with Biometrics',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               )
                             : Container(),
                         const SizedBox(
