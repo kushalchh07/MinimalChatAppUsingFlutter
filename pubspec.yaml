@@ -66,6 +66,8 @@ dependencies:
   # google_mlkit_commons: ^0.7.1
   connectivity_plus: ^6.0.5
   local_auth: ^2.3.0
+  cloud_functions: ^4.7.6
+  googleapis_auth: ^1.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -94,6 +96,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/payments/
+    - assets/service/
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
