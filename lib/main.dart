@@ -1,6 +1,7 @@
 import 'package:chat_app/Api/firebase_api.dart';
 import 'package:chat_app/Bloc/GroupChatBloc/groupchat_bloc.dart';
 import 'package:chat_app/Bloc/GroupInfoBloc/group_info_bloc.dart';
+import 'package:chat_app/Bloc/NotificationBloc/notification_bloc.dart';
 import 'package:chat_app/Bloc/Signupbloc/signup_bloc.dart';
 import 'package:chat_app/Bloc/StoriesBloc/stories_bloc.dart';
 import 'package:chat_app/Bloc/biometricBloc/biometric_bloc.dart';
@@ -141,6 +142,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BiometricBloc(LocalAuthentication()),
+        ),
+        BlocProvider(
+          create: (context) => NotificationBloc(),
         ),
         BlocProvider(
           create: (context) =>

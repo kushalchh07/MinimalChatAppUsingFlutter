@@ -23,6 +23,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../Bloc/NotificationBloc/notification_bloc.dart';
 import '../../Bloc/chatBloc/chat_state.dart';
 import '../../constants/constants.dart';
 
@@ -396,7 +397,15 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: sendMessage,
+                  onPressed: () {
+                    sendMessage();
+                    BlocProvider.of<NotificationBloc>(context)
+                        .add(SendNotification(
+                      title: 'New Message',
+                      body: _messageController.text,
+                      receiverUserId: widget.receiverUserId,
+                    ));
+                  },
                   icon: const Icon(Icons.send),
                 ),
               ],

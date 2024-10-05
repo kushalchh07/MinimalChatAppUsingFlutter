@@ -17,25 +17,3 @@ const logger = require("firebase-functions/logger");
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
-
-
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
-
-exports.scheduledStoryDeletion = functions.pubsub.schedule('every 1 hour').onRun(async (context) => {
-  const now = admin.firestore.Timestamp.now();
-  const cutoff = new Date(now.toDate().getTime() - 24 * 60 * 60 * 1000);
-  const storiesRef = admin.firestore().collection('stories');
-  const oldStoriesQuery = storiesRef.where('timestamp', '<', cutoff);
-
-  const oldStoriesSnapshot = await oldStoriesQuery.get();
-  const batch = admin.firestore().batch();
-
-  oldStoriesSnapshot.forEach(doc => {
-    batch.delete(doc.ref);
-  });
-
-  await batch.commit();
-  console.log('Deleted stories older than 24 hours');
-});
