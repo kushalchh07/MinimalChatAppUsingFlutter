@@ -564,13 +564,7 @@ class ChatService extends ChangeNotifier {
         'message': body,
       });
       log('Notification sent: ${result.data}');
-      // final Map<String, dynamic> notificationPayload = {
-      //   'to': deviceToken,
-      //   'notification': {
-      //     'title': title,
-      //     'body': body,
-      //   },
-      // };
+     
 
       // Make the HTTP POST request to the FCM endpoint
       await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
