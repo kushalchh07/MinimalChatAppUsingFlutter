@@ -357,7 +357,7 @@ Widget _buildMessageList(String groupId) {
         return Center(child: Text('Error: ${snapshot.error}'));
       }
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
+        return Center(child: CupertinoActivityIndicator());
       }
       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
         return Center(child: Text('No messages available.'));

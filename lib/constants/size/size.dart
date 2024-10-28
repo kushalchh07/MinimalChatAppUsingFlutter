@@ -78,7 +78,7 @@ class AppSize extends StatelessWidget {
 //             BlocBuilder<CreateChatRoomBloc, CreateChatRoomState>(
 //               builder: (context, state) {
 //                 if (state is CreateChatRoomLoading) {
-//                   return CircularProgressIndicator();
+//                   return CupertinoActivityIndicator();
 //                 } else if (state is CreateChatRoomSuccess) {
 //                   return Text('Chat Room Created Successfully!');
 //                 } else if (state is CreateChatRoomFailure) {

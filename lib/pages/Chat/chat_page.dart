@@ -251,7 +251,7 @@ class _ChatPageState extends State<ChatPage> {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CupertinoActivityIndicator());
               }
 
               WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());
@@ -273,7 +273,7 @@ class _ChatPageState extends State<ChatPage> {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return Center(child: CupertinoActivityIndicator());
             }
 
             WidgetsBinding.instance.addPostFrameCallback((_) => scrollDown());

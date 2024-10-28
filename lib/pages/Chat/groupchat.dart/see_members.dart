@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/Bloc/userBloc/user_bloc.dart';
 import 'package:chat_app/Bloc/userBloc/user_event.dart';
 import 'package:chat_app/constants/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +41,7 @@ class _SeeMembersState extends State<SeeMembers> {
         builder: (context, state) {
           if (state is LoadMembersLoading) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             );
           } else if (state is LoadMembersSuccess) {
             final members = state.members;

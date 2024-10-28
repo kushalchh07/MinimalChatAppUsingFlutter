@@ -89,7 +89,7 @@ class _GroupNameEditor extends StatelessWidget {
           context
               .read<GroupInfoBloc>()
               .add(GetGroupNameEvent(groupId: groupId));
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CupertinoActivityIndicator());
         } else if (state is GroupNameLoaded) {
           TextEditingController _controller =
               TextEditingController(text: state.groupName);

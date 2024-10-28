@@ -1,4 +1,5 @@
 import 'package:chat_app/constants/colors/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_auth/local_auth.dart';
@@ -73,7 +74,7 @@ class BiometricAuthScreen extends StatelessWidget {
             } else if (state is BiometricAuthenticationFailure) {
               return Center(child: Text('Error: ${state.message}'));
             }
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CupertinoActivityIndicator());
           },
         ),
       ),

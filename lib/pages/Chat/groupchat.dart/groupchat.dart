@@ -12,6 +12,7 @@ import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/groupchat.dart/groupchat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,7 +81,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
                                         if (state is UsersLoading) {
                                           return Center(
                                               child:
-                                                  CircularProgressIndicator());
+                                                  CupertinoActivityIndicator());
                                         } else if (state is UsersLoaded) {
                                           return Container(
                                             height:
@@ -183,7 +184,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
               },
               builder: (context, state) {
                 if (state is ChatRoomLoading) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: CupertinoActivityIndicator());
                 }
                 if (state is ChatRoomsLoaded) {
                   return state.chatRooms.isEmpty

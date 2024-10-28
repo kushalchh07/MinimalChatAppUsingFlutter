@@ -83,18 +83,12 @@ class _CustomDrawerState extends State<CustomDrawer>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: AppBar(
-        // backgroundColor: appBackgroundColor,
-        // surfaceTintColor: whiteColor,
-        // titleSpacing: 0,
-        title: Text("Settings"),
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-      ),
-      // backgroundColor: appBackgroundColor.withOpacity(0.5),
+      appBar: AppBar(),
+      // backgroundColor: appBackgroundColor.withOpacity(0.5)
       body: SingleChildScrollView(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
                 height: Get.height * 0.1,
@@ -107,16 +101,9 @@ class _CustomDrawerState extends State<CustomDrawer>
                       top: 50,
                     ),
                     decoration: BoxDecoration(
-                      color: appSecondary,
+                      // color: appSecondary,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                            // color: Colors.white.withOpacity(0.5),s
-                            // spreadRadius: 1,
-                            // blurRadius: 5,
-                            // offset: const Offset(0, 3),
-                            ),
-                      ],
+                      boxShadow: [],
                     ),
                     child: Column(
                       children: <Widget>[
@@ -288,7 +275,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircularProgressIndicator();
+                            return CupertinoActivityIndicator();
                           } else if (snapshot.hasError) {
                             return Icon(Icons.error);
                           } else {

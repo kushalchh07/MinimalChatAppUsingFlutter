@@ -1,5 +1,6 @@
 import 'package:chat_app/Bloc/profileImagebloc/profile_image_bloc.dart';
 import 'package:chat_app/pages/screen/base.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -58,7 +59,7 @@ class _ProfileImageState extends State<ProfileImage> {
                   );
                 }
                 if (state is ProfileImageUploading) {
-                  return CircularProgressIndicator();
+                  return CupertinoActivityIndicator();
                 }
                 if (state is ProfileImageLoadFailure) {
                   return Text(state.error);

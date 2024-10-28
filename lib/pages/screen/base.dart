@@ -188,10 +188,10 @@ class BaseState extends State<Base> with TickerProviderStateMixin {
                   const NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
               controller: _motionTabBarController,
               children: <Widget>[
-                ChatScreen(),
-                GroupChatScreen(),
-                Users(),
-                CustomDrawer(),
+                const ChatScreen(),
+                const GroupChatScreen(),
+                const Users(),
+                const CustomDrawer(),
               ],
             ),
             // screens[_selectedIndex],

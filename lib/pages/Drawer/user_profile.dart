@@ -56,7 +56,7 @@ class _UserProfileState extends State<UserProfile> {
             },
             builder: (context, state) {
               if (state is LoadMyProfileLoading) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: CupertinoActivityIndicator());
               } else if (state is MyProfileLoaded) {
                 fullNameController.text = state.myprofile['name'];
                 emailController.text = state.myprofile['email'];

@@ -71,7 +71,7 @@
 //           if (state is FriendRequestError) {
 //             return Center(child: Text("Error: ${state.message}"));
 //           }
-//           return Center(child: CircularProgressIndicator());
+//           return Center(child: CupertinoActivityIndicator());
 //         },
 //       ),
 //     );
