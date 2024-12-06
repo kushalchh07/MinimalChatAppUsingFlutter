@@ -5,10 +5,10 @@ import 'dart:developer';
 import 'package:chat_app/pages/screen/base.dart';
 import 'package:chat_app/repository/payment_repo.dart';
 import 'package:chat_app/services/auth_services.dart';
-import 'package:esewa_flutter_sdk/esewa_config.dart';
-import 'package:esewa_flutter_sdk/esewa_flutter_sdk.dart';
-import 'package:esewa_flutter_sdk/esewa_payment.dart';
-import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
+// import 'package:esewa_flutter_sdk/esewa_config.dart';
+// import 'package:esewa_flutter_sdk/esewa_flutter_sdk.dart';
+// import 'package:esewa_flutter_sdk/esewa_payment.dart';
+// import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -229,61 +229,61 @@ payEsewa(
 ) {
   log("pay esews initialized");
   try {
-    EsewaFlutterSdk.initPayment(
-      esewaConfig: EsewaConfig(
-        environment: Environment.test,
-        //test ko lagi
-        clientId: 'JB0BBQ4aD0UqIThFJwAKBgAXEUkEGQUBBAwdOgABHD4DChwUAB0R',
-        secretId: 'BhwIWQQADhIYSxILExMcAgFXFhcOBwAKBgAXEQ==',
-      ),
-      esewaPayment: EsewaPayment(
-        productId: "$productid",
-        productName: "$product",
-        productPrice: "$price",
-        callbackUrl: '',
-      ),
-      onPaymentSuccess: (EsewaPaymentSuccessResult data) async {
-        debugPrint(":::SUCCESS::: => $data");
-        log("Success" + data.toString());
-        verifyTransactionStatus(data, context);
-      },
-      onPaymentFailure: (data) {
-        debugPrint(":::FAILURE::: => $data");
-        log("failure" + data.toString());
-      },
-      onPaymentCancellation: (data) {
-        debugPrint(":::CANCELLATION::: => $data");
-        log("cancel" + data.toString());
-      },
-    );
+    // EsewaFlutterSdk.initPayment(
+    //   esewaConfig: EsewaConfig(
+    //     environment: Environment.test,
+    //     //test ko lagi
+    //     clientId: 'JB0BBQ4aD0UqIThFJwAKBgAXEUkEGQUBBAwdOgABHD4DChwUAB0R',
+    //     secretId: 'BhwIWQQADhIYSxILExMcAgFXFhcOBwAKBgAXEQ==',
+    //   ),
+    //   esewaPayment: EsewaPayment(
+    //     productId: "$productid",
+    //     productName: "$product",
+    //     productPrice: "$price",
+    //     callbackUrl: '',
+    //   ),
+    //   onPaymentSuccess: (EsewaPaymentSuccessResult data) async {
+    //     debugPrint(":::SUCCESS::: => $data");
+    //     log("Success" + data.toString());
+    //     verifyTransactionStatus(data, context);
+    //   },
+    //   onPaymentFailure: (data) {
+    //     debugPrint(":::FAILURE::: => $data");
+    //     log("failure" + data.toString());
+    //   },
+    //   onPaymentCancellation: (data) {
+    //     debugPrint(":::CANCELLATION::: => $data");
+    //     log("cancel" + data.toString());
+    //   },
+    // );
   } on Exception catch (e) {
     debugPrint("EXCEPTION : ${e.toString()}");
     log("Exception" + e.toString());
   }
 }
 
-void verifyTransactionStatus(
-    EsewaPaymentSuccessResult result, BuildContext context) async {
-  Map data = result.toJson();
-  EsewaRepository esewaRepository = EsewaRepository();
-  var response = await callVerificationApi(data['refId']);
-  log("The Response Is: ${response.body}");
-  log("The Response Status Code Is: ${response.statusCode}");
+// void verifyTransactionStatus(
+//     EsewaPaymentSuccessResult result, BuildContext context) async {
+//   Map data = result.toJson();
+//   EsewaRepository esewaRepository = EsewaRepository();
+//   var response = await callVerificationApi(data['refId']);
+//   log("The Response Is: ${response.body}");
+//   log("The Response Status Code Is: ${response.statusCode}");
 
-  if (response.statusCode.toString() == "200") {
-    // await esewaRepository.fetchTransaction(data['refId']);
+//   if (response.statusCode.toString() == "200") {
+//     // await esewaRepository.fetchTransaction(data['refId']);
 
-    await AuthService.updatePremiumStatus(
-        FirebaseAuth.instance.currentUser!.uid);
-    paymentSuccessAlert(context);
-  } else {
-    showDialog(
-        context: context,
-        builder: (context) => const AlertDialog(
-              content: Text('Verification Failed'),
-            ));
-  }
-}
+//     await AuthService.updatePremiumStatus(
+//         FirebaseAuth.instance.currentUser!.uid);
+//     paymentSuccessAlert(context);
+//   } else {
+//     showDialog(
+//         context: context,
+//         builder: (context) => const AlertDialog(
+//               content: Text('Verification Failed'),
+//             ));
+//   }
+// }
 
 callVerificationApi(result) async {
   print("TxnRefd Id: " + result);

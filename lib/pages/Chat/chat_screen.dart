@@ -1,14 +1,12 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_app/Bloc/chatBloc/chat_state.dart';
 import 'package:chat_app/constants/colors/colors.dart';
 import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/pages/Chat/chat_page.dart';
 import 'package:chat_app/pages/Login&signUp/sign_inpage.dart';
 import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/services/chat_services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -180,9 +178,9 @@ class _ChatScreenState extends State<ChatScreen>
             padding: const EdgeInsets.only(bottom: 20),
             child: Container(
               height: Get.height * 0.06,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 // color: appBackgroundColor,
-                borderRadius: const BorderRadius.only(
+                borderRadius:  BorderRadius.only(
                   bottomLeft: Radius.circular(20),
                   bottomRight: Radius.circular(20),
                 ),
@@ -261,9 +259,9 @@ class _ChatScreenState extends State<ChatScreen>
           future: getName(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CupertinoActivityIndicator();
+              return const CupertinoActivityIndicator();
             } else if (snapshot.hasError) {
-              return Text('Error');
+              return const Text('Error');
             } else {
               String fullName = snapshot.data ?? 'N/A';
               String firstName = getFirstName(fullName).toUpperCase();
@@ -348,12 +346,12 @@ class _UserListState extends State<UserList> {
           BlocProvider.of<UserBloc>(context).add(LoadUsers());
         }
         if (state is UsersLoading) {
-          return Center(child: CupertinoActivityIndicator());
+          return const Center(child: CupertinoActivityIndicator());
         } else if (state is UsersLoaded) {
           final users = state.users;
           log(users.toString());
           if (users.isEmpty) {
-            return Center(child: Text('No users found'));
+            return const  Center(child: Text('No users found'));
           }
           return RefreshIndicator.adaptive(
             onRefresh: () async {
@@ -368,7 +366,7 @@ class _UserListState extends State<UserList> {
                     })),
           );
         } else if (state is UsersError) {
-          return Center(child: Text('Failed to load users'));
+          return const  Center(child: Text('Failed to load users'));
         } else {
           return Container();
         }
@@ -382,17 +380,17 @@ void _blockUser(BuildContext context, String userId) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Confirm'),
-        content: Text('Are you sure you want to block this user?'),
+        title: const Text('Confirm'),
+        content:const  Text('Are you sure you want to block this user?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: Text('Block'),
+            child:const  Text('Block'),
             onPressed: () {
               BlocProvider.of<UserBloc>(context).add(BlockUserEvent(userId));
               // initState();

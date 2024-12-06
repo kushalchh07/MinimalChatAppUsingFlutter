@@ -1,0 +1,6 @@
+framework module firebase_app_check {
+  umbrella header "firebase_app_check-umbrella.h"
+
+  export *
+  module * { export * }
+}
