@@ -48,6 +48,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
           // backgroundColor: appBackgroundColor,
           elevation: 0.2,
           title: Text('Group Chat'),
+          centerTitle: false,
           actions: <Widget>[
             PopupMenuButton<String>(
               icon: Icon(Icons.more_vert),
@@ -61,7 +62,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
                         builder: (BuildContext context, StateSetter setState) {
                           return AlertDialog(
                             title: Text('Create Group Chat'),
-                            content: Container(
+                            content: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.7,
                               child: SingleChildScrollView(
                                 child: Column(
@@ -83,7 +84,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
                                               child:
                                                   CupertinoActivityIndicator());
                                         } else if (state is UsersLoaded) {
-                                          return Container(
+                                          return SizedBox(
                                             height:
                                                 300.0, // Set a fixed height for the ListView
                                             child: ListView.builder(
@@ -170,7 +171,7 @@ class _GroupChatScreenState extends State<GroupChatScreen>
           onRefresh: () async {
             BlocProvider.of<GroupchatBloc>(context).add(GroupChatLoadEvent());
           },
-          child: Container(
+          child: SizedBox(
             child: BlocConsumer<GroupchatBloc, GroupchatState>(
               listener: (context, state) {
                 if (state is ChatRoomCreated) {
@@ -250,9 +251,9 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
         elevation: 0.2,
         child: Container(
           decoration: BoxDecoration(
-            color: appSecondary,
+            // color: appSecondary,
 
-            // border: Border.all(color: Colors.black), // Border color
+            border: Border.all(color: Colors.black), // Border color
             borderRadius: BorderRadius.circular(20.0),
             // Border radius
           ),
@@ -264,17 +265,17 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
               ),
-              child: state.chatRooms[index].groupImageUrl.isEmpty ?? true
+              child: state.chatRooms[index].groupImageUrl.isEmpty
                   ? Container(
                       // height: 60,
                       // width: 60,
                       decoration: BoxDecoration(
-                          color: primaryColor, shape: BoxShape.circle),
+                          shape: BoxShape.circle, color: primaryColor),
                       child: Center(
                         child: Text(
-                          getFirstandLastNameInitals(
-                              state.chatRooms[index].name),
-                          style: TextStyle(color: whiteColor, fontSize: 20),
+                          capitalize(getFirstandLastNameInitals(
+                              state.chatRooms[index].name)),
+                          style: TextStyle(fontSize: 20, color: whiteColor),
                         ),
                       ),
                     )
@@ -307,8 +308,10 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
                     ),
             ),
             title: Text(
-              state.chatRooms[index].name,
-              style: TextStyle(fontSize: 20, color: Colors.black),
+              capitalize(state.chatRooms[index].name),
+              style: TextStyle(
+                fontSize: 20,
+              ),
             ),
             subtitle: Text(
               "Enjoy Chatting with friends",
@@ -317,11 +320,11 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
             onTap: () {
               log("Tapped On this tile");
               Get.to(() => GroupchatPage(
-                    groupImage: state.chatRooms[index].groupImageUrl ?? '',
-                    groupName: state.chatRooms[index].name ?? '',
-                    groupId: state.chatRooms[index].id ?? '',
+                    groupImage: state.chatRooms[index].groupImageUrl,
+                    groupName: state.chatRooms[index].name,
+                    groupId: state.chatRooms[index].id,
                     // groupMembers: state.chatRooms[index].members ?? [],
-                    adminId: state.chatRooms[index].adminId ?? '',
+                    adminId: state.chatRooms[index].adminId,
                     isImage: false,
                   ));
             },
@@ -336,4 +339,9 @@ buildgroupListItem(BuildContext context, ChatRoomsLoaded state, index) {
       ),
     ),
   );
+}
+
+String capitalize(String word) {
+  if (word.isEmpty) return word; // Handle empty strings
+  return word[0].toUpperCase() + word.substring(1).toLowerCase();
 }
